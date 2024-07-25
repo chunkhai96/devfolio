@@ -12,7 +12,7 @@ const navbarItem: Array<NavbarItem> = [
 <template>
   <div class="rounded-full h-15 flex py-4">
     <div v-for="item in navbarItem"
-      class="py-2 px-4 rounded-full hover:cursor-pointer hover:bg-gray-200">
+      class="py-2 px-4 rounded-full hover:cursor-pointer hover:bg-slate-800">
       {{ item.title }}
     </div>
   </div>
