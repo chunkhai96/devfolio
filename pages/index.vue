@@ -1,8 +1,63 @@
 <script lang="ts" setup>
+import type { TimelineItem } from '~/components'
+
 const landingSectionText = {
   title: 'Andy Pang',
   description: 'I solve problems through innovation using code.'
 }
+
+const whatIDoSectionText = {
+  title: 'What I Do',
+  roles: [
+    'Machine Learning Engineer',
+    'Full Stack Developer',
+    'Data Scientist'
+  ],
+  techStackItems: [
+    { icon: 'devicon-python-plain', text: 'Python' },
+    { icon: 'devicon-typescript-plain' , text: 'TypeScript' },
+    { icon: 'devicon-go-original-wordmark', text: 'Golang' },
+    { icon: 'devicon-azuresqldatabase-plain', text: 'SQL' },
+    { icon: 'devicon-vuejs-plain', text: 'Vue.js' },
+    { icon: 'devicon-nuxtjs-plain', text: 'Nuxt.js' },
+    { icon: 'devicon-nodejs-plain-wordmark', text: 'Node.js' },
+    { icon: 'devicon-docker-plain', text: 'Docker' },
+    { icon: 'devicon-kubernetes-plain', text: 'Kubernetes' }
+  ],
+  subtitles: [
+    '💡 Craft innovative AI solutions that transform complex problems into intelligent, automated systems',
+    '💡 Develop dynamic and responsive web applications that provide seamless user experiences',
+    '💡 Enabling data-driven decision-making through advanced analytics and visualization techniques'
+  ]
+}
+
+const experienceTimelineItems: TimelineItem[] = [
+  {
+    title: 'Machine Learning Engineer',
+    company: 'Management Resources Consultants (MRC Asia)',
+    duration: 'Apr 2022 - Present',
+    description: 'Crafted global salary data includes basic salary, allowances and bonuses using machine learning. Coveraged over 180+ countries worldwide with 1,300+ different jobs.'
+  },
+  {
+    title: 'Artificial Intelligence Engineer',
+    company: 'TalentX',
+    duration: 'Jan 2021 - Apr 2022',
+    description: 'Led a team of 5 to build AI solutions to improve effieciency of talent acquisition, hiring, and talent management.'
+  },
+  {
+    title: 'System Engineer',
+    company: 'Infineon Technologies',
+    duration: 'Jul 2020 - Jan 2021',
+    description: 'Develop and maintain financial technology solutions.'
+  },
+  {
+    title: 'Data Science Intern',
+    company: 'Seek',
+    duration: 'Jul 2019 - Jan 2020',
+    description: 'Develop job reviews classification and sentiment analysis models serving more than 3 markets with different languages.'
+  }
+]
+
 </script>
 <template>
   <div class="bg-slate-900 text-slate-50">
@@ -14,41 +69,52 @@ const landingSectionText = {
           <div class="absolute bg-gradient-to-b from-slate-900/0 to-slate-900/100 h-[50vh] w-full bottom-0" />
         </div>
       </div>
-      <!-- <img class="w-full h-full object-cover absolute -z-10"
-        src="/images/background.jpg" /> -->
       <div class="z-20">
-        <Navbar />
+        <AppNavbar />
       </div>
-      <div class="flex items-center justify-center grow w-full max-w-[1024px] p-4 z-20">
+      <div class="flex items-center justify-center grow w-full max-w-[1240px] p-8 mb-40 z-20">
         <div class="flex flex-col grow gap-8">
           <h1 class="text-7xl">{{ landingSectionText.title }}</h1>
           <span class="text-2xl text-slate-400">{{ landingSectionText.description }}</span>
         </div>
-        <div class="size-96 bg-gray-400 flex justify-center items-center">
-          Image
+        <div class="size-[28rem] flex-shrink-0">
+          <img class="rounded-full object-cover" src="~/assets/images/avatar.png" />
         </div>
       </div>
     </div>
-    <div class="flex items-center justify-center w-full">
-      <div class="flex flex-row gap-4 w-full max-w-[1024px] gap-8">
-        <div class="size-96 bg-gray-400 flex justify-center items-center">
+    <div class="flex flex-col items-center justify-center w-full gap-36 p-8">
+      <div class="flex gap-12 h-full w-full max-w-[1240px] items-center">
+        <div class="size-96 flex-shrink-0 bg-gray-400 flex justify-center items-center">
           Image
         </div>
-        <div class="flex flex-col justify-center w-full p-4 gap-4">
+        <div class="flex flex-col justify-between w-full p-4 gap-8">
           <h2 class="text-5xl">
-            What I Do
+            {{ whatIDoSectionText.title }}
           </h2>
-          <span class="text-2xl">
-            Passionate Machine Learning Engineer | Full Stack Developer | Data Scientist
-          </span>
-          <div class="flex bg-blue-400">
-            <div>Hello</div>
-            <div>Hello</div>
-            <div>Hello</div>
+          <div class="flex justify-between gap-8">
+            <Card v-for="role in whatIDoSectionText.roles">
+              <template #content>
+                <div class="flex justify-center items-center px-4 py-2 h-full w-full text-center">
+                  {{ role }}
+                </div>
+              </template>
+            </Card>
           </div>
-          <div class="flex">
-            <div>Hello</div>
+          <div class="flex flex-wrap gap-8 justify-center">
+            <TechStackContainer v-for="item in whatIDoSectionText.techStackItems"
+              :icon="item.icon"
+              :text="item.text" />
           </div>
+          <ul class="text-slate-400 space-y-4">
+            <li v-for="subtitle in whatIDoSectionText.subtitles">
+              {{ subtitle }}
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="flex items-center justify-center w-full">
+        <div class="flex gap-12 h-full w-full max-w-[1240px] items-center">
+          <Timeline :items="experienceTimelineItems" />
         </div>
       </div>
     </div>
