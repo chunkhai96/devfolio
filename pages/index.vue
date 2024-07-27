@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { Vue3Lottie } from 'vue3-lottie'
+import whatido from '~/assets/lotties/whatido.json'
 import type { TimelineItem } from '~/components'
 
 const landingSectionText = {
@@ -9,7 +11,7 @@ const landingSectionText = {
 const whatIDoSectionText = {
   title: 'What I Do',
   roles: [
-    'Machine Learning Engineer',
+    'AI/ML Engineer',
     'Full Stack Developer',
     'Data Scientist'
   ],
@@ -20,14 +22,13 @@ const whatIDoSectionText = {
     { icon: 'devicon-azuresqldatabase-plain', text: 'SQL' },
     { icon: 'devicon-vuejs-plain', text: 'Vue.js' },
     { icon: 'devicon-nuxtjs-plain', text: 'Nuxt.js' },
-    { icon: 'devicon-nodejs-plain-wordmark', text: 'Node.js' },
     { icon: 'devicon-docker-plain', text: 'Docker' },
     { icon: 'devicon-kubernetes-plain', text: 'Kubernetes' }
   ],
   subtitles: [
-    '💡 Craft innovative AI solutions that transform complex problems into intelligent, automated systems',
-    '💡 Develop dynamic and responsive web applications that provide seamless user experiences',
-    '💡 Enabling data-driven decision-making through advanced analytics and visualization techniques'
+    '💡 Craft innovative AI solutions that transform problems into intelligent, automated systems',
+    '💡 Develop dynamic web applications that provide seamless user experiences',
+    '💡 Enabling data-driven decision-making through advanced analytics and visualization'
   ]
 }
 
@@ -83,22 +84,20 @@ const experienceTimelineItems: TimelineItem[] = [
       </div>
     </div>
     <div class="flex flex-col items-center justify-center w-full gap-36 p-8">
-      <div class="flex gap-12 h-full w-full max-w-[1240px] items-center">
-        <div class="size-96 flex-shrink-0 bg-gray-400 flex justify-center items-center">
-          Image
-        </div>
+      <div class="flex h-full w-full max-w-[1240px] items-center">
+        <client-only>
+          <Vue3Lottie
+            width="80%"
+            :animationData="whatido"
+          />
+        </client-only>
         <div class="flex flex-col justify-between w-full p-4 gap-8">
           <h2 class="text-5xl">
             {{ whatIDoSectionText.title }}
           </h2>
           <div class="flex justify-between gap-8">
-            <Card v-for="role in whatIDoSectionText.roles">
-              <template #content>
-                <div class="flex justify-center items-center px-4 py-2 h-full w-full text-center">
-                  {{ role }}
-                </div>
-              </template>
-            </Card>
+            <Tag v-for="role in whatIDoSectionText.roles"
+              :text="role" />
           </div>
           <div class="flex flex-wrap gap-8 justify-center">
             <TechStackContainer v-for="item in whatIDoSectionText.techStackItems"
