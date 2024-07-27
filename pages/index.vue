@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Vue3Lottie } from 'vue3-lottie'
 import whatido from '~/assets/lotties/whatido.json'
+import experience from '~/assets/lotties/experience.json'
 import type { TimelineItem } from '~/components'
 
 const landingSectionText = {
@@ -32,9 +33,12 @@ const whatIDoSectionText = {
   ]
 }
 
+const experienceSectionText = {
+  title: 'Working Experience',
+}
 const experienceTimelineItems: TimelineItem[] = [
   {
-    title: 'Machine Learning Engineer',
+    title: 'Senior Machine Learning Engineer',
     company: 'Management Resources Consultants (MRC Asia)',
     duration: 'Apr 2022 - Present',
     description: 'Crafted global salary data includes basic salary, allowances and bonuses using machine learning. Coveraged over 180+ countries worldwide with 1,300+ different jobs.'
@@ -111,8 +115,17 @@ const experienceTimelineItems: TimelineItem[] = [
           </ul>
         </div>
       </div>
-      <div class="flex items-center justify-center w-full">
+      <div class="flex flex-col items-center justify-center w-full gap-12">
+        <h2 class="text-5xl">
+          {{ experienceSectionText.title }}
+        </h2>
         <div class="flex gap-12 h-full w-full max-w-[1240px] items-center">
+          <client-only>
+            <Vue3Lottie
+              width="80%"
+              :animationData="experience"
+            />
+          </client-only>
           <Timeline :items="experienceTimelineItems" />
         </div>
       </div>
