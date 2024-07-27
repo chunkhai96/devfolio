@@ -702,10 +702,10 @@
   dependencies:
     "@fortawesome/fontawesome-common-types" "6.6.0"
 
-"@fortawesome/free-brands-svg-icons@^6.6.0":
+"@fortawesome/free-solid-svg-icons@^6.6.0":
   version "6.6.0"
-  resolved "https://registry.yarnpkg.com/@fortawesome/free-brands-svg-icons/-/free-brands-svg-icons-6.6.0.tgz#2797f2cc66d21e7e47fa64e680b8835e8d30e825"
-  integrity sha512-1MPD8lMNW/earme4OQi1IFHtmHUwAKgghXlNwWi9GO7QkTfD+IIaYpIai4m2YJEzqfEji3jFHX1DZI5pbY/biQ==
+  resolved "https://registry.yarnpkg.com/@fortawesome/free-solid-svg-icons/-/free-solid-svg-icons-6.6.0.tgz#061751ca43be4c4d814f0adbda8f006164ec9f3b"
+  integrity sha512-IYv/2skhEDFc2WGUcqvFJkeK39Q+HyPf5GHUrT/l2pKbtgEIv1al1TKd6qStR5OIwQdN1GZP54ci3y4mroJWjA==
   dependencies:
     "@fortawesome/fontawesome-common-types" "6.6.0"
 
@@ -2323,6 +2323,11 @@ devalue@^5.0.0:
   version "5.0.0"
   resolved "https://registry.npmjs.org/devalue/-/devalue-5.0.0.tgz"
   integrity sha512-gO+/OMXF7488D+u3ue+G7Y4AA3ZmUnB3eHJXmBTgNHvr4ZNzl36A0ZtG+XCRNYCkYx/bFmw4qtkoFLa+wSrwAA==
+
+devicon@^2.16.0:
+  version "2.16.0"
+  resolved "https://registry.yarnpkg.com/devicon/-/devicon-2.16.0.tgz#67ca4200b44eb74bf35e4be1d63b6d34f6e07de5"
+  integrity sha512-PE5a2HBNeN4av+Iu975OiiWEwS8LJPw5HAvlv0JUHb62jZTdYxTpz4ga+cQyvdtb3x1side2P9Sr1mmOmUkO/g==
 
 didyoumean@^1.2.2:
   version "1.2.2"

@@ -10,11 +10,12 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "devicon": "^2.16.0",
     "nuxt": "^3.12.4",
     "vue": "latest"
   },
   "devDependencies": {
-    "@fortawesome/free-brands-svg-icons": "^6.6.0",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@vesp/nuxt-fontawesome": "^1.0.4",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.39",
