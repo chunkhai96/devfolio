@@ -14,7 +14,7 @@ const { items } = toRefs(props)
 
 </script>
 <template>
-  <ol class="relative border-s border-gray-700">                  
+  <ol class="relative border-s-2 border-gray-700">                  
     <li v-for="item in items"
       class="mb-10 ms-12">  
       <span class="absolute flex items-center justify-center size-12 rounded-full -start-6 ring-8 ring-gray-900 bg-blue-900">
@@ -22,7 +22,7 @@ const { items } = toRefs(props)
       </span>
       <Card>
         <template #header>
-          <h3 class="text-xl">
+          <h3 class="text-lg">
             {{ item.title }}
           </h3>
         </template>
@@ -33,7 +33,7 @@ const { items } = toRefs(props)
               <span class="hidden md:contents"> • </span>
               <span>{{ item.duration }}</span>
             </div>
-            <p>
+            <p class="text-sm">
               {{ item.description }}
             </p>
           </div>
