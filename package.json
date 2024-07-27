@@ -12,7 +12,8 @@
   "dependencies": {
     "devicon": "^2.16.0",
     "nuxt": "^3.12.4",
-    "vue": "latest"
+    "vue": "latest",
+    "vue3-lottie": "^3.3.0"
   },
   "devDependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
