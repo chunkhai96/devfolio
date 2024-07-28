@@ -20,7 +20,7 @@ const { items } = toRefs(props)
       <span class="absolute flex items-center justify-center size-12 rounded-full -start-6 ring-8 ring-gray-900 bg-blue-900">
           <fa :icon="faCalendarAlt" />
       </span>
-      <Card>
+      <Card class="shadow-lg spin transition duration-300 hover:shadow-blue-800/50">
         <template #header>
           <h3 class="text-lg">
             {{ item.title }}
