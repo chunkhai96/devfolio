@@ -115,11 +115,19 @@ const experienceTimelineItems: TimelineItem[] = [
           </ul>
         </div>
       </div>
-      <div class="flex flex-col items-center justify-center w-full gap-12">
+      <div class="flex flex-col items-center justify-center w-full max-w-[1240px] gap-12">
+        <h2 class="text-5xl">
+          Projects
+        </h2>
+        <div class="flex gap-12 h-full w-full items-center">
+          
+        </div>
+      </div>
+      <div class="flex flex-col items-center justify-center w-full max-w-[1240px] gap-12">
         <h2 class="text-5xl">
           {{ experienceSectionText.title }}
         </h2>
-        <div class="flex gap-12 h-full w-full max-w-[1240px] items-center">
+        <div class="flex gap-12 h-full w-full items-center">
           <client-only>
             <Vue3Lottie
               width="80%"
