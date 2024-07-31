@@ -2,12 +2,21 @@
 import { Vue3Lottie } from 'vue3-lottie'
 import whatido from '~/assets/lotties/whatido.json'
 import experience from '~/assets/lotties/experience.json'
-import type { TimelineItem } from '~/components'
+import credlyLogo from '~/assets/images/credly-logo.svg'
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
+import type { ExperienceTimelineItem } from '~/components'
 
 const landingSectionText = {
   title: 'Andy Pang',
   description: 'I solve problems through innovation using code.'
 }
+const externalLinks = [
+  { devicon: 'devicon-github-original', url: 'https://github.com/chunkhai96', color: 'bg-slate-800' },
+  { devicon: 'devicon-linkedin-plain', url: 'https://www.linkedin.com/in/chunkhai96/', color: 'bg-blue-500' },
+  { devicon: 'devicon-stackoverflow-plain', url: 'https://stackoverflow.com/users/6851848/andy-pang', color: 'bg-orange-500' },
+  { fontawesome: faEnvelope, url: 'mailto:andypang96@gmail.com' },
+  { src: credlyLogo, url: 'https://www.credly.com/users/andy-pang.da6734f2' },
+]
 
 const whatIDoSectionText = {
   title: 'What I Do',
@@ -33,10 +42,23 @@ const whatIDoSectionText = {
   ]
 }
 
+const projectSectionText = {
+  title: 'Projects',
+}
+const projectItems = [
+  {
+    title: 'DevFolio',
+    description: 'Personal portfolio website',
+    imageSrc: '/devfolio.png',
+    codeLink: 'https://github.com/andy-pang/devfolio',
+    liveLink: 'https://devfolio.co/'
+  }
+]
+
 const experienceSectionText = {
   title: 'Working Experience',
 }
-const experienceTimelineItems: TimelineItem[] = [
+const experienceTimelineItems: ExperienceTimelineItem[] = [
   {
     title: 'Senior Machine Learning Engineer',
     company: 'Management Resources Consultants (MRC Asia)',
@@ -78,12 +100,25 @@ const experienceTimelineItems: TimelineItem[] = [
         <AppNavbar />
       </div>
       <div class="flex items-center justify-center grow w-full max-w-[1240px] p-8 mb-40 z-20">
-        <div class="flex flex-col grow gap-8">
-          <h1 class="text-7xl">{{ landingSectionText.title }}</h1>
-          <span class="text-2xl text-slate-400">{{ landingSectionText.description }}</span>
-        </div>
-        <div class="size-[28rem] flex-shrink-0">
-          <img class="rounded-full object-cover" src="~/assets/images/avatar.png" />
+        <div class="flex items-center grow h-[28rem]">
+          <div class="flex flex-col grow gap-8 h-full">
+            <h1 class="text-7xl grow flex items-end">{{ landingSectionText.title }}</h1>
+            <span class="text-2xl text-slate-400">{{ landingSectionText.description }}</span>
+            <div class="flex grow items-end gap-4">
+              <NuxtLink v-for="link in externalLinks"
+                :to="link.url"
+                target="_blank">
+                <IconButton
+                  :devicon="link.devicon"
+                  :src="link.src"
+                  :fontawesome="link.fontawesome"
+                  :color="link.color" />
+              </NuxtLink>
+            </div>
+          </div>
+          <div class="size-[28rem] flex-shrink-0">
+            <img class="rounded-full object-cover" src="~/assets/images/avatar.png" />
+          </div>
         </div>
       </div>
     </div>
@@ -117,10 +152,23 @@ const experienceTimelineItems: TimelineItem[] = [
       </div>
       <div class="flex flex-col items-center justify-center w-full max-w-[1240px] gap-12">
         <h2 class="text-5xl">
-          Projects
+          {{ projectSectionText.title }}
         </h2>
-        <div class="flex gap-12 h-full w-full items-center">
-          
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 h-full w-full items-center">
+          <Card v-for="project in projectItems">
+            <template #imgHeader>
+              <img class="w-full h-full object-cover" :src="project.imageSrc" />
+            </template>
+            <template #header>
+              {{ project.title }}
+            </template>
+            <template #content>
+              {{ project.description }}
+            </template>
+            <template #footer>
+
+            </template>
+          </Card>
         </div>
       </div>
       <div class="flex flex-col items-center justify-center w-full max-w-[1240px] gap-12">
@@ -134,7 +182,7 @@ const experienceTimelineItems: TimelineItem[] = [
               :animationData="experience"
             />
           </client-only>
-          <Timeline :items="experienceTimelineItems" />
+          <ExperienceTimeline :items="experienceTimelineItems" />
         </div>
       </div>
     </div>
