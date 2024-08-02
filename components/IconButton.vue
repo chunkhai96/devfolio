@@ -25,7 +25,7 @@ const props = defineProps({
 const { devicon, src, fontawesome, color, textColor } = toRefs(props)
 </script>
 <template>
-  <button class="font-bold size-12 rounded-full flex justify-center items-center transition duration-300 hover:scale-110"
+  <button class="font-bold size-12 rounded-full flex justify-center items-center transition duration-300 hover:scale-110 hover:hover:shadow-blue-800/50 shadow-lg"
     :class="[color, textColor]">
     <i v-if="devicon" class="p-2 text-2xl" :class="devicon"></i>
     <img v-else-if="src" class="text-2xl" :src="src" />
