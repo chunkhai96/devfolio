@@ -43,15 +43,43 @@ const whatIDoSectionText = {
 }
 
 const projectSectionText = {
-  title: 'Projects',
+  title: 'Personal Projects',
 }
 const projectItems = [
   {
     title: 'DevFolio',
-    description: 'Personal portfolio website',
-    imageSrc: '/devfolio.png',
-    codeLink: 'https://github.com/andy-pang/devfolio',
-    liveLink: 'https://devfolio.co/'
+    description: 'Personal portfolio website to introduce myself and showcase my works.',
+    imageSrc: 'images/project-devfolio.png',
+    codeLink: 'https://github.com/chunkhai96/devfolio',
+    liveLink: 'https://andypangdev.com'
+  },
+  {
+    title: 'I Have Chosen You',
+    description: 'A religious web applications to provide a platform for people who need help.',
+    imageSrc: 'images/project-ihavechosenyou.png',
+    liveLink: 'https://ihavechosenyou.com/en'
+  },
+  {
+    title: 'RideS',
+    description: 'Carpooling platform on Android to support University students',
+    imageSrc: 'images/project-rides.png',
+    codeLink: 'https://github.com/chunkhai96/RideS',
+    liveLink: 'https://youtu.be/UE8D9PCm3zk?si=wmFT6Wa4glJ9MZ-n'
+  },
+  {
+    title: 'Employee Policy Chatbot',
+    description: 'Chatbot to help answer questions about employee policies such as sick leave, claims, insurance, etc.',
+    imageSrc: 'images/project-policy-chatbot.png'
+  },
+  {
+    title: 'Web Crawler',
+    description: 'Crawl and scrape public accesible data from websites includes jobs, salary, property, etc.',
+    imageSrc: 'images/project-web-crawler.jpg'
+  },
+  {
+    title: 'Data Dashboard',
+    description: 'Visualize and analyze data in dashboard for better decision making.',
+    imageSrc: 'images/project-devfolio.png'
   }
 ]
 
@@ -157,16 +185,28 @@ const experienceTimelineItems: ExperienceTimelineItem[] = [
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 h-full w-full items-center">
           <Card v-for="project in projectItems">
             <template #imgHeader>
-              <img class="w-full h-full object-cover" :src="project.imageSrc" />
+              <img class="w-full h-40 object-cover rounded-t-3xl"
+                :src="project.imageSrc" />
             </template>
             <template #header>
               {{ project.title }}
             </template>
             <template #content>
-              {{ project.description }}
+              <span class="text-slate-400 text-sm">{{ project.description }}</span>
             </template>
             <template #footer>
-
+              <div class="flex gap-4 mt-4">
+                <NuxtLink v-if="project.codeLink"
+                  target="_blank"
+                  :to="project.codeLink">
+                  <Button label="Code" :textSizeClass="'text-sm'"></Button>
+                </NuxtLink>
+                <NuxtLink v-if="project.liveLink"
+                  target="_blank"
+                  :to="project.liveLink">
+                  <Button label="Preview" :textSizeClass="'text-sm'"></Button>
+                </NuxtLink>
+              </div>
             </template>
           </Card>
         </div>
