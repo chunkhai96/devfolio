@@ -211,7 +211,7 @@ const achievementItems = [
               </NuxtLink>
             </div>
           </div>
-          <div class="size-[16rem] md:size-[28rem] flex-shrink-0">
+          <div class="size-[16rem] md:size-[28rem] flex-shrink-0 mt-12 md:mt-0">
             <img class="rounded-full object-cover" src="~/assets/images/avatar.png" />
           </div>
         </div>
