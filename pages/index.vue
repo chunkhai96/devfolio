@@ -114,6 +114,18 @@ const experienceTimelineItems: ExperienceTimelineItem[] = [
   }
 ]
 
+const talkSectionText = {
+  title: 'Talks'
+}
+const talkItems = [
+  {
+    title: 'Competent in Job Market Through Final Year Project Management',
+    imageSrc: 'images/talk-uthm.png',
+    youtube: 'https://youtu.be/skoynvqo64o?si=7wzZnsVE4ziiZ4qt',
+    slide: 'https://docs.google.com/presentation/d/19JZlfQRdsyLvZ91-RtQGYBnsyXRKvAlCJR03ll6JHEg/edit?usp=sharing'
+  }
+]
+
 const achievementSectionText = {
   title: 'Achievements and Certifications',
 }
@@ -239,7 +251,8 @@ const achievementItems = [
           {{ projectSectionText.title }}
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 h-full w-full items-center">
-          <Card v-for="project in projectItems">
+          <Card v-for="project in projectItems"
+            class="shadow-lg transition duration-300 hover:shadow-blue-800/50">
             <template #imgHeader>
               <img class="w-full h-40 object-cover rounded-t-3xl"
                 :src="project.imageSrc" />
@@ -279,6 +292,37 @@ const achievementItems = [
             />
           </client-only>
           <ExperienceTimeline :items="experienceTimelineItems" />
+        </div>
+      </div>
+      <div class="flex flex-col items-center justify-center w-full max-w-[1240px] gap-12">
+        <h2 class="text-4xl md:text-5xl text-center md:text-left">
+          {{ talkSectionText.title }}
+        </h2>
+        <div class="flex flex-wrap justify-center gap-12 h-full w-full items-center">
+          <Card v-for="talk in talkItems"
+            class="w-full md:w-1/2 lg:w-1/3 shadow-lg transition duration-300 hover:shadow-blue-800/50">
+            <template #imgHeader>
+              <img class="w-full h-40 object-cover rounded-t-3xl"
+                :src="talk.imageSrc" />
+            </template>
+            <template #header>
+              {{ talk.title }}
+            </template>
+            <template #footer>
+              <div class="flex gap-4 mt-4">
+                <NuxtLink v-if="talk.youtube"
+                  target="_blank"
+                  :to="talk.youtube">
+                  <Button label="YouTube" :textSizeClass="'text-sm'"></Button>
+                </NuxtLink>
+                <NuxtLink v-if="talk.slide"
+                  target="_blank"
+                  :to="talk.slide">
+                  <Button label="Slide" :textSizeClass="'text-sm'"></Button>
+                </NuxtLink>
+              </div>
+            </template>
+          </Card>
         </div>
       </div>
       <div class="flex flex-col items-center justify-center w-full max-w-[1240px]">
