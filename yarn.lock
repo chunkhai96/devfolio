@@ -907,7 +907,7 @@
     which "^3.0.1"
     ws "^8.17.1"
 
-"@nuxt/kit@3.12.4", "@nuxt/kit@^3.11.2", "@nuxt/kit@^3.12.2", "@nuxt/kit@^3.9.1":
+"@nuxt/kit@3.12.4", "@nuxt/kit@^3.10.0", "@nuxt/kit@^3.11.2", "@nuxt/kit@^3.12.2", "@nuxt/kit@^3.9.1":
   version "3.12.4"
   resolved "https://registry.npmjs.org/@nuxt/kit/-/kit-3.12.4.tgz"
   integrity sha512-aNRD1ylzijY0oYolldNcZJXVyxdGzNTl+Xd0UYyFQCu9f4wqUZqQ9l+b7arCEzchr96pMK0xdpvLcS3xo1wDcw==
@@ -3691,6 +3691,14 @@ nuxi@^3.12.0:
   optionalDependencies:
     fsevents "~2.3.3"
 
+nuxt-marquee@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/nuxt-marquee/-/nuxt-marquee-1.0.4.tgz#aa26d3e7cc47761d4f5ae4f9ee89c13dd0e18650"
+  integrity sha512-FJ7uLhiLt7LQtmlcsJXq76aN+L1kHVLcJQPcUm0o4rW0bIda7LL4kZc4VB2t/VHiqzN7MRSq3lwXqUFV5zJ+wA==
+  dependencies:
+    "@nuxt/kit" "^3.10.0"
+    vue-fast-marquee "^1.0.6"
+
 nuxt@^3.12.4:
   version "3.12.4"
   resolved "https://registry.npmjs.org/nuxt/-/nuxt-3.12.4.tgz"
@@ -5216,6 +5224,11 @@ vue-devtools-stub@^0.1.0:
   version "0.1.0"
   resolved "https://registry.npmjs.org/vue-devtools-stub/-/vue-devtools-stub-0.1.0.tgz"
   integrity sha512-RutnB7X8c5hjq39NceArgXg28WZtZpGc3+J16ljMiYnFhKvd8hITxSWQSQ5bvldxMDU6gG5mkxl1MTQLXckVSQ==
+
+vue-fast-marquee@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/vue-fast-marquee/-/vue-fast-marquee-1.0.6.tgz#ad445a07447aee855fdb9e8fe3807867e0ae326a"
+  integrity sha512-VMqaeuBSS3L55Q84EuLJPHZ4Zv4UVBDXmh+2hb1IBTLKt/FmurJnWVXv8BNnbQSupA4kHbPlWDLwp+kvEMOF7A==
 
 vue-router@^4.4.0:
   version "4.4.0"
