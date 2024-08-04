@@ -15,7 +15,8 @@ const externalLinks = [
   { devicon: 'devicon-linkedin-plain', url: 'https://www.linkedin.com/in/chunkhai96/', color: 'bg-blue-500' },
   { devicon: 'devicon-stackoverflow-plain', url: 'https://stackoverflow.com/users/6851848/andy-pang', color: 'bg-orange-500' },
   { fontawesome: faEnvelope, url: 'mailto:andypang96@gmail.com' },
-  { src: credlyLogo, url: 'https://www.credly.com/users/andy-pang.da6734f2' },
+  { devicon: 'devicon-googlecloud-plain', url: 'https://www.cloudskillsboost.google/public_profiles/6afcecb6-2169-472e-b3fc-68c97b626f0a', color: 'bg-red-500' },
+  { devicon: 'devicon-windows11-original', url: 'https://learn.microsoft.com/en-us/users/andypang/', color: 'bg-blue-500' }
 ]
 
 const whatIDoSectionText = {
@@ -193,12 +194,12 @@ const achievementItems = [
       <div class="z-20">
         <AppNavbar />
       </div>
-      <div class="flex items-center justify-center grow w-full max-w-[1240px] p-8 mb-40 z-20">
-        <div class="flex items-center grow h-[28rem]">
+      <div class="flex items-center justify-center grow w-full max-w-[1240px] p-8 mb-36 md:mb-40 z-20">
+        <div class="flex flex-col-reverse md:flex-row justify-center items-center grow h-[28rem] gap-12">
           <div class="flex flex-col grow gap-8 h-full">
-            <h1 class="text-7xl grow flex items-end">{{ landingSectionText.title }}</h1>
-            <span class="text-2xl text-slate-400">{{ landingSectionText.description }}</span>
-            <div class="flex grow items-end gap-4">
+            <h1 class="grow flex items-end justify-center text-5xl md:text-7xl md:justify-start">{{ landingSectionText.title }}</h1>
+            <span class="text-2xl text-slate-400 text-center md:text-left">{{ landingSectionText.description }}</span>
+            <div class="flex flex-wrap grow items-end gap-4 justify-center md:justify-start">
               <NuxtLink v-for="link in externalLinks"
                 :to="link.url"
                 target="_blank">
@@ -210,14 +211,14 @@ const achievementItems = [
               </NuxtLink>
             </div>
           </div>
-          <div class="size-[28rem] flex-shrink-0">
+          <div class="size-[16rem] md:size-[28rem] flex-shrink-0">
             <img class="rounded-full object-cover" src="~/assets/images/avatar.png" />
           </div>
         </div>
       </div>
     </div>
     <div class="flex flex-col items-center justify-center w-full gap-36 p-8">
-      <div class="flex h-full w-full max-w-[1240px] items-center">
+      <div class="flex flex-col-reverse md:flex-row h-full w-full max-w-[1240px] items-center">
         <client-only>
           <Vue3Lottie
             width="80%"
@@ -225,10 +226,10 @@ const achievementItems = [
           />
         </client-only>
         <div class="flex flex-col justify-between w-full p-4 gap-8">
-          <h2 class="text-5xl">
+          <h2 class="text-4xl md:text-5xl text-center md:text-left">
             {{ whatIDoSectionText.title }}
           </h2>
-          <div class="flex justify-between gap-8">
+          <div class="grid grid-cols-1 md:grid-cols-3 justify-between gap-8">
             <Tag v-for="role in whatIDoSectionText.roles"
               :text="role" />
           </div>
@@ -238,14 +239,15 @@ const achievementItems = [
               :text="item.text" />
           </div>
           <ul class="text-slate-400 space-y-4">
-            <li v-for="subtitle in whatIDoSectionText.subtitles">
+            <li v-for="subtitle in whatIDoSectionText.subtitles"
+              class="text-center md:text-left">
               {{ subtitle }}
             </li>
           </ul>
         </div>
       </div>
       <div class="flex flex-col items-center justify-center w-full max-w-[1240px] gap-12">
-        <h2 class="text-5xl">
+        <h2 class="text-4xl md:text-5xl text-center md:text-left">
           {{ projectSectionText.title }}
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 h-full w-full items-center">
@@ -278,13 +280,13 @@ const achievementItems = [
         </div>
       </div>
       <div class="flex flex-col items-center justify-center w-full max-w-[1240px] gap-12">
-        <h2 class="text-5xl text-center">
+        <h2 class="text-4xl md:text-5xl text-center">
           {{ experienceSectionText.title }}
         </h2>
-        <div class="flex gap-12 h-full w-full items-center">
+        <div class="flex flex-col md:flex-row gap-12 h-full w-full items-center">
           <client-only>
             <Vue3Lottie
-              width="80%"
+              width="80"
               :animationData="experience"
             />
           </client-only>
@@ -292,7 +294,7 @@ const achievementItems = [
         </div>
       </div>
       <div class="flex flex-col items-center justify-center w-full max-w-[1240px]">
-        <h2 class="text-5xl text-center">
+        <h2 class="text-4xl md:text-5xl text-center">
           {{ achievementSectionText.title }}
         </h2>
         <NuxtMarquee class="overflow-hidden"
