@@ -11,12 +11,12 @@ const landingSectionText = {
   description: 'I solve problems through innovation using code.'
 }
 const externalLinks = [
-  { devicon: 'devicon-github-original', url: 'https://github.com/chunkhai96', color: 'bg-slate-800' },
-  { devicon: 'devicon-linkedin-plain', url: 'https://www.linkedin.com/in/chunkhai96/', color: 'bg-blue-500' },
-  { devicon: 'devicon-stackoverflow-plain', url: 'https://stackoverflow.com/users/6851848/andy-pang', color: 'bg-orange-500' },
-  { fontawesome: faEnvelope, url: 'mailto:andypang96@gmail.com' },
-  { devicon: 'devicon-googlecloud-plain', url: 'https://www.cloudskillsboost.google/public_profiles/6afcecb6-2169-472e-b3fc-68c97b626f0a', color: 'bg-red-500' },
-  { devicon: 'devicon-windows11-original', url: 'https://learn.microsoft.com/en-us/users/andypang/', color: 'bg-blue-500' }
+  { devicon: 'devicon-github-original', url: 'https://github.com/chunkhai96', color: 'bg-slate-800', label: 'GitHub' },
+  { devicon: 'devicon-linkedin-plain', url: 'https://www.linkedin.com/in/chunkhai96/', color: 'bg-blue-500', label: 'LinkedIn' },
+  { devicon: 'devicon-stackoverflow-plain', url: 'https://stackoverflow.com/users/6851848/andy-pang', color: 'bg-orange-500', label: 'StackOverflow' },
+  { fontawesome: faEnvelope, url: 'mailto:andypang96@gmail.com', 'color': 'bg-slate-400', label: 'Email' },
+  { devicon: 'devicon-googlecloud-plain', url: 'https://www.cloudskillsboost.google/public_profiles/6afcecb6-2169-472e-b3fc-68c97b626f0a', color: 'bg-red-500', label: 'Google Cloud Skills Boost' },
+  { devicon: 'devicon-windows11-original', url: 'https://learn.microsoft.com/en-us/users/andypang/', color: 'bg-blue-500', label: 'Microsoft Learn' }
 ]
 
 const whatIDoSectionText = {
@@ -49,37 +49,37 @@ const projectSectionText = {
 const projectItems = [
   {
     title: 'DevFolio',
-    description: 'Personal portfolio website to introduce myself and showcase my works.',
+    description: 'A dynamic personal portfolio website designed to introduce myself and showcase my creative and professional projects.',
     imageSrc: 'images/project-devfolio.png',
     codeLink: 'https://github.com/chunkhai96/devfolio',
     liveLink: 'https://andypangdev.com'
   },
   {
     title: 'I Have Chosen You',
-    description: 'A religious web applications to provide a platform for people who need help.',
+    description: 'A compassionate religious web application that serves as a platform for those seeking support and assistance.',
     imageSrc: 'images/project-ihavechosenyou.png',
     liveLink: 'https://ihavechosenyou.com/en'
   },
   {
     title: 'RideS',
-    description: 'Carpooling platform on Android to support University students',
+    description: 'An innovative carpooling app on Android that facilitates easy and affordable transportation solutions for university students.',
     imageSrc: 'images/project-rides.png',
     codeLink: 'https://github.com/chunkhai96/RideS',
     liveLink: 'https://youtu.be/UE8D9PCm3zk?si=wmFT6Wa4glJ9MZ-n'
   },
   {
     title: 'Employee Policy Chatbot',
-    description: 'Chatbot to help answer questions about employee policies such as sick leave, claims, insurance, etc.',
+    description: 'An interactive chatbot to provide quick and accurate answers about employee policies, including sick leave, claims, insurance, etc.',
     imageSrc: 'images/project-policy-chatbot.png'
   },
   {
     title: 'Web Crawler',
-    description: 'Crawl and scrape public accesible data from websites includes jobs, salary, property, etc.',
+    description: 'Crawl and scrape publicly accessible data from websites, including job listings, salary information, property details, etc.',
     imageSrc: 'images/project-web-crawler.jpg'
   },
   {
     title: 'Data Dashboard',
-    description: 'Visualize and analyze data in dashboard for better decision making.',
+    description: 'An intuitive dashboard that visualizes and analyzes data, empowering users to make informed and strategic decisions.',
     imageSrc: 'images/project-devfolio.png'
   }
 ]
@@ -92,25 +92,25 @@ const experienceTimelineItems: ExperienceTimelineItem[] = [
     title: 'Senior Machine Learning Engineer',
     company: 'Management Resources Consultants (MRC Asia)',
     duration: 'Apr 2022 - Present',
-    description: 'Crafted global salary data includes basic salary, allowances and bonuses using machine learning. Coveraged over 180+ countries worldwide with 1,300+ different jobs.'
+    description: 'Crafted innovative machine learning solutions to analyze and predict global salary data, encompassing base pay, allowances, and bonuses, covering 140+ countries and 1,300+ unique job roles'
   },
   {
     title: 'Artificial Intelligence Engineer',
     company: 'TalentX',
     duration: 'Jan 2021 - Apr 2022',
-    description: 'Led a team of 5 to build AI solutions to improve effieciency of talent acquisition, hiring, and talent management.'
+    description: 'Led a team of 5 in developing cutting-edge AI solutions that revolutionized talent acquisition, hiring processes, and talent management.'
   },
   {
     title: 'System Engineer',
     company: 'Infineon Technologies',
     duration: 'Jul 2020 - Jan 2021',
-    description: 'Develop and maintain financial technology solutions.'
+    description: 'Engineered and maintained state-of-the-art financial technology solutions, contributing to seamless financial operations and technology integration.'
   },
   {
     title: 'Data Science Intern',
     company: 'Seek',
     duration: 'Jul 2019 - Jan 2020',
-    description: 'Develop job reviews classification and sentiment analysis models serving more than 3 markets with different languages.'
+    description: 'Developed sophisticated job review classification and sentiment analysis models, servicing 3 distinct markets with multilingual capabilities.'
   }
 ]
 
@@ -118,24 +118,6 @@ const achievementSectionText = {
   title: 'Achievements and Certifications',
 }
 const achievementItems = [
-  {
-    title: 'Machine Learning on Google Cloud Specialization',
-    provider: 'Google Cloud',
-    link: 'https://coursera.org/share/23ff1c353e4d9649f9c023e13180e7fc',
-    imageSrc: 'images/google-cloud-logo.png'
-  },
-  {
-    title: 'Machine Learning',
-    provider: 'Stanford University',
-    link: 'https://coursera.org/share/a9326fa001b85ec2459909389f8fee02',
-    imageSrc: 'images/stanford-logo.png'
-  },
-  {
-    title: 'Front-End Web Development with React',
-    provider: 'The Hong Kong University of Science and Technology',
-    link: 'https://coursera.org/share/ec4d848c78ed50bab7f172a4e0cefe92',
-    imageSrc: 'images/hkust-logo.png'
-  },
   {
     title: 'Microsoft Certified: Azure Fundamentals',
     provider: 'Microsoft',
@@ -147,6 +129,12 @@ const achievementItems = [
     provider: 'DeepLearning.AI',
     link: 'https://coursera.org/share/3c6e15d0f2306504f6751da1e2195356',
     imageSrc: 'images/deep-learning-ai-logo.png'
+  },
+  {
+    title: 'Data Analyst Nanodegree',
+    provider: 'Udacity',
+    link: 'https://www.udacity.com/certificate/QRRDHARF',
+    imageSrc: 'images/udacity-logo.png'
   },
   {
     title: 'Programming with Google Go Specialization',
@@ -161,16 +149,16 @@ const achievementItems = [
     imageSrc: 'images/deep-learning-ai-logo.png'
   },
   {
-    title: 'Machine Learning on Google Cloud Specialization',
-    provider: 'Google Cloud',
-    link: 'https://coursera.org/share/23ff1c353e4d9649f9c023e13180e7fc',
-    imageSrc: 'images/google-cloud-logo.png'
-  },
-  {
     title: 'Machine Learning',
     provider: 'Stanford University',
     link: 'https://coursera.org/share/a9326fa001b85ec2459909389f8fee02',
     imageSrc: 'images/stanford-logo.png'
+  },
+  {
+    title: 'Machine Learning on Google Cloud Specialization',
+    provider: 'Google Cloud',
+    link: 'https://coursera.org/share/23ff1c353e4d9649f9c023e13180e7fc',
+    imageSrc: 'images/google-cloud-logo.png'
   },
   {
     title: 'Front-End Web Development with React',
@@ -205,9 +193,9 @@ const achievementItems = [
                 target="_blank">
                 <IconButton
                   :devicon="link.devicon"
-                  :src="link.src"
                   :fontawesome="link.fontawesome"
-                  :color="link.color" />
+                  :color="link.color"
+                  :title="link.label" />
               </NuxtLink>
             </div>
           </div>
@@ -308,7 +296,7 @@ const achievementItems = [
                   :src="achievement.imageSrc" />
               </template>
               <template #header>
-                {{ achievement.title }}
+                <span class="line-clamp-2">{{ achievement.title }}</span>
               </template>
               <template #content>
                 <span class="text-sm text-slate-400">{{ achievement.provider }}</span>
