@@ -113,6 +113,72 @@ const experienceTimelineItems: ExperienceTimelineItem[] = [
   }
 ]
 
+const achievementSectionText = {
+  title: 'Achievements and Certifications',
+}
+const achievementItems = [
+  {
+    title: 'Machine Learning on Google Cloud Specialization',
+    provider: 'Google Cloud',
+    link: 'https://coursera.org/share/23ff1c353e4d9649f9c023e13180e7fc',
+    imageSrc: 'images/google-cloud-logo.png'
+  },
+  {
+    title: 'Machine Learning',
+    provider: 'Stanford University',
+    link: 'https://coursera.org/share/a9326fa001b85ec2459909389f8fee02',
+    imageSrc: 'images/stanford-logo.png'
+  },
+  {
+    title: 'Front-End Web Development with React',
+    provider: 'The Hong Kong University of Science and Technology',
+    link: 'https://coursera.org/share/ec4d848c78ed50bab7f172a4e0cefe92',
+    imageSrc: 'images/hkust-logo.png'
+  },
+  {
+    title: 'Microsoft Certified: Azure Fundamentals',
+    provider: 'Microsoft',
+    link: 'https://learn.microsoft.com/api/credentials/share/en-us/andypang/920020771177B6BE?sharingId=973E5703531249ED',
+    imageSrc: 'images/azure-fundamental-logo.png'
+  },
+  {
+    title: 'Natural Language Processing Specialization',
+    provider: 'DeepLearning.AI',
+    link: 'https://coursera.org/share/3c6e15d0f2306504f6751da1e2195356',
+    imageSrc: 'images/deep-learning-ai-logo.png'
+  },
+  {
+    title: 'Programming with Google Go Specialization',
+    provider: 'University of California Irvine',
+    link: 'https://coursera.org/share/a0e910c581580aa9297d14ee71ee2ed6',
+    imageSrc: 'images/uci-logo.png'
+  },
+  {
+    title: 'Deep Learning Specialization',
+    provider: 'DeepLearning.AI',
+    link: 'https://coursera.org/share/b64de4b8cecec71649b37bc147802e65',
+    imageSrc: 'images/deep-learning-ai-logo.png'
+  },
+  {
+    title: 'Machine Learning on Google Cloud Specialization',
+    provider: 'Google Cloud',
+    link: 'https://coursera.org/share/23ff1c353e4d9649f9c023e13180e7fc',
+    imageSrc: 'images/google-cloud-logo.png'
+  },
+  {
+    title: 'Machine Learning',
+    provider: 'Stanford University',
+    link: 'https://coursera.org/share/a9326fa001b85ec2459909389f8fee02',
+    imageSrc: 'images/stanford-logo.png'
+  },
+  {
+    title: 'Front-End Web Development with React',
+    provider: 'The Hong Kong University of Science and Technology',
+    link: 'https://coursera.org/share/ec4d848c78ed50bab7f172a4e0cefe92',
+    imageSrc: 'images/hkust-logo.png'
+  }
+]
+
 </script>
 <template>
   <div class="bg-slate-900 text-slate-50">
@@ -212,7 +278,7 @@ const experienceTimelineItems: ExperienceTimelineItem[] = [
         </div>
       </div>
       <div class="flex flex-col items-center justify-center w-full max-w-[1240px] gap-12">
-        <h2 class="text-5xl">
+        <h2 class="text-5xl text-center">
           {{ experienceSectionText.title }}
         </h2>
         <div class="flex gap-12 h-full w-full items-center">
@@ -224,6 +290,27 @@ const experienceTimelineItems: ExperienceTimelineItem[] = [
           </client-only>
           <ExperienceTimeline :items="experienceTimelineItems" />
         </div>
+      </div>
+      <div class="flex flex-col items-center justify-center w-full max-w-[1240px]">
+        <h2 class="text-5xl text-center">
+          {{ achievementSectionText.title }}
+        </h2>
+        <NuxtMarquee class="overflow-hidden"
+          :pauseOnHover="true">
+          <Card v-for="achievement in achievementItems"
+            class="w-80 h-[19rem] my-12 mr-12 shadow-lg transition duration-300 hover:scale-105 hover:shadow-blue-800/50 hover:cursor-pointer">
+            <template #imgHeader>
+              <img class="w-full h-40 object-contain rounded-t-3xl bg-slate-200 p-4"
+                :src="achievement.imageSrc" />
+            </template>
+            <template #header>
+              {{ achievement.title }}
+            </template>
+            <template #content>
+              <span class="text-sm text-slate-400">{{ achievement.provider }}</span>
+            </template>
+          </Card>
+        </NuxtMarquee>
       </div>
     </div>
   </div>  
