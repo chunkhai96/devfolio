@@ -297,19 +297,22 @@ const achievementItems = [
         </h2>
         <NuxtMarquee class="overflow-hidden"
           :pauseOnHover="true">
-          <Card v-for="achievement in achievementItems"
-            class="w-80 h-[19rem] my-12 mr-12 shadow-lg transition duration-300 hover:scale-105 hover:shadow-blue-800/50 hover:cursor-pointer">
-            <template #imgHeader>
-              <img class="w-full h-40 object-contain rounded-t-3xl bg-slate-200 p-4"
-                :src="achievement.imageSrc" />
-            </template>
-            <template #header>
-              {{ achievement.title }}
-            </template>
-            <template #content>
-              <span class="text-sm text-slate-400">{{ achievement.provider }}</span>
-            </template>
-          </Card>
+          <NuxtLink v-for="achievement in achievementItems"
+            target="_blank"
+            :to="achievement.link">
+            <Card class="w-80 h-[19rem] my-12 mr-12 shadow-lg transition duration-300 hover:scale-105 hover:shadow-blue-800/50 hover:cursor-pointer">
+              <template #imgHeader>
+                <img class="w-full h-40 object-contain rounded-t-3xl bg-slate-200 p-4"
+                  :src="achievement.imageSrc" />
+              </template>
+              <template #header>
+                {{ achievement.title }}
+              </template>
+              <template #content>
+                <span class="text-sm text-slate-400">{{ achievement.provider }}</span>
+              </template>
+            </Card>
+          </NuxtLink>
         </NuxtMarquee>
       </div>
     </div>
