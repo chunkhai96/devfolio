@@ -258,7 +258,8 @@ const hasError = (): boolean => {
 </script>
 <template>
   <div class="bg-slate-900 text-slate-50">
-    <div class="flex flex-col items-center h-screen">
+    <div id="home"
+      class="flex flex-col items-center h-screen">
       <div class="absolute w-full h-screen z-10">
         <div class="relatives w-full h-screen">
           <img src="/images/background.jpg"
@@ -293,7 +294,8 @@ const hasError = (): boolean => {
       </div>
     </div>
     <div class="flex flex-col items-center justify-center w-full gap-36 p-8">
-      <div class="flex flex-col-reverse md:flex-row h-full w-full max-w-[1240px] items-center">
+      <div id="whatido"
+        class="flex flex-col-reverse md:flex-row h-full w-full max-w-[1240px] items-center">
         <client-only>
           <Vue3Lottie
             width="80%"
@@ -321,7 +323,8 @@ const hasError = (): boolean => {
           </ul>
         </div>
       </div>
-      <div class="flex flex-col items-center justify-center w-full max-w-[1240px] gap-12">
+      <div id="project"
+        class="flex flex-col items-center justify-center w-full max-w-[1240px] gap-12">
         <h2 class="text-4xl md:text-5xl text-center md:text-left">
           {{ projectSectionText.title }}
         </h2>
@@ -355,7 +358,8 @@ const hasError = (): boolean => {
           </Card>
         </div>
       </div>
-      <div class="flex flex-col items-center justify-center w-full max-w-[1240px] gap-12">
+      <div id="experience"
+        class="flex flex-col items-center justify-center w-full max-w-[1240px] gap-12">
         <h2 class="text-4xl md:text-5xl text-center">
           {{ experienceSectionText.title }}
         </h2>
@@ -369,7 +373,8 @@ const hasError = (): boolean => {
           <ExperienceTimeline :items="experienceTimelineItems" />
         </div>
       </div>
-      <div class="flex flex-col items-center justify-center w-full max-w-[1240px] gap-12">
+      <div id="talk"
+        class="flex flex-col items-center justify-center w-full max-w-[1240px] gap-12">
         <h2 class="text-4xl md:text-5xl text-center md:text-left">
           {{ talkSectionText.title }}
         </h2>
@@ -400,7 +405,8 @@ const hasError = (): boolean => {
           </Card>
         </div>
       </div>
-      <div class="flex flex-col items-center justify-center w-full max-w-[1240px]">
+      <div id="achievement"
+        class="flex flex-col items-center justify-center w-full max-w-[1240px]">
         <h2 class="text-4xl md:text-5xl text-center">
           {{ achievementSectionText.title }}
         </h2>
@@ -424,7 +430,8 @@ const hasError = (): boolean => {
           </NuxtLink>
         </NuxtMarquee>
       </div>
-      <div class="flex flex-col-reverse md:flex-row items-center justify-center w-full max-w-[720px] gap-12 mb-24">
+      <div id="contactme"
+        class="flex flex-col-reverse md:flex-row items-center justify-center w-full max-w-[720px] gap-12 mb-24">
         <div class="flex flex-col item-center md:items-start w-full gap-8">
           <div class="flex flex-col item-center w-full gap-4">
             <h2 class="text-4xl md:text-5xl text-center">
