@@ -2,10 +2,13 @@
 import { Vue3Lottie } from 'vue3-lottie'
 import whatido from '~/assets/lotties/whatido.json'
 import experience from '~/assets/lotties/experience.json'
-import credlyLogo from '~/assets/images/credly-logo.svg'
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
 import type { ExperienceTimelineItem } from '~/components'
+import type { Web3FormResponse } from '.'
 
+const config = useRuntimeConfig()
+
+// Landing Section
 const landingSectionText = {
   title: 'Andy Pang',
   description: 'I solve problems through innovation using code.'
@@ -19,6 +22,7 @@ const externalLinks = [
   { devicon: 'devicon-windows11-original', url: 'https://learn.microsoft.com/en-us/users/andypang/', color: 'bg-blue-500', label: 'Microsoft Learn' }
 ]
 
+// What I Do Section
 const whatIDoSectionText = {
   title: 'What I Do',
   roles: [
@@ -30,10 +34,10 @@ const whatIDoSectionText = {
     { icon: 'devicon-python-plain', text: 'Python' },
     { icon: 'devicon-typescript-plain' , text: 'TypeScript' },
     { icon: 'devicon-go-original-wordmark', text: 'Golang' },
+    { icon: 'devicon-scikitlearn-plain', text: 'SciKit-Learn' },
+    { icon: 'devicon-numpy-plain', text: 'Numpy' },
     { icon: 'devicon-azuresqldatabase-plain', text: 'SQL' },
     { icon: 'devicon-vuejs-plain', text: 'Vue.js' },
-    { icon: 'devicon-nuxtjs-plain', text: 'Nuxt.js' },
-    { icon: 'devicon-docker-plain', text: 'Docker' },
     { icon: 'devicon-kubernetes-plain', text: 'Kubernetes' }
   ],
   subtitles: [
@@ -43,6 +47,7 @@ const whatIDoSectionText = {
   ]
 }
 
+// Projects Section
 const projectSectionText = {
   title: 'Personal Projects',
 }
@@ -84,6 +89,7 @@ const projectItems = [
   }
 ]
 
+// Experience Section
 const experienceSectionText = {
   title: 'Working Experience',
 }
@@ -114,6 +120,7 @@ const experienceTimelineItems: ExperienceTimelineItem[] = [
   }
 ]
 
+// Talks Section
 const talkSectionText = {
   title: 'Talks'
 }
@@ -126,6 +133,7 @@ const talkItems = [
   }
 ]
 
+// Achievements Section
 const achievementSectionText = {
   title: 'Achievements and Certifications',
 }
@@ -180,6 +188,73 @@ const achievementItems = [
   }
 ]
 
+// Contact Me Section
+const contactMeSectionText = {
+  title: 'Contact Me',
+  description: 'I\'d love to connect! Reach out for questions, collaborations, or a chat.'
+}
+const form = ref({
+  access_key: config.public.web3FormAccessKey,
+  subject: 'New Submission from andypangdev.com',
+  name: '',
+  email: '',
+  message: '',
+
+})
+const formError = ref({
+  name: '',
+  email: '',
+  message: '',
+})
+const result = ref<string>('');
+const status = ref<string>('');
+const submitForm = async () => {
+  if (hasError()) return
+  result.value = "Please wait...";
+  try {
+    const response = await $fetch<Web3FormResponse>('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: form.value,
+    })
+    if (response.success) {
+      status.value = 'success'
+      result.value = response.message
+    } else {
+      console.error(response); // Log for debugging, can be removed
+      status.value = 'error';
+      result.value = 'Something went wrong!'
+    }
+  } catch (error) {
+    console.error(error); // Log for debugging, can be removed
+    status.value = 'error'
+    result.value = 'Something went wrong!'
+  } finally {
+    // Reset form after submission
+    form.value.name = ''
+    form.value.email = ''
+    form.value.message = ''
+
+    // Clear result and status after 5 seconds
+    setTimeout(() => {
+      result.value = ''
+      status.value = ''
+    }, 5000)
+  }
+}
+const hasError = (): boolean => {
+  if (form.value.name === '') {
+    formError.value.name = 'Name is required'
+  }
+  if (form.value.email === '') {
+    formError.value.email = 'Email is required'
+  }
+  if (form.value.message === '') {
+    formError.value.message = 'Message is required'
+  }
+  return form.value.name === '' || form.value.email === '' || form.value.message === ''
+}
+
 </script>
 <template>
   <div class="bg-slate-900 text-slate-50">
@@ -188,7 +263,7 @@ const achievementItems = [
         <div class="relatives w-full h-screen">
           <img src="/images/background.jpg"
             class="w-full h-full object-cover" />
-          <div class="absolute bg-gradient-to-b from-slate-900/0 to-slate-900/100 h-[50vh] w-full bottom-0" />
+          <div class="absolute bg-gradient-to-b from-slate-900/0 to-slate-900/100 h-[50vh] w-full bottom-0"></div>
         </div>
       </div>
       <div class="z-20">
@@ -334,7 +409,7 @@ const achievementItems = [
           <NuxtLink v-for="achievement in achievementItems"
             target="_blank"
             :to="achievement.link">
-            <Card class="w-80 h-[19rem] my-12 mr-12 shadow-lg transition duration-300 hover:scale-105 hover:shadow-blue-800/50 hover:cursor-pointer">
+            <Card class="w-[320px] h-[19rem] my-12 mr-12 shadow-lg transition duration-300 hover:scale-105 hover:shadow-blue-800/50 hover:cursor-pointer">
               <template #imgHeader>
                 <img class="w-full h-40 object-contain rounded-t-3xl bg-slate-200 p-4"
                   :src="achievement.imageSrc" />
@@ -348,6 +423,77 @@ const achievementItems = [
             </Card>
           </NuxtLink>
         </NuxtMarquee>
+      </div>
+      <div class="flex flex-col-reverse md:flex-row items-center justify-center w-full max-w-[720px] gap-12 mb-24">
+        <div class="flex flex-col item-center md:items-start w-full gap-8">
+          <div class="flex flex-col item-center w-full gap-4">
+            <h2 class="text-4xl md:text-5xl text-center">
+              {{ contactMeSectionText.title }}
+            </h2>
+            <span class="text-slate-400 text-center">
+              {{ contactMeSectionText.description }}
+            </span>
+          </div>
+          <div class="flex flex-col-reverse md:flex-row w-full bg-slate-800 border border-slate-600 rounded-3xl items-center justify-center md:justify-start">
+            <div class="flex flex-row flex-wrap md:flex-col gap-4 items-center justify-center p-4">
+              <NuxtLink v-for="link in externalLinks"
+                :to="link.url"
+                target="_blank">
+                <IconButton
+                  :devicon="link.devicon"
+                  :fontawesome="link.fontawesome"
+                  :color="link.color"
+                  :title="link.label" />
+              </NuxtLink>
+            </div>
+            <div class="flex flex-col gap-4 w-full bg-slate-900 border border-slate-600 rounded-3xl p-8">
+              <div>
+                <input
+                  class="w-full py-2 px-4 bg-slate-800 border border-slate-600 rounded-full shadow focus:outline-none focus:border-blue-800 hover:shadow-blue-800/50"
+                  type="text"
+                  name="name"
+                  placeholder="Name"
+                  v-model="form.name" />
+                <span class="text-red-500 px-4">
+                  {{ formError.name }}
+                </span>
+              </div>
+              <div>
+                <input
+                  class="w-full py-2 px-4 bg-slate-800 border border-slate-600 rounded-full shadow focus:outline-none focus:border-blue-800 hover:shadow-blue-800/50"
+                  type="text"
+                  name="email"
+                  placeholder="Email"
+                  v-model="form.email" />
+                <span class="text-red-500 px-4">
+                  {{ formError.email }}
+                </span>
+              </div>
+              <div>
+                <textarea
+                  class="w-full py-2 px-4 bg-slate-800 border border-slate-600 rounded-3xl resize-none shadow focus:outline-none focus:border-blue-800 hover:shadow-blue-800/50"
+                  rows="6"  
+                  name="message"
+                  placeholder="Enter your message..."
+                  v-model="form.message" />
+                <span class="text-red-500 px-4">
+                  {{ formError.message }}
+                </span>
+              </div>
+              <span class="text-center">
+                {{ result }}
+              </span>
+              <Button label="Send Message"
+                class="hover:shadow-blue-800/50 shadow"
+                :textSizeClass="'text-sm'"
+                :backgroundColor="'bg-blue-900'"
+                :hoverColor="'hover:bg-blue-700'"
+                :borderColor="'border-blue-950'"
+                @click="submitForm">
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>  

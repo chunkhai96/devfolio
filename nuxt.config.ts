@@ -4,6 +4,11 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   css: ['~/assets/css/main.css', 'devicon/devicon.min.css'],
   modules: ['@vesp/nuxt-fontawesome', "nuxt-marquee"],
+  runtimeConfig:{
+    public: {
+      web3FormAccessKey: ''
+    }
+  },
   postcss: {
     plugins: {
       tailwindcss: {},
