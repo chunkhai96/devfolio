@@ -268,15 +268,19 @@ const hasError = (): boolean => {
           <div class="absolute bg-gradient-to-b from-slate-900/0 to-slate-900/100 h-[50vh] w-full bottom-0"></div>
         </div>
       </div>
-      <div class="flex justify-end md:justify-center w-full z-30">
+      <div class="flex justify-end lg:justify-center w-full z-30">
         <AppNavbar />
       </div>
-      <div class="flex items-center justify-center grow w-full max-w-[1240px] p-8 mb-36 md:mb-40 z-20">
-        <div class="flex flex-col-reverse md:flex-row justify-center items-center grow h-[28rem] gap-12">
-          <div class="flex flex-col grow gap-8 h-full">
-            <h1 class="grow flex items-end justify-center text-5xl md:text-7xl md:justify-start">{{ landingSectionText.title }}</h1>
-            <span class="text-2xl text-slate-400 text-center md:text-left">{{ landingSectionText.description }}</span>
-            <div class="flex flex-wrap grow items-end gap-4 justify-center md:justify-start">
+      <div class="flex items-center justify-center grow w-full max-w-[1240px] p-8 mb-36 lg:mb-40 z-20">
+        <div class="flex flex-col-reverse lg:flex-row justify-center items-center grow h-[28rem] gap-12">
+          <div class="flex flex-col gap-8 h-full">
+            <h1 class="grow flex items-end justify-center text-5xl lg:text-7xl lg:justify-start">
+              {{ landingSectionText.title }}
+            </h1>
+            <span class="sm:text-2xl text-slate-400 text-center lg:text-left typing-effect">
+              {{ landingSectionText.description }}
+            </span>
+            <div class="flex flex-wrap grow items-end gap-4 justify-center lg:justify-start">
               <NuxtLink v-for="link in externalLinks"
                 :to="link.url"
                 target="_blank">
@@ -288,15 +292,17 @@ const hasError = (): boolean => {
               </NuxtLink>
             </div>
           </div>
-          <div class="size-[16rem] md:size-[28rem] flex-shrink-0 mt-12 md:mt-0">
-            <img class="rounded-full object-cover" src="~/assets/images/avatar.png" />
+          <div class="flex grow justify-end">
+            <div class="size-[16rem] lg:size-[26rem] xl:size-[30rem] flex-shrink-0 mt-12 lg:mt-0">
+              <img class="rounded-full object-cover" src="~/assets/images/avatar.png" />
+            </div>
           </div>
         </div>
       </div>
     </div>
     <div class="flex flex-col items-center justify-center w-full gap-36 p-8">
       <div id="whatido"
-        class="flex flex-col-reverse md:flex-row h-full w-full max-w-[1240px] items-center">
+        class="flex flex-col-reverse lg:flex-row h-full w-full max-w-[1240px] items-center">
         <client-only>
           <Vue3Lottie
             width="80%"
@@ -304,7 +310,7 @@ const hasError = (): boolean => {
           />
         </client-only>
         <div class="flex flex-col justify-between w-full p-4 gap-8">
-          <h2 class="text-4xl md:text-5xl text-center md:text-left">
+          <h2 class="text-4xl md:text-5xl text-center lg:text-left">
             {{ whatIDoSectionText.title }}
           </h2>
           <div class="grid grid-cols-1 md:grid-cols-3 justify-between gap-8">
@@ -318,7 +324,7 @@ const hasError = (): boolean => {
           </div>
           <ul class="text-slate-400 space-y-4">
             <li v-for="subtitle in whatIDoSectionText.subtitles"
-              class="text-center md:text-left">
+              class="text-center lg:text-left">
               {{ subtitle }}
             </li>
           </ul>
@@ -515,3 +521,26 @@ const hasError = (): boolean => {
     </div>
   </div>  
 </template>
+<style lang="css" scoped>
+.typing-effect {
+  overflow: hidden; /* Ensure the text is not visible until the typewriter effect*/
+  border-right: 0.15em solid #94a3b8;
+  white-space: nowrap; /* Keeps the text on a single line */
+  animation: typing 5s steps(30) infinite, blink 1s infinite;
+}
+
+/* The typing animation */
+@keyframes typing {
+  0% { width: 0 }
+  50% { width: 100% }
+}
+
+@keyframes blink {
+  0%, 45% {
+    border-color: transparent;
+  }
+  50%, 100% {
+    border-color: #94a3b8;
+  }
+}
+</style>
