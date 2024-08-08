@@ -267,7 +267,7 @@ const hasError = (): boolean => {
           <div class="absolute bg-gradient-to-b from-slate-900/0 to-slate-900/100 h-[50vh] w-full bottom-0"></div>
         </div>
       </div>
-      <div class="z-20">
+      <div class="flex justify-end md:justify-center w-full z-30">
         <AppNavbar />
       </div>
       <div class="flex items-center justify-center grow w-full max-w-[1240px] p-8 mb-36 md:mb-40 z-20">
@@ -415,7 +415,8 @@ const hasError = (): boolean => {
           <NuxtLink v-for="achievement in achievementItems"
             target="_blank"
             :to="achievement.link">
-            <Card class="w-[320px] h-[19rem] my-12 mr-12 shadow-lg transition duration-300 hover:scale-105 hover:shadow-blue-800/50 hover:cursor-pointer">
+            <Card class="h-[19rem] my-12 mr-12 shadow-lg transition duration-300 hover:scale-105 hover:shadow-blue-800/50 hover:cursor-pointer"
+              style="width: 20rem">
               <template #imgHeader>
                 <img class="w-full h-40 object-contain rounded-t-3xl bg-slate-200 p-4"
                   :src="achievement.imageSrc" />

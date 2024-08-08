@@ -4,3 +4,8 @@ export type ExperienceTimelineItem = {
   duration: string,
   description: string
 }
+
+export type PopupMenuItem = {
+  title: string,
+  link: string
+}
