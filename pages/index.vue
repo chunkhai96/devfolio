@@ -2,7 +2,7 @@
 import { Vue3Lottie } from 'vue3-lottie'
 import whatido from '~/assets/lotties/whatido.json'
 import experience from '~/assets/lotties/experience.json'
-import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
+import { faEnvelope, faForward } from '@fortawesome/free-solid-svg-icons'
 import type { ExperienceTimelineItem } from '~/components'
 import type { Web3FormResponse } from '.'
 
@@ -187,6 +187,7 @@ const achievementItems = [
     imageSrc: 'images/hkust-logo.png'
   }
 ]
+const marqueeSpeed = ref<number>(50)
 
 // Contact Me Section
 const contactMeSectionText = {
@@ -411,7 +412,8 @@ const hasError = (): boolean => {
           {{ achievementSectionText.title }}
         </h2>
         <NuxtMarquee class="overflow-hidden"
-          :pauseOnHover="true">
+          :pauseOnHover="true"
+          :speed="marqueeSpeed">
           <NuxtLink v-for="achievement in achievementItems"
             target="_blank"
             :to="achievement.link">
@@ -430,6 +432,13 @@ const hasError = (): boolean => {
             </Card>
           </NuxtLink>
         </NuxtMarquee>
+        <button
+          class="rounded-full px-4 py-2 shadow bg-slate-800 border border-slate-600 hover:bg-slate-700"
+          @mouseover="marqueeSpeed = 500"
+          @mouseleave="marqueeSpeed = 50">
+          <fa :icon="faForward" />
+          Fast Forward
+        </button>
       </div>
       <div id="contactme"
         class="flex flex-col-reverse md:flex-row items-center justify-center w-full max-w-[720px] gap-12 mb-24">
