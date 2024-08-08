@@ -16,11 +16,11 @@ const navbarItem: Array<NavbarItem> = [
 </script>
 <template>
   <div class="rounded-full h-15 flex py-4 z-50">
-    <PopupMenu class="md:hidden"
+    <PopupMenu class="lg:hidden"
       :items="navbarItem" />
     <NuxtLink v-for="item in navbarItem"
       :to="item.link">
-      <div class="hidden md:block py-2 px-4 rounded-full hover:cursor-pointer hover:bg-slate-800">
+      <div class="hidden lg:block py-2 px-4 rounded-full hover:cursor-pointer hover:bg-slate-800">
         {{ item.title }}
       </div>
     </NuxtLink>
