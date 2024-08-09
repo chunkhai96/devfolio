@@ -85,7 +85,7 @@ const projectItems = [
   {
     title: 'Data Dashboard',
     description: 'An intuitive dashboard that visualizes and analyzes data, empowering users to make informed and strategic decisions.',
-    imageSrc: 'images/project-devfolio.png'
+    imageSrc: 'images/project-dashboard.png'
   }
 ]
 
