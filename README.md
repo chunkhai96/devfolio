@@ -1,75 +1,43 @@
-# Nuxt 3 Minimal Starter
+# Devfolio - Personal Development Portfolio Website
+This is a personal portfolio website built on top of [Nuxt 3](https://nuxtjs.org/). It serves as a platform for me to showcase my skills, projects, achievements, and provide a way for potential employers to get in touch with me. 
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+### [Live Preview](https://www.andypangdev.com/)
 
-## Setup
+## Features
 
-Make sure to install the dependencies:
+* Responsive design
+* Minimalist and modern design
+* Dynamic personal portfolio section that displays my projects, experiences, achievements, and other relevant information
+* Contact form to facilitate direct communication with me
+* Integration with various social media platforms
+* Accessibility features
 
-```bash
-# npm
-npm install
+## Technology Stack
 
-# pnpm
-pnpm install
+* Nuxt 3
+* Vue 3
+* Tailwind CSS
+* TypeScript
 
-# yarn
-yarn install
+## Run the Project Locally
 
-# bun
-bun install
-```
+1. Clone the repository
+2. Install dependencies by running `npm install` or `pnpm install` or `yarn install` or `bun install`
+3. Run the development server by running `npm run dev` or `pnpm run dev` or `yarn dev` or `bun run dev`
+4. Open your browser and navigate to `http://localhost:3000`
 
-## Development Server
+## Contributing
 
-Start the development server on `http://localhost:3000`:
+Contributions are always welcome. If you find any issues or have suggestions, please open an issue or submit a pull request.
 
-```bash
-# npm
-npm run dev
+## License
 
-# pnpm
-pnpm run dev
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
-# yarn
-yarn dev
+## Acknowledgements
 
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+* [Nuxt 3](https://nuxtjs.org/)
+* [Tailwind CSS](https://tailwindcss.com/)
+* [Font Awesome](https://fontawesome.com/)
+* [Devicons](https://devicons.github.io/devicon/)
+* [Lottie](https://airbnb.io/lottie/)
