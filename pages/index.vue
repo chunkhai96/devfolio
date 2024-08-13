@@ -11,8 +11,9 @@ const config = useRuntimeConfig()
 // Landing Section
 const landingSectionText = {
   title: 'Andy Pang',
-  description: 'I solve problems through innovation using code.'
+  description: 'I solve problems through innovation using code.',
 }
+const resumeSrc = 'https://drive.google.com/file/d/1hWBVXXyK6ykCb8c82DddwkF0XtBQGswn/view?usp=sharing'
 const externalLinks = [
   { devicon: 'devicon-github-original', url: 'https://github.com/chunkhai96', color: 'bg-slate-800', label: 'GitHub' },
   { devicon: 'devicon-linkedin-plain', url: 'https://www.linkedin.com/in/chunkhai96/', color: 'bg-blue-500', label: 'LinkedIn' },
@@ -274,22 +275,33 @@ const hasError = (): boolean => {
       <div class="flex items-center justify-center grow w-full max-w-[1240px] p-8 mb-36 lg:mb-40 z-20">
         <div class="flex flex-col-reverse lg:flex-row justify-center items-center grow h-[28rem] gap-12">
           <div class="flex flex-col gap-8 h-full">
-            <h1 class="grow flex items-end justify-center text-5xl lg:text-7xl lg:justify-start">
+            <h1 class="grow flex items-end justify-center text-5xl lg:text-7xl lg:justify-start mt-0 lg:mt-24">
               {{ landingSectionText.title }}
             </h1>
             <span class="sm:text-2xl text-slate-400 text-center lg:text-left typing-effect">
               {{ landingSectionText.description }}
             </span>
-            <div class="flex flex-wrap grow items-end gap-4 justify-center lg:justify-start">
-              <NuxtLink v-for="link in externalLinks"
-                :to="link.url"
-                target="_blank">
-                <IconButton
-                  :devicon="link.devicon"
-                  :fontawesome="link.fontawesome"
-                  :color="link.color"
-                  :title="link.label" />
-              </NuxtLink>
+            <!-- <div class="flex grow items-end justify-center lg:justify-start">
+              <Button label="Get Resume" />
+            </div> -->
+            <div class="flex flex-col grow justify-end lg:items-start gap-8">
+              <div class="flex items-end justify-center lg:justify-start">
+                <NuxtLink :to="resumeSrc"
+                  target="_blank">
+                  <Button label="Get My Resume" />
+                </NuxtLink>
+              </div>
+              <div class="flex flex-wrap items-end gap-4 justify-center lg:justify-start">
+                <NuxtLink v-for="link in externalLinks"
+                  :to="link.url"
+                  target="_blank">
+                  <IconButton
+                    :devicon="link.devicon"
+                    :fontawesome="link.fontawesome"
+                    :color="link.color"
+                    :title="link.label" />
+                </NuxtLink>
+              </div>
             </div>
           </div>
           <div class="flex grow justify-end">
