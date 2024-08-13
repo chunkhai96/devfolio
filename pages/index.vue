@@ -265,6 +265,7 @@ const hasError = (): boolean => {
       <div class="absolute w-full h-screen z-10">
         <div class="relatives w-full h-screen">
           <img src="/images/background.jpg"
+            alt="Background"
             class="w-full h-full object-cover" />
           <div class="absolute bg-gradient-to-b from-slate-900/0 to-slate-900/100 h-[50vh] w-full bottom-0"></div>
         </div>
@@ -306,7 +307,9 @@ const hasError = (): boolean => {
           </div>
           <div class="flex grow justify-end">
             <div class="size-[16rem] lg:size-[26rem] xl:size-[32rem] flex-shrink-0 mt-12 lg:mt-0">
-              <img class="rounded-full object-cover" src="~/assets/images/avatar.png" />
+              <img class="rounded-full object-cover"
+                src="~/assets/images/avatar.png"
+                alt="Avatar"/>
             </div>
           </div>
         </div>
@@ -352,6 +355,7 @@ const hasError = (): boolean => {
             class="shadow-lg transition duration-300 hover:shadow-blue-800/50">
             <template #imgHeader>
               <img class="w-full h-40 object-cover rounded-t-3xl"
+                :alt="project.title"
                 :src="project.imageSrc" />
             </template>
             <template #header>
@@ -402,6 +406,7 @@ const hasError = (): boolean => {
             class="w-full md:w-1/2 lg:w-1/3 shadow-lg transition duration-300 hover:shadow-blue-800/50">
             <template #imgHeader>
               <img class="w-full h-40 object-cover rounded-t-3xl"
+                :alt="talk.title"
                 :src="talk.imageSrc" />
             </template>
             <template #header>
@@ -439,6 +444,7 @@ const hasError = (): boolean => {
               style="width: 20rem">
               <template #imgHeader>
                 <img class="w-full h-40 object-contain rounded-t-3xl bg-slate-200 p-4"
+                  :alt="achievement.title"
                   :src="achievement.imageSrc" />
               </template>
               <template #header>
