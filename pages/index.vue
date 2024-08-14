@@ -56,37 +56,37 @@ const projectItems = [
   {
     title: 'DevFolio',
     description: 'A dynamic personal portfolio website designed to introduce myself and showcase my creative and professional projects.',
-    imageSrc: 'images/project-devfolio.png',
+    imageSrc: 'images/project-devfolio.webp',
     codeLink: 'https://github.com/chunkhai96/devfolio',
     liveLink: 'https://andypangdev.com'
   },
   {
     title: 'I Have Chosen You',
     description: 'A compassionate religious web application that serves as a platform for those seeking support and assistance.',
-    imageSrc: 'images/project-ihavechosenyou.png',
+    imageSrc: 'images/project-ihavechosenyou.webp',
     liveLink: 'https://ihavechosenyou.com/en'
   },
   {
     title: 'RideS',
     description: 'An innovative carpooling app on Android that facilitates easy and affordable transportation solutions for university students.',
-    imageSrc: 'images/project-rides.png',
+    imageSrc: 'images/project-rides.webp',
     codeLink: 'https://github.com/chunkhai96/RideS',
     liveLink: 'https://youtu.be/UE8D9PCm3zk?si=wmFT6Wa4glJ9MZ-n'
   },
   {
     title: 'Employee Policy Chatbot',
     description: 'An interactive chatbot to provide quick and accurate answers about employee policies, including sick leave, claims, insurance, etc.',
-    imageSrc: 'images/project-policy-chatbot.png'
+    imageSrc: 'images/project-policy-chatbot.webp'
   },
   {
     title: 'Web Crawler',
     description: 'Crawl and scrape publicly accessible data from websites, including job listings, salary information, property details, etc.',
-    imageSrc: 'images/project-web-crawler.jpg'
+    imageSrc: 'images/project-web-crawler.webp'
   },
   {
     title: 'Data Dashboard',
     description: 'An intuitive dashboard that visualizes and analyzes data, empowering users to make informed and strategic decisions.',
-    imageSrc: 'images/project-dashboard.png'
+    imageSrc: 'images/project-dashboard.webp'
   }
 ]
 
@@ -128,7 +128,7 @@ const talkSectionText = {
 const talkItems = [
   {
     title: 'Competent in Job Market Through Final Year Project Management',
-    imageSrc: 'images/talk-uthm.png',
+    imageSrc: 'images/talk-uthm.webp',
     youtube: 'https://youtu.be/skoynvqo64o?si=7wzZnsVE4ziiZ4qt',
     slide: 'https://docs.google.com/presentation/d/19JZlfQRdsyLvZ91-RtQGYBnsyXRKvAlCJR03ll6JHEg/edit?usp=sharing'
   }
@@ -143,49 +143,49 @@ const achievementItems = [
     title: 'Microsoft Certified: Azure Fundamentals',
     provider: 'Microsoft',
     link: 'https://learn.microsoft.com/api/credentials/share/en-us/andypang/920020771177B6BE?sharingId=973E5703531249ED',
-    imageSrc: 'images/azure-fundamental-logo.png'
+    imageSrc: 'images/azure-fundamental-logo.webp'
   },
   {
     title: 'Natural Language Processing Specialization',
     provider: 'DeepLearning.AI',
     link: 'https://coursera.org/share/3c6e15d0f2306504f6751da1e2195356',
-    imageSrc: 'images/deep-learning-ai-logo.png'
+    imageSrc: 'images/deep-learning-ai-logo.webp'
   },
   {
     title: 'Data Analyst Nanodegree',
     provider: 'Udacity',
     link: 'https://www.udacity.com/certificate/QRRDHARF',
-    imageSrc: 'images/udacity-logo.png'
+    imageSrc: 'images/udacity-logo.webp'
   },
   {
     title: 'Programming with Google Go Specialization',
     provider: 'University of California Irvine',
     link: 'https://coursera.org/share/a0e910c581580aa9297d14ee71ee2ed6',
-    imageSrc: 'images/uci-logo.png'
+    imageSrc: 'images/uci-logo.webp'
   },
   {
     title: 'Deep Learning Specialization',
     provider: 'DeepLearning.AI',
     link: 'https://coursera.org/share/b64de4b8cecec71649b37bc147802e65',
-    imageSrc: 'images/deep-learning-ai-logo.png'
+    imageSrc: 'images/deep-learning-ai-logo.webp'
   },
   {
     title: 'Machine Learning',
     provider: 'Stanford University',
     link: 'https://coursera.org/share/a9326fa001b85ec2459909389f8fee02',
-    imageSrc: 'images/stanford-logo.png'
+    imageSrc: 'images/stanford-logo.webp'
   },
   {
     title: 'Machine Learning on Google Cloud Specialization',
     provider: 'Google Cloud',
     link: 'https://coursera.org/share/23ff1c353e4d9649f9c023e13180e7fc',
-    imageSrc: 'images/google-cloud-logo.png'
+    imageSrc: 'images/google-cloud-logo.webp'
   },
   {
     title: 'Front-End Web Development with React',
     provider: 'The Hong Kong University of Science and Technology',
     link: 'https://coursera.org/share/ec4d848c78ed50bab7f172a4e0cefe92',
-    imageSrc: 'images/hkust-logo.png'
+    imageSrc: 'images/hkust-logo.webp'
   }
 ]
 const marqueeSpeed = ref<number>(50)
@@ -264,7 +264,7 @@ const hasError = (): boolean => {
       class="flex flex-col items-center h-screen">
       <div class="absolute w-full h-screen z-10">
         <div class="relatives w-full h-screen">
-          <img src="/images/background.jpg"
+          <img src="/images/background.webp"
             alt="Background"
             class="w-full h-full object-cover" />
           <div class="absolute bg-gradient-to-b from-slate-900/0 to-slate-900/100 h-[50vh] w-full bottom-0"></div>
@@ -308,7 +308,7 @@ const hasError = (): boolean => {
           <div class="flex grow justify-end">
             <div class="size-[16rem] lg:size-[26rem] xl:size-[32rem] flex-shrink-0 mt-12 lg:mt-0">
               <img class="rounded-full object-cover"
-                src="~/assets/images/avatar.png"
+                src="~/assets/images/avatar.webp"
                 alt="Avatar"/>
             </div>
           </div>
