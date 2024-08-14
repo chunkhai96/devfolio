@@ -56,7 +56,7 @@ const projectItems = [
   {
     title: 'DevFolio',
     description: 'A dynamic personal portfolio website designed to introduce myself and showcase my creative and professional projects.',
-    imageSrc: 'images/project-devfolio.png',
+    imageSrc: 'images/project-devfolio.webp',
     codeLink: 'https://github.com/chunkhai96/devfolio',
     liveLink: 'https://andypangdev.com'
   },
@@ -264,7 +264,7 @@ const hasError = (): boolean => {
       class="flex flex-col items-center h-screen">
       <div class="absolute w-full h-screen z-10">
         <div class="relatives w-full h-screen">
-          <img src="/images/background.jpg"
+          <img src="/images/background.webp"
             alt="Background"
             class="w-full h-full object-cover" />
           <div class="absolute bg-gradient-to-b from-slate-900/0 to-slate-900/100 h-[50vh] w-full bottom-0"></div>

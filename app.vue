@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 useSeoMeta({
   author: 'Andy Pang',
-  ogImage: '/images/project-devfolio.png',
+  ogImage: '/images/project-devfolio.webp',
   ogType: 'website'
 })
 </script>
