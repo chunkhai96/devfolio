@@ -308,7 +308,7 @@ const hasError = (): boolean => {
           <div class="flex grow justify-end">
             <div class="size-[16rem] lg:size-[26rem] xl:size-[32rem] flex-shrink-0 mt-12 lg:mt-0">
               <img class="rounded-full object-cover"
-                src="~/assets/images/avatar.png"
+                src="~/assets/images/avatar.webp"
                 alt="Avatar"/>
             </div>
           </div>
