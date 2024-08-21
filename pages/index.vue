@@ -2,26 +2,12 @@
 import { Vue3Lottie } from 'vue3-lottie'
 import whatido from '~/assets/lotties/whatido.json'
 import experience from '~/assets/lotties/experience.json'
-import { faEnvelope, faForward } from '@fortawesome/free-solid-svg-icons'
+import { faForward } from '@fortawesome/free-solid-svg-icons'
+import * as landingData from '@/data/landing'
 import type { ExperienceTimelineItem } from '~/components'
 import type { Web3FormResponse } from '.'
 
 const config = useRuntimeConfig()
-
-// Landing Section
-const landingSectionText = {
-  title: 'Andy Pang',
-  description: 'I solve problems through innovation using code.',
-}
-const resumeSrc = 'https://drive.google.com/file/d/1hWBVXXyK6ykCb8c82DddwkF0XtBQGswn/view?usp=sharing'
-const externalLinks = [
-  { devicon: 'devicon-github-original', url: 'https://github.com/chunkhai96', color: 'bg-slate-800', label: 'GitHub' },
-  { devicon: 'devicon-linkedin-plain', url: 'https://www.linkedin.com/in/chunkhai96/', color: 'bg-blue-500', label: 'LinkedIn' },
-  { devicon: 'devicon-stackoverflow-plain', url: 'https://stackoverflow.com/users/6851848/andy-pang', color: 'bg-orange-500', label: 'StackOverflow' },
-  { fontawesome: faEnvelope, url: 'mailto:andypang96@gmail.com', 'color': 'bg-slate-400', label: 'Email' },
-  { devicon: 'devicon-googlecloud-plain', url: 'https://www.cloudskillsboost.google/public_profiles/6afcecb6-2169-472e-b3fc-68c97b626f0a', color: 'bg-red-500', label: 'Google Cloud Skills Boost' },
-  { devicon: 'devicon-windows11-original', url: 'https://learn.microsoft.com/en-us/users/andypang/', color: 'bg-blue-500', label: 'Microsoft Learn' }
-]
 
 // What I Do Section
 const whatIDoSectionText = {
@@ -277,23 +263,23 @@ const hasError = (): boolean => {
         <div class="flex flex-col-reverse lg:flex-row justify-center items-center grow h-[28rem] gap-12">
           <div class="flex flex-col gap-8 h-full">
             <h1 class="grow flex items-end justify-center text-5xl lg:text-7xl lg:justify-start mt-0 lg:mt-24">
-              {{ landingSectionText.title }}
+              {{ landingData.title }}
             </h1>
             <span class="sm:text-2xl text-slate-400 text-center lg:text-left typing-effect">
-              {{ landingSectionText.description }}
+              {{ landingData.description }}
             </span>
             <!-- <div class="flex grow items-end justify-center lg:justify-start">
               <Button label="Get Resume" />
             </div> -->
             <div class="flex flex-col grow justify-end lg:items-start gap-8">
               <div class="flex items-end justify-center lg:justify-start">
-                <NuxtLink :to="resumeSrc"
+                <NuxtLink :to="landingData.resumeSrc"
                   target="_blank">
                   <Button label="Get My Resume" />
                 </NuxtLink>
               </div>
               <div class="flex flex-wrap items-end gap-4 justify-center lg:justify-start">
-                <NuxtLink v-for="link in externalLinks"
+                <NuxtLink v-for="link in landingData.externalLinks"
                   :to="link.url"
                   target="_blank">
                   <IconButton
@@ -477,7 +463,7 @@ const hasError = (): boolean => {
           </div>
           <div class="flex flex-col-reverse md:flex-row w-full bg-slate-800 border border-slate-600 rounded-3xl items-center justify-center md:justify-start">
             <div class="flex flex-row flex-wrap md:flex-col gap-4 items-center justify-center p-4">
-              <NuxtLink v-for="link in externalLinks"
+              <NuxtLink v-for="link in landingData.externalLinks"
                 :to="link.url"
                 target="_blank">
                 <IconButton
