@@ -10,6 +10,12 @@ type ExternalLink = {
   label: string
 }
 
+type TechStackItem = {
+  icon: string,
+  text: string
+}
+
 export type {
-  ExternalLink
+  ExternalLink,
+  TechStackItem
 }

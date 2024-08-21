@@ -4,35 +4,11 @@ import whatido from '~/assets/lotties/whatido.json'
 import experience from '~/assets/lotties/experience.json'
 import { faForward } from '@fortawesome/free-solid-svg-icons'
 import * as landingData from '@/data/landing'
+import * as whatidoData from '@/data/whatido'
 import type { ExperienceTimelineItem } from '~/components'
 import type { Web3FormResponse } from '.'
 
 const config = useRuntimeConfig()
-
-// What I Do Section
-const whatIDoSectionText = {
-  title: 'What I Do',
-  roles: [
-    'AI/ML Engineer',
-    'Full Stack Developer',
-    'Data Scientist'
-  ],
-  techStackItems: [
-    { icon: 'devicon-python-plain', text: 'Python' },
-    { icon: 'devicon-typescript-plain' , text: 'TypeScript' },
-    { icon: 'devicon-go-original-wordmark', text: 'Golang' },
-    { icon: 'devicon-scikitlearn-plain', text: 'SciKit-Learn' },
-    { icon: 'devicon-numpy-plain', text: 'Numpy' },
-    { icon: 'devicon-azuresqldatabase-plain', text: 'SQL' },
-    { icon: 'devicon-vuejs-plain', text: 'Vue.js' },
-    { icon: 'devicon-kubernetes-plain', text: 'Kubernetes' }
-  ],
-  subtitles: [
-    '💡 Craft innovative AI solutions that transform problems into intelligent, automated systems',
-    '💡 Develop dynamic web applications that provide seamless user experiences',
-    '💡 Enabling data-driven decision-making through advanced analytics and visualization'
-  ]
-}
 
 // Projects Section
 const projectSectionText = {
@@ -302,7 +278,8 @@ const hasError = (): boolean => {
       </div>
     </div>
     <div class="flex flex-col items-center justify-center w-full gap-36 p-8">
-      <div id="whatido"
+      <div v-if="whatidoData.show"
+        id="whatido"
         class="flex flex-col-reverse lg:flex-row h-full w-full max-w-[1240px] items-center">
         <client-only>
           <Vue3Lottie
@@ -312,19 +289,19 @@ const hasError = (): boolean => {
         </client-only>
         <div class="flex flex-col justify-between w-full p-4 gap-8">
           <h2 class="text-4xl md:text-5xl text-center lg:text-left">
-            {{ whatIDoSectionText.title }}
+            {{ whatidoData.title }}
           </h2>
           <div class="grid grid-cols-1 md:grid-cols-3 justify-between gap-8">
-            <Tag v-for="role in whatIDoSectionText.roles"
+            <Tag v-for="role in whatidoData.roles"
               :text="role" />
           </div>
           <div class="flex flex-wrap gap-8 justify-center">
-            <TechStackContainer v-for="item in whatIDoSectionText.techStackItems"
+            <TechStackContainer v-for="item in whatidoData.techStackItems"
               :icon="item.icon"
               :text="item.text" />
           </div>
           <ul class="text-slate-400 space-y-4">
-            <li v-for="subtitle in whatIDoSectionText.subtitles"
+            <li v-for="subtitle in whatidoData.keyPoints"
               class="text-center lg:text-left">
               {{ subtitle }}
             </li>
