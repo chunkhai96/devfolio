@@ -15,7 +15,16 @@ type TechStackItem = {
   text: string
 }
 
+type ProjectItem = {
+  title: string
+  description: string
+  imageSrc: string
+  codeLink?: string
+  liveLink?: string
+}
+
 export type {
   ExternalLink,
-  TechStackItem
+  TechStackItem,
+  ProjectItem
 }

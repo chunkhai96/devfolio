@@ -5,52 +5,11 @@ import experience from '~/assets/lotties/experience.json'
 import { faForward } from '@fortawesome/free-solid-svg-icons'
 import * as landingData from '@/data/landing'
 import * as whatidoData from '@/data/whatido'
+import * as projectData from '@/data/project'
 import type { ExperienceTimelineItem } from '~/components'
 import type { Web3FormResponse } from '.'
 
 const config = useRuntimeConfig()
-
-// Projects Section
-const projectSectionText = {
-  title: 'Personal Projects',
-}
-const projectItems = [
-  {
-    title: 'DevFolio',
-    description: 'A dynamic personal portfolio website designed to introduce myself and showcase my creative and professional projects.',
-    imageSrc: 'images/project-devfolio.webp',
-    codeLink: 'https://github.com/chunkhai96/devfolio',
-    liveLink: 'https://andypangdev.com'
-  },
-  {
-    title: 'I Have Chosen You',
-    description: 'A compassionate religious web application that serves as a platform for those seeking support and assistance.',
-    imageSrc: 'images/project-ihavechosenyou.webp',
-    liveLink: 'https://ihavechosenyou.com/en'
-  },
-  {
-    title: 'RideS',
-    description: 'An innovative carpooling app on Android that facilitates easy and affordable transportation solutions for university students.',
-    imageSrc: 'images/project-rides.webp',
-    codeLink: 'https://github.com/chunkhai96/RideS',
-    liveLink: 'https://youtu.be/UE8D9PCm3zk?si=wmFT6Wa4glJ9MZ-n'
-  },
-  {
-    title: 'Employee Policy Chatbot',
-    description: 'An interactive chatbot to provide quick and accurate answers about employee policies, including sick leave, claims, insurance, etc.',
-    imageSrc: 'images/project-policy-chatbot.webp'
-  },
-  {
-    title: 'Web Crawler',
-    description: 'Crawl and scrape publicly accessible data from websites, including job listings, salary information, property details, etc.',
-    imageSrc: 'images/project-web-crawler.webp'
-  },
-  {
-    title: 'Data Dashboard',
-    description: 'An intuitive dashboard that visualizes and analyzes data, empowering users to make informed and strategic decisions.',
-    imageSrc: 'images/project-dashboard.webp'
-  }
-]
 
 // Experience Section
 const experienceSectionText = {
@@ -308,13 +267,14 @@ const hasError = (): boolean => {
           </ul>
         </div>
       </div>
-      <div id="project"
+      <div v-if="projectData.show"
+        id="project"
         class="flex flex-col items-center justify-center w-full max-w-[1240px] gap-12">
         <h2 class="text-4xl md:text-5xl text-center md:text-left">
-          {{ projectSectionText.title }}
+          {{ projectData.title }}
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 h-full w-full items-center">
-          <Card v-for="project in projectItems"
+          <Card v-for="project in projectData.projectItems"
             class="shadow-lg transition duration-300 hover:shadow-blue-800/50">
             <template #imgHeader>
               <img class="w-full h-40 object-cover rounded-t-3xl"
