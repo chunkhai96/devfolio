@@ -6,41 +6,10 @@ import { faForward } from '@fortawesome/free-solid-svg-icons'
 import * as landingData from '@/data/landing'
 import * as whatidoData from '@/data/whatido'
 import * as projectData from '@/data/project'
-import type { ExperienceTimelineItem } from '~/components'
+import * as experienceData from '@/data/experience'
 import type { Web3FormResponse } from '.'
 
 const config = useRuntimeConfig()
-
-// Experience Section
-const experienceSectionText = {
-  title: 'Working Experience',
-}
-const experienceTimelineItems: ExperienceTimelineItem[] = [
-  {
-    title: 'Senior Machine Learning Engineer',
-    company: 'Management Resources Consultants (MRC Asia)',
-    duration: 'Apr 2022 - Present',
-    description: 'Crafted innovative machine learning solutions to analyze and predict global salary data, encompassing base pay, allowances, and bonuses, covering 140+ countries and 1,300+ unique job roles.'
-  },
-  {
-    title: 'Artificial Intelligence Engineer',
-    company: 'TalentX',
-    duration: 'Jan 2021 - Apr 2022',
-    description: 'Led a team of 5 in developing cutting-edge AI solutions that revolutionized talent acquisition, hiring processes, and talent management.'
-  },
-  {
-    title: 'System Engineer',
-    company: 'Infineon Technologies',
-    duration: 'Jul 2020 - Jan 2021',
-    description: 'Engineered and maintained state-of-the-art financial technology solutions, contributing to seamless financial operations and technology integration.'
-  },
-  {
-    title: 'Data Science Intern',
-    company: 'Seek',
-    duration: 'Jul 2019 - Jan 2020',
-    description: 'Developed sophisticated job review classification and sentiment analysis models, servicing 3 distinct markets with multilingual capabilities.'
-  }
-]
 
 // Talks Section
 const talkSectionText = {
@@ -304,10 +273,11 @@ const hasError = (): boolean => {
           </Card>
         </div>
       </div>
-      <div id="experience"
+      <div v-if="experienceData.show"
+        id="experience"
         class="flex flex-col items-center justify-center w-full max-w-[1240px] gap-12">
         <h2 class="text-4xl md:text-5xl text-center">
-          {{ experienceSectionText.title }}
+          {{ experienceData.title }}
         </h2>
         <div class="flex flex-col md:flex-row gap-12 h-full w-full items-center">
           <client-only>
@@ -316,7 +286,7 @@ const hasError = (): boolean => {
               :animationData="experience"
             />
           </client-only>
-          <ExperienceTimeline :items="experienceTimelineItems" />
+          <ExperienceTimeline :items="experienceData.timelineItems" />
         </div>
       </div>
       <div id="talk"

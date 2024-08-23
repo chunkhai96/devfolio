@@ -23,8 +23,16 @@ type ProjectItem = {
   liveLink?: string
 }
 
+export type ExperienceTimelineItem = {
+  title: string,
+  company: string,
+  duration: string,
+  description: string
+}
+
 export type {
   ExternalLink,
   TechStackItem,
-  ProjectItem
+  ProjectItem,
+  ExperienceTimelineItem
 }
