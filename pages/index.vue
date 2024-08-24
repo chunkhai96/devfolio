@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Vue3Lottie } from 'vue3-lottie'
-import whatido from '~/assets/lotties/whatido.json'
-import experience from '~/assets/lotties/experience.json'
+import whatidoLottie from '~/assets/lotties/whatido.json'
+import experienceLottie from '~/assets/lotties/experience.json'
 import { faForward } from '@fortawesome/free-solid-svg-icons'
 import * as landingData from '@/data/landing'
 import * as whatidoData from '@/data/whatido'
@@ -9,6 +9,7 @@ import * as projectData from '@/data/project'
 import * as experienceData from '@/data/experience'
 import * as talkData from '@/data/talk'
 import * as achievementData from '@/data/achievement'
+import * as contactData from '@/data/contact'
 import type { Web3FormResponse } from '.'
 
 const config = useRuntimeConfig()
@@ -119,7 +120,7 @@ const hasError = (): boolean => {
                 </NuxtLink>
               </div>
               <div class="flex flex-wrap items-end gap-4 justify-center lg:justify-start">
-                <NuxtLink v-for="link in landingData.externalLinks"
+                <NuxtLink v-for="link in contactData.externalLinks"
                   :to="link.url"
                   target="_blank">
                   <IconButton
@@ -148,7 +149,7 @@ const hasError = (): boolean => {
         <client-only>
           <Vue3Lottie
             width="80%"
-            :animationData="whatido"
+            :animationData="whatidoLottie"
           />
         </client-only>
         <div class="flex flex-col justify-between w-full p-4 gap-8">
@@ -219,7 +220,7 @@ const hasError = (): boolean => {
           <client-only>
             <Vue3Lottie
               width="80"
-              :animationData="experience"
+              :animationData="experienceLottie"
             />
           </client-only>
           <ExperienceTimeline :items="experienceData.timelineItems" />
@@ -295,20 +296,21 @@ const hasError = (): boolean => {
           Fast Forward
         </button>
       </div>
-      <div id="contactme"
+      <div v-if="contactData.show"
+        id="contactme"
         class="flex flex-col-reverse md:flex-row items-center justify-center w-full max-w-[720px] gap-12 mb-24">
         <div class="flex flex-col item-center md:items-start w-full gap-8">
           <div class="flex flex-col item-center w-full gap-4">
             <h2 class="text-4xl md:text-5xl text-center">
-              {{ contactMeSectionText.title }}
+              {{ contactData.title }}
             </h2>
             <span class="text-slate-400 text-center">
-              {{ contactMeSectionText.description }}
+              {{ contactData.subtitle }}
             </span>
           </div>
           <div class="flex flex-col-reverse md:flex-row w-full bg-slate-800 border border-slate-600 rounded-3xl items-center justify-center md:justify-start">
             <div class="flex flex-row flex-wrap md:flex-col gap-4 items-center justify-center p-4">
-              <NuxtLink v-for="link in landingData.externalLinks"
+              <NuxtLink v-for="link in contactData.externalLinks"
                 :to="link.url"
                 target="_blank">
                 <IconButton
