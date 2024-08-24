@@ -37,10 +37,18 @@ type TalkItem = {
   slide?: string
 }
 
+type AchievementItem = {
+  title: string
+  provider: string
+  link: string
+  imageSrc: string
+}
+
 export type {
   ExternalLink,
   TechStackItem,
   ProjectItem,
   ExperienceTimelineItem,
-  TalkItem
+  TalkItem,
+  AchievementItem
 }

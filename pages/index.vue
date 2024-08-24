@@ -8,64 +8,12 @@ import * as whatidoData from '@/data/whatido'
 import * as projectData from '@/data/project'
 import * as experienceData from '@/data/experience'
 import * as talkData from '@/data/talk'
+import * as achievementData from '@/data/achievement'
 import type { Web3FormResponse } from '.'
 
 const config = useRuntimeConfig()
 
-// Achievements Section
-const achievementSectionText = {
-  title: 'Achievements and Certifications',
-}
-const achievementItems = [
-  {
-    title: 'Microsoft Certified: Azure Fundamentals',
-    provider: 'Microsoft',
-    link: 'https://learn.microsoft.com/api/credentials/share/en-us/andypang/920020771177B6BE?sharingId=973E5703531249ED',
-    imageSrc: 'images/azure-fundamental-logo.webp'
-  },
-  {
-    title: 'Natural Language Processing Specialization',
-    provider: 'DeepLearning.AI',
-    link: 'https://coursera.org/share/3c6e15d0f2306504f6751da1e2195356',
-    imageSrc: 'images/deep-learning-ai-logo.webp'
-  },
-  {
-    title: 'Data Analyst Nanodegree',
-    provider: 'Udacity',
-    link: 'https://www.udacity.com/certificate/QRRDHARF',
-    imageSrc: 'images/udacity-logo.webp'
-  },
-  {
-    title: 'Programming with Google Go Specialization',
-    provider: 'University of California Irvine',
-    link: 'https://coursera.org/share/a0e910c581580aa9297d14ee71ee2ed6',
-    imageSrc: 'images/uci-logo.webp'
-  },
-  {
-    title: 'Deep Learning Specialization',
-    provider: 'DeepLearning.AI',
-    link: 'https://coursera.org/share/b64de4b8cecec71649b37bc147802e65',
-    imageSrc: 'images/deep-learning-ai-logo.webp'
-  },
-  {
-    title: 'Machine Learning',
-    provider: 'Stanford University',
-    link: 'https://coursera.org/share/a9326fa001b85ec2459909389f8fee02',
-    imageSrc: 'images/stanford-logo.webp'
-  },
-  {
-    title: 'Machine Learning on Google Cloud Specialization',
-    provider: 'Google Cloud',
-    link: 'https://coursera.org/share/23ff1c353e4d9649f9c023e13180e7fc',
-    imageSrc: 'images/google-cloud-logo.webp'
-  },
-  {
-    title: 'Front-End Web Development with React',
-    provider: 'The Hong Kong University of Science and Technology',
-    link: 'https://coursera.org/share/ec4d848c78ed50bab7f172a4e0cefe92',
-    imageSrc: 'images/hkust-logo.webp'
-  }
-]
+// Achievements Marquee Speed
 const marqueeSpeed = ref<number>(50)
 
 // Contact Me Section
@@ -311,15 +259,16 @@ const hasError = (): boolean => {
           </Card>
         </div>
       </div>
-      <div id="achievement"
+      <div v-if="achievementData.show"
+        id="achievement"
         class="flex flex-col items-center justify-center w-full max-w-[1240px]">
         <h2 class="text-4xl md:text-5xl text-center">
-          {{ achievementSectionText.title }}
+          {{ achievementData.title }}
         </h2>
         <NuxtMarquee class="overflow-hidden"
           :pauseOnHover="true"
           :speed="marqueeSpeed">
-          <NuxtLink v-for="achievement in achievementItems"
+          <NuxtLink v-for="achievement in achievementData.achievementItems"
             target="_blank"
             :to="achievement.link">
             <Card class="h-[19rem] my-12 mr-12 shadow-lg transition duration-300 hover:scale-105 hover:shadow-blue-800/50 hover:cursor-pointer"
