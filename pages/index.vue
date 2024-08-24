@@ -7,22 +7,10 @@ import * as landingData from '@/data/landing'
 import * as whatidoData from '@/data/whatido'
 import * as projectData from '@/data/project'
 import * as experienceData from '@/data/experience'
+import * as talkData from '@/data/talk'
 import type { Web3FormResponse } from '.'
 
 const config = useRuntimeConfig()
-
-// Talks Section
-const talkSectionText = {
-  title: 'Talks'
-}
-const talkItems = [
-  {
-    title: 'Competent in Job Market Through Final Year Project Management',
-    imageSrc: 'images/talk-uthm.webp',
-    youtube: 'https://youtu.be/skoynvqo64o?si=7wzZnsVE4ziiZ4qt',
-    slide: 'https://docs.google.com/presentation/d/19JZlfQRdsyLvZ91-RtQGYBnsyXRKvAlCJR03ll6JHEg/edit?usp=sharing'
-  }
-]
 
 // Achievements Section
 const achievementSectionText = {
@@ -289,13 +277,14 @@ const hasError = (): boolean => {
           <ExperienceTimeline :items="experienceData.timelineItems" />
         </div>
       </div>
-      <div id="talk"
+      <div v-if="talkData.show"
+        id="talk"
         class="flex flex-col items-center justify-center w-full max-w-[1240px] gap-12">
         <h2 class="text-4xl md:text-5xl text-center md:text-left">
-          {{ talkSectionText.title }}
+          {{ talkData.title }}
         </h2>
         <div class="flex flex-wrap justify-center gap-12 h-full w-full items-center">
-          <Card v-for="talk in talkItems"
+          <Card v-for="talk in talkData.talkItems"
             class="w-full md:w-1/2 lg:w-1/3 shadow-lg transition duration-300 hover:shadow-blue-800/50">
             <template #imgHeader>
               <img class="w-full h-40 object-cover rounded-t-3xl"

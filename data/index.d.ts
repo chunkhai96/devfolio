@@ -30,9 +30,17 @@ export type ExperienceTimelineItem = {
   description: string
 }
 
+type TalkItem = {
+  title: string
+  imageSrc: string
+  youtube?: string
+  slide?: string
+}
+
 export type {
   ExternalLink,
   TechStackItem,
   ProjectItem,
-  ExperienceTimelineItem
+  ExperienceTimelineItem,
+  TalkItem
 }

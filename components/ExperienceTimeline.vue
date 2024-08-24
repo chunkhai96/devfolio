@@ -2,7 +2,7 @@
 import {
   faCalendarAlt
 } from '@fortawesome/free-solid-svg-icons'
-import type { ExperienceTimelineItem } from '.'
+import type { ExperienceTimelineItem } from '~/data'
 
 const props = defineProps({
   items: {
