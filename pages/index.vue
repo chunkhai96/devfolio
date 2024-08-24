@@ -10,7 +10,11 @@ import * as experienceData from '@/data/experience'
 import * as talkData from '@/data/talk'
 import * as achievementData from '@/data/achievement'
 import * as contactData from '@/data/contact'
-import type { Web3FormResponse } from '.'
+
+interface Web3FormResponse {
+  success: boolean,
+  message: string
+}
 
 const config = useRuntimeConfig()
 
