@@ -1,10 +1,10 @@
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
-import type { ExternalLink } from '.'
+import type { ExternalLinkItem } from '.'
 
 const show: boolean = true
 const title: string = 'Contact Me'
 const subtitle: string = 'I\'d love to connect! Reach out for questions, collaborations, or a chat.'
-const externalLinks: Array<ExternalLink> = [
+const externalLinks: Array<ExternalLinkItem> = [
   {
     devicon: 'devicon-github-original',
     url: 'https://github.com/chunkhai96',
