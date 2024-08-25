@@ -1,193 +1,24 @@
 <script lang="ts" setup>
 import { Vue3Lottie } from 'vue3-lottie'
-import whatido from '~/assets/lotties/whatido.json'
-import experience from '~/assets/lotties/experience.json'
-import { faEnvelope, faForward } from '@fortawesome/free-solid-svg-icons'
-import type { ExperienceTimelineItem } from '~/components'
-import type { Web3FormResponse } from '.'
+import whatidoLottie from '~/assets/lotties/whatido.json'
+import experienceLottie from '~/assets/lotties/experience.json'
+import { faForward } from '@fortawesome/free-solid-svg-icons'
+import * as landingData from '@/data/landing'
+import * as whatidoData from '@/data/whatido'
+import * as projectData from '@/data/project'
+import * as experienceData from '@/data/experience'
+import * as talkData from '@/data/talk'
+import * as achievementData from '@/data/achievement'
+import * as contactData from '@/data/contact'
+
+interface Web3FormResponse {
+  success: boolean,
+  message: string
+}
 
 const config = useRuntimeConfig()
 
-// Landing Section
-const landingSectionText = {
-  title: 'Andy Pang',
-  description: 'I solve problems through innovation using code.',
-}
-const resumeSrc = 'https://drive.google.com/file/d/1hWBVXXyK6ykCb8c82DddwkF0XtBQGswn/view?usp=sharing'
-const externalLinks = [
-  { devicon: 'devicon-github-original', url: 'https://github.com/chunkhai96', color: 'bg-slate-800', label: 'GitHub' },
-  { devicon: 'devicon-linkedin-plain', url: 'https://www.linkedin.com/in/chunkhai96/', color: 'bg-blue-500', label: 'LinkedIn' },
-  { devicon: 'devicon-stackoverflow-plain', url: 'https://stackoverflow.com/users/6851848/andy-pang', color: 'bg-orange-500', label: 'StackOverflow' },
-  { fontawesome: faEnvelope, url: 'mailto:andypang96@gmail.com', 'color': 'bg-slate-400', label: 'Email' },
-  { devicon: 'devicon-googlecloud-plain', url: 'https://www.cloudskillsboost.google/public_profiles/6afcecb6-2169-472e-b3fc-68c97b626f0a', color: 'bg-red-500', label: 'Google Cloud Skills Boost' },
-  { devicon: 'devicon-windows11-original', url: 'https://learn.microsoft.com/en-us/users/andypang/', color: 'bg-blue-500', label: 'Microsoft Learn' }
-]
-
-// What I Do Section
-const whatIDoSectionText = {
-  title: 'What I Do',
-  roles: [
-    'AI/ML Engineer',
-    'Full Stack Developer',
-    'Data Scientist'
-  ],
-  techStackItems: [
-    { icon: 'devicon-python-plain', text: 'Python' },
-    { icon: 'devicon-typescript-plain' , text: 'TypeScript' },
-    { icon: 'devicon-go-original-wordmark', text: 'Golang' },
-    { icon: 'devicon-scikitlearn-plain', text: 'SciKit-Learn' },
-    { icon: 'devicon-numpy-plain', text: 'Numpy' },
-    { icon: 'devicon-azuresqldatabase-plain', text: 'SQL' },
-    { icon: 'devicon-vuejs-plain', text: 'Vue.js' },
-    { icon: 'devicon-kubernetes-plain', text: 'Kubernetes' }
-  ],
-  subtitles: [
-    '💡 Craft innovative AI solutions that transform problems into intelligent, automated systems',
-    '💡 Develop dynamic web applications that provide seamless user experiences',
-    '💡 Enabling data-driven decision-making through advanced analytics and visualization'
-  ]
-}
-
-// Projects Section
-const projectSectionText = {
-  title: 'Personal Projects',
-}
-const projectItems = [
-  {
-    title: 'DevFolio',
-    description: 'A dynamic personal portfolio website designed to introduce myself and showcase my creative and professional projects.',
-    imageSrc: 'images/project-devfolio.webp',
-    codeLink: 'https://github.com/chunkhai96/devfolio',
-    liveLink: 'https://andypangdev.com'
-  },
-  {
-    title: 'I Have Chosen You',
-    description: 'A compassionate religious web application that serves as a platform for those seeking support and assistance.',
-    imageSrc: 'images/project-ihavechosenyou.webp',
-    liveLink: 'https://ihavechosenyou.com/en'
-  },
-  {
-    title: 'RideS',
-    description: 'An innovative carpooling app on Android that facilitates easy and affordable transportation solutions for university students.',
-    imageSrc: 'images/project-rides.webp',
-    codeLink: 'https://github.com/chunkhai96/RideS',
-    liveLink: 'https://youtu.be/UE8D9PCm3zk?si=wmFT6Wa4glJ9MZ-n'
-  },
-  {
-    title: 'Employee Policy Chatbot',
-    description: 'An interactive chatbot to provide quick and accurate answers about employee policies, including sick leave, claims, insurance, etc.',
-    imageSrc: 'images/project-policy-chatbot.webp'
-  },
-  {
-    title: 'Web Crawler',
-    description: 'Crawl and scrape publicly accessible data from websites, including job listings, salary information, property details, etc.',
-    imageSrc: 'images/project-web-crawler.webp'
-  },
-  {
-    title: 'Data Dashboard',
-    description: 'An intuitive dashboard that visualizes and analyzes data, empowering users to make informed and strategic decisions.',
-    imageSrc: 'images/project-dashboard.webp'
-  }
-]
-
-// Experience Section
-const experienceSectionText = {
-  title: 'Working Experience',
-}
-const experienceTimelineItems: ExperienceTimelineItem[] = [
-  {
-    title: 'Senior Machine Learning Engineer',
-    company: 'Management Resources Consultants (MRC Asia)',
-    duration: 'Apr 2022 - Present',
-    description: 'Crafted innovative machine learning solutions to analyze and predict global salary data, encompassing base pay, allowances, and bonuses, covering 140+ countries and 1,300+ unique job roles.'
-  },
-  {
-    title: 'Artificial Intelligence Engineer',
-    company: 'TalentX',
-    duration: 'Jan 2021 - Apr 2022',
-    description: 'Led a team of 5 in developing cutting-edge AI solutions that revolutionized talent acquisition, hiring processes, and talent management.'
-  },
-  {
-    title: 'System Engineer',
-    company: 'Infineon Technologies',
-    duration: 'Jul 2020 - Jan 2021',
-    description: 'Engineered and maintained state-of-the-art financial technology solutions, contributing to seamless financial operations and technology integration.'
-  },
-  {
-    title: 'Data Science Intern',
-    company: 'Seek',
-    duration: 'Jul 2019 - Jan 2020',
-    description: 'Developed sophisticated job review classification and sentiment analysis models, servicing 3 distinct markets with multilingual capabilities.'
-  }
-]
-
-// Talks Section
-const talkSectionText = {
-  title: 'Talks'
-}
-const talkItems = [
-  {
-    title: 'Competent in Job Market Through Final Year Project Management',
-    imageSrc: 'images/talk-uthm.webp',
-    youtube: 'https://youtu.be/skoynvqo64o?si=7wzZnsVE4ziiZ4qt',
-    slide: 'https://docs.google.com/presentation/d/19JZlfQRdsyLvZ91-RtQGYBnsyXRKvAlCJR03ll6JHEg/edit?usp=sharing'
-  }
-]
-
-// Achievements Section
-const achievementSectionText = {
-  title: 'Achievements and Certifications',
-}
-const achievementItems = [
-  {
-    title: 'Microsoft Certified: Azure Fundamentals',
-    provider: 'Microsoft',
-    link: 'https://learn.microsoft.com/api/credentials/share/en-us/andypang/920020771177B6BE?sharingId=973E5703531249ED',
-    imageSrc: 'images/azure-fundamental-logo.webp'
-  },
-  {
-    title: 'Natural Language Processing Specialization',
-    provider: 'DeepLearning.AI',
-    link: 'https://coursera.org/share/3c6e15d0f2306504f6751da1e2195356',
-    imageSrc: 'images/deep-learning-ai-logo.webp'
-  },
-  {
-    title: 'Data Analyst Nanodegree',
-    provider: 'Udacity',
-    link: 'https://www.udacity.com/certificate/QRRDHARF',
-    imageSrc: 'images/udacity-logo.webp'
-  },
-  {
-    title: 'Programming with Google Go Specialization',
-    provider: 'University of California Irvine',
-    link: 'https://coursera.org/share/a0e910c581580aa9297d14ee71ee2ed6',
-    imageSrc: 'images/uci-logo.webp'
-  },
-  {
-    title: 'Deep Learning Specialization',
-    provider: 'DeepLearning.AI',
-    link: 'https://coursera.org/share/b64de4b8cecec71649b37bc147802e65',
-    imageSrc: 'images/deep-learning-ai-logo.webp'
-  },
-  {
-    title: 'Machine Learning',
-    provider: 'Stanford University',
-    link: 'https://coursera.org/share/a9326fa001b85ec2459909389f8fee02',
-    imageSrc: 'images/stanford-logo.webp'
-  },
-  {
-    title: 'Machine Learning on Google Cloud Specialization',
-    provider: 'Google Cloud',
-    link: 'https://coursera.org/share/23ff1c353e4d9649f9c023e13180e7fc',
-    imageSrc: 'images/google-cloud-logo.webp'
-  },
-  {
-    title: 'Front-End Web Development with React',
-    provider: 'The Hong Kong University of Science and Technology',
-    link: 'https://coursera.org/share/ec4d848c78ed50bab7f172a4e0cefe92',
-    imageSrc: 'images/hkust-logo.webp'
-  }
-]
+// Achievements Marquee Speed
 const marqueeSpeed = ref<number>(50)
 
 // Contact Me Section
@@ -277,23 +108,23 @@ const hasError = (): boolean => {
         <div class="flex flex-col-reverse lg:flex-row justify-center items-center grow h-[28rem] gap-12">
           <div class="flex flex-col gap-8 h-full">
             <h1 class="grow flex items-end justify-center text-5xl lg:text-7xl lg:justify-start mt-0 lg:mt-24">
-              {{ landingSectionText.title }}
+              {{ landingData.title }}
             </h1>
             <span class="sm:text-2xl text-slate-400 text-center lg:text-left typing-effect">
-              {{ landingSectionText.description }}
+              {{ landingData.description }}
             </span>
             <!-- <div class="flex grow items-end justify-center lg:justify-start">
               <Button label="Get Resume" />
             </div> -->
             <div class="flex flex-col grow justify-end lg:items-start gap-8">
               <div class="flex items-end justify-center lg:justify-start">
-                <NuxtLink :to="resumeSrc"
+                <NuxtLink :to="landingData.resumeSrc"
                   target="_blank">
                   <Button label="Get My Resume" />
                 </NuxtLink>
               </div>
               <div class="flex flex-wrap items-end gap-4 justify-center lg:justify-start">
-                <NuxtLink v-for="link in externalLinks"
+                <NuxtLink v-for="link in contactData.externalLinks"
                   :to="link.url"
                   target="_blank">
                   <IconButton
@@ -308,7 +139,7 @@ const hasError = (): boolean => {
           <div class="flex grow justify-end">
             <div class="size-[16rem] lg:size-[26rem] xl:size-[32rem] flex-shrink-0 mt-12 lg:mt-0">
               <img class="rounded-full object-cover"
-                src="~/assets/images/avatar.webp"
+                :src="landingData.profilePictureSrc"
                 alt="Avatar"/>
             </div>
           </div>
@@ -316,42 +147,44 @@ const hasError = (): boolean => {
       </div>
     </div>
     <div class="flex flex-col items-center justify-center w-full gap-36 p-8">
-      <div id="whatido"
+      <div v-if="whatidoData.show"
+        id="whatido"
         class="flex flex-col-reverse lg:flex-row h-full w-full max-w-[1240px] items-center">
         <client-only>
           <Vue3Lottie
             width="80%"
-            :animationData="whatido"
+            :animationData="whatidoLottie"
           />
         </client-only>
         <div class="flex flex-col justify-between w-full p-4 gap-8">
           <h2 class="text-4xl md:text-5xl text-center lg:text-left">
-            {{ whatIDoSectionText.title }}
+            {{ whatidoData.title }}
           </h2>
           <div class="grid grid-cols-1 md:grid-cols-3 justify-between gap-8">
-            <Tag v-for="role in whatIDoSectionText.roles"
+            <Tag v-for="role in whatidoData.roles"
               :text="role" />
           </div>
           <div class="flex flex-wrap gap-8 justify-center">
-            <TechStackContainer v-for="item in whatIDoSectionText.techStackItems"
+            <TechStackContainer v-for="item in whatidoData.techStackItems"
               :icon="item.icon"
               :text="item.text" />
           </div>
           <ul class="text-slate-400 space-y-4">
-            <li v-for="subtitle in whatIDoSectionText.subtitles"
+            <li v-for="subtitle in whatidoData.keyPoints"
               class="text-center lg:text-left">
               {{ subtitle }}
             </li>
           </ul>
         </div>
       </div>
-      <div id="project"
+      <div v-if="projectData.show"
+        id="project"
         class="flex flex-col items-center justify-center w-full max-w-[1240px] gap-12">
         <h2 class="text-4xl md:text-5xl text-center md:text-left">
-          {{ projectSectionText.title }}
+          {{ projectData.title }}
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 h-full w-full items-center">
-          <Card v-for="project in projectItems"
+          <Card v-for="project in projectData.projectItems"
             class="shadow-lg transition duration-300 hover:shadow-blue-800/50">
             <template #imgHeader>
               <img class="w-full h-40 object-cover rounded-t-3xl"
@@ -381,28 +214,30 @@ const hasError = (): boolean => {
           </Card>
         </div>
       </div>
-      <div id="experience"
+      <div v-if="experienceData.show"
+        id="experience"
         class="flex flex-col items-center justify-center w-full max-w-[1240px] gap-12">
         <h2 class="text-4xl md:text-5xl text-center">
-          {{ experienceSectionText.title }}
+          {{ experienceData.title }}
         </h2>
         <div class="flex flex-col md:flex-row gap-12 h-full w-full items-center">
           <client-only>
             <Vue3Lottie
               width="80"
-              :animationData="experience"
+              :animationData="experienceLottie"
             />
           </client-only>
-          <ExperienceTimeline :items="experienceTimelineItems" />
+          <ExperienceTimeline :items="experienceData.timelineItems" />
         </div>
       </div>
-      <div id="talk"
+      <div v-if="talkData.show"
+        id="talk"
         class="flex flex-col items-center justify-center w-full max-w-[1240px] gap-12">
         <h2 class="text-4xl md:text-5xl text-center md:text-left">
-          {{ talkSectionText.title }}
+          {{ talkData.title }}
         </h2>
         <div class="flex flex-wrap justify-center gap-12 h-full w-full items-center">
-          <Card v-for="talk in talkItems"
+          <Card v-for="talk in talkData.talkItems"
             class="w-full md:w-1/2 lg:w-1/3 shadow-lg transition duration-300 hover:shadow-blue-800/50">
             <template #imgHeader>
               <img class="w-full h-40 object-cover rounded-t-3xl"
@@ -429,15 +264,16 @@ const hasError = (): boolean => {
           </Card>
         </div>
       </div>
-      <div id="achievement"
+      <div v-if="achievementData.show"
+        id="achievement"
         class="flex flex-col items-center justify-center w-full max-w-[1240px]">
         <h2 class="text-4xl md:text-5xl text-center">
-          {{ achievementSectionText.title }}
+          {{ achievementData.title }}
         </h2>
         <NuxtMarquee class="overflow-hidden"
           :pauseOnHover="true"
           :speed="marqueeSpeed">
-          <NuxtLink v-for="achievement in achievementItems"
+          <NuxtLink v-for="achievement in achievementData.achievementItems"
             target="_blank"
             :to="achievement.link">
             <Card class="h-[19rem] my-12 mr-12 shadow-lg transition duration-300 hover:scale-105 hover:shadow-blue-800/50 hover:cursor-pointer"
@@ -464,20 +300,21 @@ const hasError = (): boolean => {
           Fast Forward
         </button>
       </div>
-      <div id="contactme"
+      <div v-if="contactData.show"
+        id="contactme"
         class="flex flex-col-reverse md:flex-row items-center justify-center w-full max-w-[720px] gap-12 mb-24">
         <div class="flex flex-col item-center md:items-start w-full gap-8">
           <div class="flex flex-col item-center w-full gap-4">
             <h2 class="text-4xl md:text-5xl text-center">
-              {{ contactMeSectionText.title }}
+              {{ contactData.title }}
             </h2>
             <span class="text-slate-400 text-center">
-              {{ contactMeSectionText.description }}
+              {{ contactData.subtitle }}
             </span>
           </div>
           <div class="flex flex-col-reverse md:flex-row w-full bg-slate-800 border border-slate-600 rounded-3xl items-center justify-center md:justify-start">
             <div class="flex flex-row flex-wrap md:flex-col gap-4 items-center justify-center p-4">
-              <NuxtLink v-for="link in externalLinks"
+              <NuxtLink v-for="link in contactData.externalLinks"
                 :to="link.url"
                 target="_blank">
                 <IconButton

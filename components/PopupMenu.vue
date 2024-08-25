@@ -1,6 +1,10 @@
 <script lang="ts" setup>
-import type { PopupMenuItem } from '.'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
+
+interface PopupMenuItem {
+  title: string,
+  link: string
+}
 
 const props = defineProps({
   items: {
