@@ -4,7 +4,7 @@ const show: boolean = true
 const title: string = 'Working Experience'
 const timelineItems: Array<ExperienceTimelineItem> = [
   {
-    title: 'Principal Machine Learning Engineer',
+    title: 'Lead Machine Learning Engineer',
     company: 'Management Resources Consultants (MRC Asia)',
     duration: 'Apr 2022 - Present',
     description: 'Crafted innovative machine learning solutions to analyze and predict global salary data, encompassing base pay, allowances, and bonuses, covering 140+ countries and 1,300+ unique job roles.'
@@ -29,7 +29,7 @@ const timelineItems: Array<ExperienceTimelineItem> = [
   }
 ]
 
-export { 
+export {
   show,
   title,
   timelineItems
