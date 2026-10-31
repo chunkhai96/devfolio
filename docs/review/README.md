@@ -57,6 +57,7 @@ My own earlier self-assessment (4.3) was not confirmed. Four independent art-dir
 | 4 (after furniture/terrace pass) | 3.5 | 3 | 3 | 3 | 3 | fail |
 | 5 (Poly Haven scanned materials, horizon portal) | 3.5 | 3 | 3 | 3 | 3 | fail |
 | 6 (room-identity pass: per-room palettes, lab baffles, corridor fins, framed displays) | 3.5 | 3 | 3 | 3 | 3 | fail |
+| 7 (scanned CC0 furniture: lab stools, terrace lounge) | 3.5 | 3 | 3 | 3 | 3 | fail |
 
 Non-visual dimensions are consistently 4 (typography/UI, exploration, content, responsive/a11y). No dimension has ever scored ≤ 2. Every round's concrete defects were fixed before the next (hover cue, overlaid titles, Tailwind class collisions, culled canopy, NaN shaft, marker clutter, contrast, phone layout, etc.), but the four core visual scores did not move: the gap is material/modeling density, not individual bugs.
 
@@ -68,7 +69,7 @@ Performance: ~3 ms per frame (forced GPU sync) at 2520×1575 with MSAA ×4 on M2
 
 ## Open items for the owner
 
-- **Visual gate (§8):** six independent reviews plateau at 3.4–3.5, including after scanned materials and a room-identity pass; reviewers describe it as a competent real-time archviz piece rather than a memorable one. Reaching 4+ on composition/modeling/materials/lighting most likely needs authored hero assets per room from a 3D artist (or a sculpted, higher-poly modeling pass), not more procedural iteration. Previously: Scanned materials (round 5) improved realism but not the core scores; reviewers now ask for room-specific identities (distinct material palettes and a hero object per room), constructed detail on the portal/displays/plinths, and stronger light hierarchy. That is a larger art-direction pass rather than further polish.
+- **Visual gate (§8):** seven independent reviews plateau at 3.4–3.5, including after scanned materials, a room-identity pass and scanned furniture; reviewers describe it as a competent real-time archviz piece rather than a memorable one. Reaching 4+ on composition/modeling/materials/lighting most likely needs authored hero assets per room from a 3D artist (or a sculpted, higher-poly modeling pass), not more procedural iteration. Previously: Scanned materials (round 5) improved realism but not the core scores; reviewers now ask for room-specific identities (distinct material palettes and a hero object per room), constructed detail on the portal/displays/plinths, and stronger light hierarchy. That is a larger art-direction pass rather than further polish.
 
 - Project data has no per-project technologies, contribution or outcomes — panels show only what `data/project.ts` contains.
 - `public/images/project-devfolio.webp` now shows the redesigned site (full-res capture of the live 3D frame + UI); the previous image is in git history.
