@@ -5,6 +5,13 @@
       - paragraph: Exhibit 01 / Personal Projects
       - heading "DevFolio" [level=2]
       - paragraph: A dynamic personal portfolio website designed to introduce myself and showcase my creative and professional projects.
+      - paragraph: Built with
+      - list:
+        - listitem: Nuxt
+        - listitem: Vue
+        - listitem: three.js
+        - listitem: Blender
+        - listitem: Tailwind CSS
       - figure:
         - img "Screenshot of DevFolio"
       - link "Live preview":

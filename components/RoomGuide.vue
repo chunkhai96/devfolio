@@ -113,8 +113,11 @@ function pick(it: Item) {
   border-bottom: 1px solid var(--hairline); color: var(--porcelain); text-align: left; font-size: 0.9rem;
   transition: color 160ms, padding 200ms var(--ease-out);
 }
-.item:hover { color: #fff; padding-left: 8px; }
-.item:hover .meta { color: var(--ice-cyan); }
+/* hover only on real pointers: a tap would otherwise leave one row stuck indented */
+@media (hover: hover) {
+  .item:hover { color: #fff; padding-left: 8px; }
+  .item:hover .meta { color: var(--ice-cyan); }
+}
 .meta { font-family: var(--font-mono); font-size: 0.7rem; color: var(--titanium); min-width: 30px; }
 .label { flex: 1; }
 .back { margin-top: 12px; display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--mist); min-height: 36px; }
@@ -126,9 +129,11 @@ function pick(it: Item) {
   .plan { display: none; }
   .blurb { display: none; }
   /* phones: every item fully visible as a two-column grid, scrolling vertically if a room has many */
-  .items { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; border-top: 0; margin-top: 10px; max-height: 34vh; overflow-y: auto; scrollbar-width: none; }
-  .item { border: 1px solid var(--hairline); border-radius: 10px; padding: 8px 10px; min-height: 44px; font-size: 0.82rem; line-height: 1.25; }
+  .items { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; border-top: 0; margin-top: 10px; max-height: 38vh; overflow-y: auto; scrollbar-width: none; }
+  /* number sits above the title so narrow cards keep titles to two lines */
+  .item { flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; border: 1px solid var(--hairline); border-radius: 10px; padding: 7px 10px; min-height: 44px; font-size: 0.82rem; line-height: 1.25; }
+  .meta { min-width: 0; font-size: 0.64rem; }
   .item svg { display: none; }
-  .item:hover { padding-left: 12px; }
 }
+@media (max-width: 760px) and (hover: hover) { .item:hover { padding-left: 12px; } }
 </style>

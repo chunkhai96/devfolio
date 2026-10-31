@@ -15,13 +15,14 @@ import bpy
 SRC, OUT = sys.argv[sys.argv.index('--') + 1:][:2]
 os.makedirs(OUT, exist_ok=True)
 
-# poly haven id -> (our texture set, output size, saturation kept, target mean luminance)
+# poly haven id -> (our texture set, output size, saturation kept, target mean luminance, tonal contrast kept)
+# plaster and limestone are calmed so large surfaces read as honed finishes, not blotches
 MAP = {
-  'granite_tile': ('basalt_floor', 2048, 0.35, 0.55),
-  'plaster_grey_04': ('limestone', 2048, 0.2, 0.6),
-  'grey_plaster_02': ('plaster', 1024, 0.15, 0.62),
-  'white_plaster_02': ('ceramic', 1024, 0.45, 0.86),
-  'caban': ('fabric', 1024, 0.0, 0.6),
+  'granite_tile': ('basalt_floor', 2048, 0.35, 0.55, 1.0),
+  'plaster_grey_04': ('limestone', 2048, 0.2, 0.6, 0.6),
+  'grey_plaster_02': ('plaster', 1024, 0.15, 0.62, 0.45),
+  'white_plaster_02': ('ceramic', 1024, 0.45, 0.86, 0.5),
+  'caban': ('fabric', 1024, 0.0, 0.6, 1.0),
 }
 
 
@@ -49,8 +50,9 @@ def save(arr, path):
   bpy.data.images.remove(img)
 
 
-for pid, (name, size, sat, target) in MAP.items():
+for pid, (name, size, sat, target, contrast) in MAP.items():
   diff = load(os.path.join(SRC, f'{pid}_diff_2k.jpg'), size)
+  diff = diff.mean(axis=(0, 1)) + (diff - diff.mean(axis=(0, 1))) * contrast
   lum = diff @ np.array([0.2126, 0.7152, 0.0722], dtype=np.float32)
   gray = np.repeat(lum[..., None], 3, axis=-1)
   col = gray + (diff - gray) * sat

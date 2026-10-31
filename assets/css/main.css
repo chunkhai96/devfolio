@@ -16,7 +16,7 @@
   --ice-cyan: #9ad8d6;
   --warm-light: #e6dfd3;
   --deep-slate: #1a2229;
-  --panel: rgba(17, 22, 28, 0.985);
+  --panel: rgb(17, 22, 28);
   --panel-border: rgba(138, 150, 158, 0.22);
   --hairline: rgba(215, 223, 223, 0.12);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);

@@ -633,8 +633,8 @@ export class AtelierEngine {
     const aspect = W / H
     const hfov = 2 * Math.atan(Math.tan(vfov / 2) * aspect)
     const small = width < 2.0
-    const fillW = (this.portrait ? 0.86 : small ? 0.36 : 0.62) * freeW
-    const fillH = (this.portrait ? 0.62 : small ? 0.42 : 0.6) * freeH
+    const fillW = (this.portrait ? 0.86 : small ? 0.46 : 0.62) * freeW
+    const fillH = (this.portrait ? 0.62 : small ? 0.5 : 0.6) * freeH
     const distW = width / (2 * Math.tan(hfov / 2) * fillW)
     const distH = height / (2 * Math.tan(vfov / 2) * fillH)
     const dist = Math.max(distW, distH, 1.6)
@@ -654,7 +654,8 @@ export class AtelierEngine {
     return {
       pos, target, fov,
       shiftX: this.inset.right / W,
-      shiftY: -(this.inset.bottom - top) / H - projShiftY,
+      // positive shiftY moves the image down; projShiftY < 0 lifts the exhibit back to the optical centre
+      shiftY: -(this.inset.bottom - top) / H + projShiftY,
     }
   }
 

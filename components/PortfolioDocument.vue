@@ -24,6 +24,7 @@ import ContactPanel from './panels/ContactPanel.vue'
             <p class="eyebrow">Exhibit {{ String(i + 1).padStart(2, '0') }}</p>
             <h3>{{ p.title }}</h3>
             <p>{{ p.description }}</p>
+            <p v-if="p.stack?.length" class="pstack">{{ p.stack.join(' · ') }}</p>
             <div class="plinks">
               <a v-if="p.liveLink" :href="p.liveLink" target="_blank" rel="noopener">{{ /youtu\.?be/.test(p.liveLink) ? 'Watch demo' : 'Live preview' }} <Icon name="arrow-up-right" :size="14" /></a>
               <a v-if="p.codeLink" :href="p.codeLink" target="_blank" rel="noopener">Source code <Icon name="arrow-up-right" :size="14" /></a>
@@ -130,4 +131,5 @@ import ContactPanel from './panels/ContactPanel.vue'
   .exp li { grid-template-columns: 1fr; gap: 4px; }
   .talk { grid-template-columns: 1fr; }
 }
+.pstack { font-family: var(--font-mono); font-size: 0.75rem; color: var(--titanium); margin-top: 6px; }
 </style>

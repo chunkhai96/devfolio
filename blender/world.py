@@ -615,6 +615,9 @@ def build_lab(B):
   for ry in (y0 + 0.6, 0.0, y1 - 0.6):
     B.bx('metal', x0 + 0.4, x1 - 0.4, ry - 0.015, ry + 0.015, H_WING - 0.04, H_WING, 'titanium')
   B.area('lab_wash', ((x0 + x1) / 2, 0, H_WING - 0.05), ((x0 + x1) / 2, 0, 0), size=13, size_y=8, power=160, color=NEUTRAL)
+  # grazing wall-wash down the fabric walls from the baffle edge, so the long walls read as lit surfaces
+  for side in (1, -1):
+    B.area(f'lab_graze_{side}', ((x0 + x1) / 2, side * 6.25, H_WING - 0.5), ((x0 + x1) / 2, side * 7.0, 0.8), size=15.4, size_y=0.12, power=420, color=WARM_SOFT)
 
 
 def build_corridor(B):
@@ -640,7 +643,7 @@ def build_corridor(B):
     B.bx(o, x0 - 0.9, x0 + 0.06, cy - nh, cy + nh, 0.86, 0.9, 'ceramic', 0.004)
     B.bx(o, x0 - 0.9, x0, cy - nh - 0.02, cy - nh, 0.86, 3.5, 'ceramic')
     B.bx(o, x0 - 0.9, x0, cy + nh, cy + nh + 0.02, 0.86, 3.5, 'ceramic')
-    B.bx(o, x0 - 0.9, x0, cy - nh - 0.02, cy + nh + 0.02, 3.5, 3.54, 'ceramic')
+    B.bx('metal', x0 - 0.9, x0, cy - nh - 0.02, cy + nh + 0.02, 3.5, 3.54, 'titanium_dark')   # dark reveal housing the downlight
     screen(B, f'screen_role_{i}', (x0 - 0.8, cy, 2.2), 2.6, 1.3, (1, 0, 0), bezel=0.015, depth=0.03)
     hit(B, f'hit_role_{i}', (x0 - 0.3, cy, 2.2), (1.2, 2 * nh, 2.6))
     B.area(f'niche_{i}', (x0 - 0.45, cy, 3.45), (x0 - 0.8, cy, 0.9), size=0.4, size_y=2 * nh - 0.3, power=160 + 40 * i, color=WARM)
@@ -662,6 +665,10 @@ def build_corridor(B):
   for side in (1, -1):
     B.area(f'cor_up_{side}', (side * 3.1, 21.8, H_WING - 1.0), (side * 3.5, 21.8, H_WING + 0.4), size=0.1, size_y=22.0, power=150, color=WARM_SOFT)
   B.area('cor_slot', (0, 21.8, H_WING + 0.7), (0, 21.8, 0), size=0.4, size_y=22.5, power=900, color=WARM)
+  # concealed cornice uplights washing the soffit, so the ceiling keeps readable shadow detail
+  for side in (1, -1):
+    B.bx('metal', side * 3.5 - (0.3 if side > 0 else 0.0), side * 3.5 + (0.0 if side > 0 else 0.3), y0 + 0.4, y1 - 0.4, H_WING - 0.62, H_WING - 0.58, 'titanium_dark', 0.003)
+    B.area(f'cor_ceil_{side}', (side * 3.25, 21.8, H_WING - 0.56), (side * 0.8, 21.8, H_WING + 0.3), size=0.12, size_y=23.0, power=520, color=WARM_SOFT)
   hit(B, 'hit_dest_terrace', (0, 34.0, 3.0), (7.0, 0.8, 6.0))
   B.spot('cor_door', (0, 32.6, H_WING - 0.1), (0, 33.2, 0), power=380, angle=60, blend=0.9, radius=0.1)
   # threshold to the terrace: slim titanium portal
@@ -740,7 +747,7 @@ def build_terrace(B):
     B.box(o, (sx * (pw_ / 2 + t_ / 2), py_ - pd_ / 2 - 0.002, ph_ / 2 - 0.2), (0.03, 0.02, ph_ - 1.2), 'black')
     B.box(o, (sx * (pw_ / 2 + t_ / 2), py_ + pd_ / 2 + 0.002, ph_ / 2 - 0.2), (0.03, 0.02, ph_ - 1.2), 'black')
     B.box('metal', (sx * (pw_ / 2 + 0.006), py_, ph_ / 2 - t_ / 2), (0.012, pd_ - 0.04, ph_ - t_), 'titanium')
-    B.area(f'portal_up_{sx}', (sx * (pw_ / 2 + t_ / 2), py_ - pd_ / 2 - 0.25, 0.05), (sx * (pw_ / 2 + t_ / 2), py_ - pd_ / 2, ph_), size=0.4, size_y=0.05, power=60, color=WARM)
+    B.area(f'portal_up_{sx}', (sx * (pw_ / 2 + t_ / 2), py_ - pd_ / 2 - 0.5, 0.06), (sx * (pw_ / 2 + t_ / 2), py_ - pd_ / 2, ph_ * 0.8), size=0.5, size_y=0.16, power=95, color=WARM)
   B.box(o, (0, py_, ph_ - t_ / 2), (pw_ + 2 * t_ - 0.002, pd_ - 0.002, t_), 'basalt', 0.03)
   B.box(o, (0, py_, ph_ - t_ - 0.03), (pw_ + 2 * t_ - 0.12, pd_ - 0.1, 0.06), 'black')
   B.box('metal', (0, py_, ph_ - t_ - 0.006), (pw_, pd_ - 0.04, 0.012), 'titanium')

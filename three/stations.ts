@@ -48,12 +48,13 @@ export const ZONE_STATIONS: Record<Zone, Station> = {
   },
   corridor: {
     id: 'corridor', zone: 'corridor',
-    landscape: pose(b(2.6, 15.6, 1.75), b(-2.2, 29.0, 1.75), 54, -0.1, 0.14),
+    landscape: pose(b(2.6, 15.6, 1.75), b(-2.2, 29.0, 1.75), 54, -0.1, 0.04),
     portrait: pose(b(0.4, 10.6, 1.7), b(-0.2, 26.0, 1.7), 68, 0.0, 0.12),
   },
   terrace: {
     id: 'terrace', zone: 'terrace',
-    landscape: pose(b(0.0, 34.6, 1.6), b(0.0, 46.0, 1.9), 52, 0.0, 0.12),
+    // three-quarter view from under the canopy: soffit overhead, lounge and plinth in the middle ground, portal and sea beyond
+    landscape: pose(b(5.4, 34.9, 1.65), b(-1.6, 43.0, 1.8), 56, -0.1, 0.1),
     portrait: pose(b(0.0, 35.2, 1.6), b(0.0, 46.0, 1.9), 70, 0.0, 0.14),
   },
 }

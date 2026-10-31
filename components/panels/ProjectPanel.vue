@@ -12,6 +12,10 @@ const linkLabel = (url: string) => /youtu\.?be/.test(url) ? 'Watch demo' : 'Live
     <p class="eyebrow">Exhibit {{ String(index + 1).padStart(2, '0') }} <span class="sep">/</span> {{ projectData.title }}</p>
     <h2 id="panel-title" tabindex="-1" class="ptitle">{{ p.title }}</h2>
     <p class="lede">{{ p.description }}</p>
+    <div v-if="p.stack?.length" class="stack">
+      <p class="eyebrow">Built with</p>
+      <ul><li v-for="t in p.stack" :key="t">{{ t }}</li></ul>
+    </div>
     <figure class="shot">
       <img :src="p.imageSrc" :alt="`Screenshot of ${p.title}`" loading="lazy" decoding="async" />
     </figure>
@@ -34,6 +38,9 @@ const linkLabel = (url: string) => /youtu\.?be/.test(url) ? 'Watch demo' : 'Live
 .sep { color: rgba(138, 150, 158, 0.6); margin: 0 6px; }
 .ptitle { font-family: var(--font-display); font-weight: 600; font-size: clamp(2rem, 2.6vw, 2.6rem); line-height: 1.05; letter-spacing: -0.015em; margin-top: 14px; }
 .lede { margin-top: 16px; font-size: 1.0625rem; line-height: 1.65; color: var(--mist); }
+.stack { margin-top: 20px; }
+.stack ul { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
+.stack li { font-family: var(--font-mono); font-size: 0.75rem; color: var(--mist); padding: 4px 10px; border: 1px solid var(--hairline); border-radius: 999px; }
 .shot { margin-top: 24px; border-radius: 12px; overflow: hidden; border: 1px solid var(--panel-border); background: #0b0e12; }
 .shot img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; object-position: top; }
 .links { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 10px; }
