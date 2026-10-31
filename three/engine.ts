@@ -624,8 +624,9 @@ export class AtelierEngine {
     const vfov = THREE.MathUtils.degToRad(fov)
     const aspect = W / H
     const hfov = 2 * Math.atan(Math.tan(vfov / 2) * aspect)
-    const fillW = (this.portrait ? 0.86 : 0.62) * freeW
-    const fillH = (this.portrait ? 0.62 : 0.6) * freeH
+    const small = width < 2.0
+    const fillW = (this.portrait ? 0.86 : small ? 0.36 : 0.62) * freeW
+    const fillH = (this.portrait ? 0.62 : small ? 0.42 : 0.6) * freeH
     const distW = width / (2 * Math.tan(hfov / 2) * fillW)
     const distH = height / (2 * Math.tan(vfov / 2) * fillH)
     const dist = Math.max(distW, distH, 1.6)
@@ -771,7 +772,7 @@ export class AtelierEngine {
         if (scr) {
           // pin sits just above the display it belongs to
           const g = this.screenGeom(scr)
-          c.copy(g.center).addScaledVector(g.up, g.height / 2 + 0.16).addScaledVector(g.normal, 0.05)
+          c.copy(g.center).addScaledVector(g.up, g.height / 2 + 0.32).addScaledVector(g.normal, 0.05)
         } else if (it.kind === 'destination') c.y = Math.min(bb.max.y - 0.6, 3.2)
         else c.y = Math.min(bb.max.y - 0.05, 1.6)
         h.userData[key] = c

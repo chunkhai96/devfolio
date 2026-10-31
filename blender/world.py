@@ -722,7 +722,7 @@ def build_terrace(B):
                     (cx + w1 - ins, cy + d1 - ins, hb - (hb - hf) * (ins / (2 * d1)) + 0.006), (cx - w1 + ins, cy + d1 - ins, hb - (hb - hf) * (ins / (2 * d1)) + 0.006)], 'titanium', 0.002)
   B.bx('fx', cx - w1 + 0.04, cx + w1 - 0.04, cy - d1 - 0.004, cy - d1 - 0.001, hf - 0.06, hf - 0.045, 'emit_cyan')
   B.box(o, (cx, cy, 0.04), (2 * w0 + 0.24, 2 * d0 + 0.24, 0.08), 'basalt', 0.008)
-  B.box('metal', (cx, cy, 0.62), (2 * (w0 - 0.04) + 0.012, 2 * (d0 - 0.025) + 0.012, 0.014), 'titanium', 0.002)
+
   # display set into the sloped top (content drawn at runtime)
   slope = math.atan2(hb - hf, 2 * d1)
   screen(B, 'screen_contact', (cx, cy, (hf + hb) / 2 + 0.012), 2 * w1 - 0.2, 2 * d1 / math.cos(slope) - 0.16, (0, -1, 0),

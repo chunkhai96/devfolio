@@ -125,11 +125,10 @@ function pick(it: Item) {
   .guide { left: 12px; right: 12px; bottom: 12px; width: auto; padding: 12px 14px; }
   .plan { display: none; }
   .blurb { display: none; }
-  .items { display: flex; gap: 8px; overflow-x: auto; border-top: 0; margin-top: 10px; padding-bottom: 2px; scrollbar-width: none;
-    -webkit-mask-image: linear-gradient(90deg, #000 82%, transparent); mask-image: linear-gradient(90deg, #000 82%, transparent); }
-  .items li:last-child { padding-right: 40px; }
-  .items li { flex: 0 0 auto; }
-  .item { border: 1px solid var(--hairline); border-radius: 10px; padding: 8px 12px; min-height: 44px; white-space: nowrap; }
+  /* phones: every item fully visible as a two-column grid, scrolling vertically if a room has many */
+  .items { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; border-top: 0; margin-top: 10px; max-height: 34vh; overflow-y: auto; scrollbar-width: none; }
+  .item { border: 1px solid var(--hairline); border-radius: 10px; padding: 8px 10px; min-height: 44px; font-size: 0.82rem; line-height: 1.25; }
+  .item svg { display: none; }
   .item:hover { padding-left: 12px; }
 }
 </style>
