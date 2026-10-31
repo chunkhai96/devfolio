@@ -5,19 +5,47 @@ This is a personal portfolio website built on top of [Nuxt 3](https://nuxtjs.org
 
 ## Features
 
-* Responsive design
-* Minimalist and modern design
-* Dynamic personal portfolio section that displays my projects, experiences, achievements, and other relevant information
-* Contact form to facilitate direct communication with me
-* Integration with various social media platforms
-* Accessibility features
+* **The Digital Atelier** — an explorable 3D architectural portfolio (see [DESIGN.md](DESIGN.md)): an arrival atrium with a kinetic sculpture, a project gallery, an engineering lab, a career corridor and a contact terrace
+* Point-and-click exploration with routed camera travel, discoverable markers, a room guide with floor plan, and deep links (`/#work/devfolio`, `/#experience`, `/#contact`…)
+* Readable HTML panels for every exhibit; keyboard, Escape/back and reduced-motion support
+* Text view at `/overview` (also the automatic fallback when WebGL 2 is unavailable)
+* Contact form, résumé and social links
 
 ## Technology Stack
 
-* Nuxt 3
-* Vue 3
-* Tailwind CSS
-* TypeScript
+* Nuxt 3, Vue 3, TypeScript, Tailwind CSS
+* three.js + pmndrs `postprocessing` (AgX tone mapping, bloom, MSAA/SMAA)
+* Blender 5 (headless Python) for the architecture, Cycles-baked lightmaps and procedural PBR textures — no paid assets
+
+## The 3D pipeline
+
+All world art is generated from code, so it is reproducible and reviewable.
+
+| Path | Role |
+|---|---|
+| `blender/world.py` | Procedural architecture, furniture, lights and exhibit placement (Blender coords, metres) |
+| `blender/textures.py` | Procedural tileable PBR maps (dark basalt, brushed titanium) from FFT noise |
+| `blender/polyhaven.py` | Normalises CC0 Poly Haven scans (floor, walls, plaster, ceramic, felt) to the palette |
+| `blender/pipeline.py` | Hidden-face culling, lightmap UVs, Cycles bake, glTF export, preview renders |
+| `blender/encode.py` | OIDN denoise + soft-knee encoding of lightmaps (decoded in `three/materials.ts`) |
+| `blender/publish.sh` | WebP lightmaps (desktop + mobile), textures, meshopt-compressed `world.glb` → `public/atelier/` |
+| `three/` | Runtime: engine, materials (lightmap decode, box-projected reflections), kinetic sculpture, sky, camera rig |
+
+Rebuild the world after editing `blender/world.py` (needs Blender 5.x; ~10 min on Apple Silicon):
+
+```bash
+B=/Applications/Blender.app/Contents/MacOS/Blender
+$B -b --python blender/pipeline.py -- bake --samples 256   # or: bake atrium gallery
+$B -b --python blender/encode.py --
+$B -b --python blender/pipeline.py -- export
+blender/publish.sh textures
+```
+
+Quick lighting previews without baking: `$B -b --python blender/pipeline.py -- preview arrival,corridor 64`.
+
+Checks: `yarn check:webkit` (Safari-engine device flows + axe) and `node scripts/review-capture.mjs` (review snapshots), both against a running production build.
+
+Content still comes only from `/data` — the 3D screens, panels and text view all render from the same files.
 
 ## Run the Project Locally
 
@@ -85,6 +113,8 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 * [Nuxt 3](https://nuxtjs.org/)
 * [Tailwind CSS](https://tailwindcss.com/)
-* [Font Awesome](https://fontawesome.com/)
-* [Devicons](https://devicons.github.io/devicon/)
-* [Lottie](https://airbnb.io/lottie/)
+* [three.js](https://threejs.org/) and [postprocessing](https://github.com/pmndrs/postprocessing)
+* [Blender](https://www.blender.org/)
+* [Devicons](https://devicons.github.io/devicon/) (MIT) — technology and profile glyphs
+* Fonts: Space Grotesk, Inter, IBM Plex Mono (SIL OFL) via Fontsource
+* Scanned materials from [Poly Haven](https://polyhaven.com) (CC0): granite_tile (Charlotte Baglioni), plaster_grey_04, grey_plaster_02, white_plaster_02 (Rob Tuytel), caban (colormass / Rico Cilliers) — prepared by `blender/polyhaven.py`

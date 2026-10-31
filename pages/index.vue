@@ -1,401 +1,99 @@
 <script lang="ts" setup>
-import { Vue3Lottie } from 'vue3-lottie'
-import whatidoLottie from '~/assets/lotties/whatido.json'
-import experienceLottie from '~/assets/lotties/experience.json'
-import { faForward } from '@fortawesome/free-solid-svg-icons'
-import * as landingData from '@/data/landing'
-import * as whatidoData from '@/data/whatido'
-import * as projectData from '@/data/project'
-import * as experienceData from '@/data/experience'
-import * as talkData from '@/data/talk'
-import * as achievementData from '@/data/achievement'
-import * as contactData from '@/data/contact'
+import { landing } from '~/utils/atelier'
 
-interface Web3FormResponse {
-  success: boolean,
-  message: string
-}
-
-const config = useRuntimeConfig()
-
-// Achievements Marquee Speed
-const marqueeSpeed = ref<number>(50)
-
-// Contact Me Section
-const contactMeSectionText = {
-  title: 'Contact Me',
-  description: 'I\'d love to connect! Reach out for questions, collaborations, or a chat.'
-}
-const form = ref({
-  access_key: config.public.web3FormAccessKey,
-  subject: 'New Submission from andypangdev.com',
-  name: '',
-  email: '',
-  message: '',
-
+useSeoMeta({
+  title: 'Andy Pang — Machine Learning Engineer',
+  description: 'Andy Pang (Pang Chun Khai) — machine learning engineer, full stack developer and data scientist. Explore projects, capabilities and experience in an interactive 3D atelier.',
 })
-const formError = ref({
-  name: '',
-  email: '',
-  message: '',
+useHead({
+  link: [{ rel: 'alternate', href: '/overview', title: 'Text view' }],
+  noscript: [{ innerHTML: `<p style="position:fixed;bottom:16px;left:16px;z-index:99;color:#d7dfdf">JavaScript is off — <a href="/overview" style="color:#9ad8d6">open the text view of ${landing.title}'s portfolio</a>.</p>` }],
 })
-const result = ref<string>('');
-const status = ref<string>('');
-const submitForm = async () => {
-  if (hasError()) return
-  result.value = "Please wait...";
-  try {
-    const response = await $fetch<Web3FormResponse>('https://api.web3forms.com/submit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: form.value,
-    })
-    if (response.success) {
-      status.value = 'success'
-      result.value = response.message
-    } else {
-      console.error(response); // Log for debugging, can be removed
-      status.value = 'error';
-      result.value = 'Something went wrong!'
-    }
-  } catch (error) {
-    console.error(error); // Log for debugging, can be removed
-    status.value = 'error'
-    result.value = 'Something went wrong!'
-  } finally {
-    // Reset form after submission
-    form.value.name = ''
-    form.value.email = ''
-    form.value.message = ''
+const route = useRoute()
+const hideUi = computed(() => route.query.ui === '0')
 
-    // Clear result and status after 5 seconds
-    setTimeout(() => {
-      result.value = ''
-      status.value = ''
-    }, 5000)
-  }
-}
-const hasError = (): boolean => {
-  if (form.value.name === '') {
-    formError.value.name = 'Name is required'
-  }
-  if (form.value.email === '') {
-    formError.value.email = 'Email is required'
-  }
-  if (form.value.message === '') {
-    formError.value.message = 'Message is required'
-  }
-  return form.value.name === '' || form.value.email === '' || form.value.message === ''
-}
+const st = useAtelier()
+const showHero = computed(() => st.zone.value === 'atrium' && !st.panel.value && !st.exploring.value)
+const showGuide = computed(() => st.webgl.value !== 'none' && !st.panel.value && !showHero.value)
+const loading = computed(() => st.webgl.value === 'ok' && !st.ready.value)
 
+// when the hero (and the focused control inside it) leaves, hand keyboard focus to the room guide
+watch(showHero, (v) => {
+  if (v || !import.meta.client) return
+  setTimeout(() => {
+    const a = document.activeElement
+    if (!a || a === document.body || !a.isConnected) document.querySelector<HTMLElement>('.guide h2')?.focus({ preventScroll: true })
+  }, 480)
+})
 </script>
 <template>
-  <div class="bg-slate-900 text-slate-50">
-    <div id="home"
-      class="flex flex-col items-center h-screen">
-      <div class="absolute w-full h-screen z-10">
-        <div class="relatives w-full h-screen">
-          <img src="/images/background.webp"
-            alt="Background"
-            class="w-full h-full object-cover" />
-          <div class="absolute bg-gradient-to-b from-slate-900/0 to-slate-900/100 h-[50vh] w-full bottom-0"></div>
+  <div class="atelier" :class="{ 'panel-open': !!st.panel.value, 'hide-ui': hideUi }">
+    <nav aria-label="Skip links">
+      <a href="#main-content" class="skip-link">Skip to content</a>
+      <NuxtLink to="/overview" class="skip-link" style="left: 180px">Text view</NuxtLink>
+    </nav>
+    <SiteHeader />
+    <main id="main-content" class="stage-wrap">
+      <div class="poster" :class="{ hide: st.ready.value }" aria-hidden="true" />
+      <ClientOnly><AtelierCanvas /></ClientOnly>
+      <div class="scrim" :class="{ on: showHero }" aria-hidden="true" />
+      <Transition name="fade"><HeroIntro v-if="showHero && st.webgl.value !== 'none'" /></Transition>
+      <Transition name="fade"><RoomGuide v-if="showGuide" /></Transition>
+      <ExhibitPanel />
+      <Transition name="fade">
+        <div v-if="loading" class="loader" role="status" aria-live="polite">
+          <span class="ltxt">Preparing the atelier</span>
+          <span class="lbar"><span :style="{ transform: `scaleX(${st.progress.value})` }" /></span>
+          <span class="lpct">{{ Math.round(st.progress.value * 100) }}%</span>
         </div>
-      </div>
-      <div class="flex justify-end lg:justify-center w-full z-30">
-        <AppNavbar />
-      </div>
-      <div class="flex items-center justify-center grow w-full max-w-[1240px] p-8 mb-36 lg:mb-40 z-20">
-        <div class="flex flex-col-reverse lg:flex-row justify-center items-center grow h-[28rem] gap-12">
-          <div class="flex flex-col gap-8 h-full">
-            <h1 class="grow flex items-end justify-center text-5xl lg:text-7xl lg:justify-start mt-0 lg:mt-24">
-              {{ landingData.title }}
-            </h1>
-            <span class="sm:text-2xl text-slate-400 text-center lg:text-left typing-effect">
-              {{ landingData.description }}
-            </span>
-            <!-- <div class="flex grow items-end justify-center lg:justify-start">
-              <Button label="Get Resume" />
-            </div> -->
-            <div class="flex flex-col grow justify-end lg:items-start gap-8">
-              <div class="flex items-end justify-center lg:justify-start">
-                <NuxtLink :to="landingData.resumeSrc"
-                  target="_blank">
-                  <Button label="Get My Resume" />
-                </NuxtLink>
-              </div>
-              <div class="flex flex-wrap items-end gap-4 justify-center lg:justify-start">
-                <NuxtLink v-for="link in contactData.externalLinks"
-                  :to="link.url"
-                  target="_blank">
-                  <IconButton
-                    :devicon="link.devicon"
-                    :fontawesome="link.fontawesome"
-                    :color="link.color"
-                    :title="link.label" />
-                </NuxtLink>
-              </div>
-            </div>
-          </div>
-          <div class="flex grow justify-end">
-            <div class="size-[16rem] lg:size-[26rem] xl:size-[32rem] flex-shrink-0 mt-12 lg:mt-0">
-              <img class="rounded-full object-cover"
-                :src="landingData.profilePictureSrc"
-                alt="Avatar"/>
-            </div>
-          </div>
-        </div>
-      </div>
+      </Transition>
+      <Transition name="fade">
+        <p v-if="st.toast.value" class="toast" role="status">{{ st.toast.value }}</p>
+      </Transition>
+      <Transition name="fade">
+        <p v-if="st.exploring.value && st.zone.value === 'atrium' && !st.panel.value && st.ready.value" class="hint">
+          Drag to look around · select a doorway, or use the room guide
+        </p>
+      </Transition>
+    </main>
+    <div v-if="st.webgl.value === 'none'" class="fallback">
+      <p class="fb-note">Showing the text edition — the interactive 3D atelier needs WebGL 2.</p>
+      <PortfolioDocument />
     </div>
-    <div class="flex flex-col items-center justify-center w-full gap-36 p-8">
-      <div v-if="whatidoData.show"
-        id="whatido"
-        class="flex flex-col-reverse lg:flex-row h-full w-full max-w-[1240px] items-center">
-        <client-only>
-          <Vue3Lottie
-            width="80%"
-            :animationData="whatidoLottie"
-          />
-        </client-only>
-        <div class="flex flex-col justify-between w-full p-4 gap-8">
-          <h2 class="text-4xl md:text-5xl text-center lg:text-left">
-            {{ whatidoData.title }}
-          </h2>
-          <div class="grid grid-cols-1 md:grid-cols-3 justify-between gap-8">
-            <Tag v-for="role in whatidoData.roles"
-              :text="role" />
-          </div>
-          <div class="flex flex-wrap gap-8 justify-center">
-            <TechStackContainer v-for="item in whatidoData.techStackItems"
-              :icon="item.icon"
-              :text="item.text" />
-          </div>
-          <ul class="text-slate-400 space-y-4">
-            <li v-for="subtitle in whatidoData.keyPoints"
-              class="text-center lg:text-left">
-              {{ subtitle }}
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div v-if="projectData.show"
-        id="project"
-        class="flex flex-col items-center justify-center w-full max-w-[1240px] gap-12">
-        <h2 class="text-4xl md:text-5xl text-center md:text-left">
-          {{ projectData.title }}
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 h-full w-full items-center">
-          <Card v-for="project in projectData.projectItems"
-            class="shadow-lg transition duration-300 hover:shadow-blue-800/50">
-            <template #imgHeader>
-              <img class="w-full h-40 object-cover rounded-t-3xl"
-                :alt="project.title"
-                :src="project.imageSrc" />
-            </template>
-            <template #header>
-              {{ project.title }}
-            </template>
-            <template #content>
-              <span class="text-slate-400 text-sm">{{ project.description }}</span>
-            </template>
-            <template #footer>
-              <div class="flex gap-4 mt-4">
-                <NuxtLink v-if="project.codeLink"
-                  target="_blank"
-                  :to="project.codeLink">
-                  <Button label="Code" :textSizeClass="'text-sm'"></Button>
-                </NuxtLink>
-                <NuxtLink v-if="project.liveLink"
-                  target="_blank"
-                  :to="project.liveLink">
-                  <Button label="Preview" :textSizeClass="'text-sm'"></Button>
-                </NuxtLink>
-              </div>
-            </template>
-          </Card>
-        </div>
-      </div>
-      <div v-if="experienceData.show"
-        id="experience"
-        class="flex flex-col items-center justify-center w-full max-w-[1240px] gap-12">
-        <h2 class="text-4xl md:text-5xl text-center">
-          {{ experienceData.title }}
-        </h2>
-        <div class="flex flex-col md:flex-row gap-12 h-full w-full items-center">
-          <client-only>
-            <Vue3Lottie
-              width="80"
-              :animationData="experienceLottie"
-            />
-          </client-only>
-          <ExperienceTimeline :items="experienceData.timelineItems" />
-        </div>
-      </div>
-      <div v-if="talkData.show"
-        id="talk"
-        class="flex flex-col items-center justify-center w-full max-w-[1240px] gap-12">
-        <h2 class="text-4xl md:text-5xl text-center md:text-left">
-          {{ talkData.title }}
-        </h2>
-        <div class="flex flex-wrap justify-center gap-12 h-full w-full items-center">
-          <Card v-for="talk in talkData.talkItems"
-            class="w-full md:w-1/2 lg:w-1/3 shadow-lg transition duration-300 hover:shadow-blue-800/50">
-            <template #imgHeader>
-              <img class="w-full h-40 object-cover rounded-t-3xl"
-                :alt="talk.title"
-                :src="talk.imageSrc" />
-            </template>
-            <template #header>
-              {{ talk.title }}
-            </template>
-            <template #footer>
-              <div class="flex gap-4 mt-4">
-                <NuxtLink v-if="talk.youtube"
-                  target="_blank"
-                  :to="talk.youtube">
-                  <Button label="YouTube" :textSizeClass="'text-sm'"></Button>
-                </NuxtLink>
-                <NuxtLink v-if="talk.slide"
-                  target="_blank"
-                  :to="talk.slide">
-                  <Button label="Slide" :textSizeClass="'text-sm'"></Button>
-                </NuxtLink>
-              </div>
-            </template>
-          </Card>
-        </div>
-      </div>
-      <div v-if="achievementData.show"
-        id="achievement"
-        class="flex flex-col items-center justify-center w-full max-w-[1240px]">
-        <h2 class="text-4xl md:text-5xl text-center">
-          {{ achievementData.title }}
-        </h2>
-        <NuxtMarquee class="overflow-hidden"
-          :pauseOnHover="true"
-          :speed="marqueeSpeed">
-          <NuxtLink v-for="achievement in achievementData.achievementItems"
-            target="_blank"
-            :to="achievement.link">
-            <Card class="h-[19rem] my-12 mr-12 shadow-lg transition duration-300 hover:scale-105 hover:shadow-blue-800/50 hover:cursor-pointer"
-              style="width: 20rem">
-              <template #imgHeader>
-                <img class="w-full h-40 object-contain rounded-t-3xl bg-slate-200 p-4"
-                  :alt="achievement.title"
-                  :src="achievement.imageSrc" />
-              </template>
-              <template #header>
-                <span class="line-clamp-2">{{ achievement.title }}</span>
-              </template>
-              <template #content>
-                <span class="text-sm text-slate-400">{{ achievement.provider }}</span>
-              </template>
-            </Card>
-          </NuxtLink>
-        </NuxtMarquee>
-        <button
-          class="rounded-full px-4 py-2 shadow bg-slate-800 border border-slate-600 hover:bg-slate-700"
-          @mouseover="marqueeSpeed = 500"
-          @mouseleave="marqueeSpeed = 50">
-          <fa :icon="faForward" />
-          Fast Forward
-        </button>
-      </div>
-      <div v-if="contactData.show"
-        id="contactme"
-        class="flex flex-col-reverse md:flex-row items-center justify-center w-full max-w-[720px] gap-12 mb-24">
-        <div class="flex flex-col item-center md:items-start w-full gap-8">
-          <div class="flex flex-col item-center w-full gap-4">
-            <h2 class="text-4xl md:text-5xl text-center">
-              {{ contactData.title }}
-            </h2>
-            <span class="text-slate-400 text-center">
-              {{ contactData.subtitle }}
-            </span>
-          </div>
-          <div class="flex flex-col-reverse md:flex-row w-full bg-slate-800 border border-slate-600 rounded-3xl items-center justify-center md:justify-start">
-            <div class="flex flex-row flex-wrap md:flex-col gap-4 items-center justify-center p-4">
-              <NuxtLink v-for="link in contactData.externalLinks"
-                :to="link.url"
-                target="_blank">
-                <IconButton
-                  :devicon="link.devicon"
-                  :fontawesome="link.fontawesome"
-                  :color="link.color"
-                  :title="link.label" />
-              </NuxtLink>
-            </div>
-            <div class="flex flex-col gap-4 w-full bg-slate-900 border border-slate-600 rounded-3xl p-8">
-              <div>
-                <input
-                  class="w-full py-2 px-4 bg-slate-800 border border-slate-600 rounded-full shadow focus:outline-none focus:border-blue-800 hover:shadow-blue-800/50"
-                  type="text"
-                  name="name"
-                  placeholder="Name"
-                  v-model="form.name" />
-                <span class="text-red-500 px-4">
-                  {{ formError.name }}
-                </span>
-              </div>
-              <div>
-                <input
-                  class="w-full py-2 px-4 bg-slate-800 border border-slate-600 rounded-full shadow focus:outline-none focus:border-blue-800 hover:shadow-blue-800/50"
-                  type="text"
-                  name="email"
-                  placeholder="Email"
-                  v-model="form.email" />
-                <span class="text-red-500 px-4">
-                  {{ formError.email }}
-                </span>
-              </div>
-              <div>
-                <textarea
-                  class="w-full py-2 px-4 bg-slate-800 border border-slate-600 rounded-3xl resize-none shadow focus:outline-none focus:border-blue-800 hover:shadow-blue-800/50"
-                  rows="6"  
-                  name="message"
-                  placeholder="Enter your message..."
-                  v-model="form.message" />
-                <span class="text-red-500 px-4">
-                  {{ formError.message }}
-                </span>
-              </div>
-              <span class="text-center">
-                {{ result }}
-              </span>
-              <Button label="Send Message"
-                class="hover:shadow-blue-800/50 shadow"
-                :textSizeClass="'text-sm'"
-                :backgroundColor="'bg-blue-900'"
-                :hoverColor="'hover:bg-blue-700'"
-                :borderColor="'border-blue-950'"
-                @click="submitForm">
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>  
+  </div>
 </template>
-<style lang="css" scoped>
-.typing-effect {
-  overflow: hidden; /* Ensure the text is not visible until the typewriter effect*/
-  border-right: 0.15em solid #94a3b8;
-  white-space: nowrap; /* Keeps the text on a single line */
-  animation: typing 5s steps(30) infinite, blink 1s infinite;
+<style scoped>
+.atelier { position: relative; }
+.hide-ui :deep(.site-header), .hide-ui :deep(.hero), .hide-ui :deep(.guide), .hide-ui .scrim, .hide-ui :deep(.markers) { display: none !important; }
+.stage-wrap { position: fixed; inset: 0; overflow: hidden; background: radial-gradient(120% 90% at 60% 40%, #1a2128 0%, #0d1014 60%, #090b0e 100%); }
+.fallback ~ .stage-wrap, .atelier:has(.fallback) .stage-wrap { position: relative; height: 0; }
+.poster { position: absolute; inset: 0; background: url('/atelier/poster.webp') center / cover no-repeat; opacity: 0.85; transition: opacity 1200ms var(--ease-out); }
+.poster.hide { opacity: 0; }
+@media (max-aspect-ratio: 1/1) { .poster { background-image: url('/atelier/poster-portrait.webp'); } }
+.scrim {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 600ms var(--ease-out);
+  background: linear-gradient(90deg, rgba(10, 13, 17, 0.72) 0%, rgba(10, 13, 17, 0.45) 30%, rgba(10, 13, 17, 0) 55%);
 }
-
-/* The typing animation */
-@keyframes typing {
-  0% { width: 0 }
-  50% { width: 100% }
+.scrim.on { opacity: 1; }
+.loader {
+  position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 25;
+  display: flex; align-items: center; gap: 14px; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; color: var(--mist);
+  text-transform: uppercase;
 }
-
-@keyframes blink {
-  0%, 45% {
-    border-color: transparent;
-  }
-  50%, 100% {
-    border-color: #94a3b8;
-  }
+.lbar { width: 120px; height: 1px; background: rgba(215, 223, 223, 0.18); overflow: hidden; }
+.lbar span { display: block; height: 100%; background: var(--ice-cyan); transform-origin: left; transition: transform 300ms var(--ease-out); }
+.lpct { min-width: 3ch; color: var(--titanium); }
+.toast {
+  position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 26; max-width: min(560px, calc(100% - 32px));
+  padding: 12px 16px; border-radius: 12px; background: var(--panel); border: 1px solid var(--panel-border); color: var(--mist); font-size: 0.9rem; line-height: 1.5;
+}
+.hint { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 14; font-size: 0.8125rem; color: var(--mist); opacity: 0.8; white-space: nowrap; }
+.fade-enter-active, .fade-leave-active { transition: opacity 400ms var(--ease-out); }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+.fb-note { max-width: 1080px; margin: 88px auto 0; padding: 0 24px; color: var(--titanium); font-size: 0.875rem; }
+.fallback .fb-note + * :deep(.doc) { padding-top: 32px; }
+@media (max-width: 760px), (max-aspect-ratio: 4/5) {
+  .scrim { background: linear-gradient(0deg, rgba(10, 13, 17, 0.88) 0%, rgba(10, 13, 17, 0.6) 38%, rgba(10, 13, 17, 0) 62%); }
+  .hint { display: none; }
 }
 </style>

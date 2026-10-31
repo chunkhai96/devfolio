@@ -1,0 +1,41 @@
+- navigation "Skip links":
+  - link "Skip to content":
+    - /url: "#main-content"
+  - link "Text view":
+    - /url: /overview
+- banner:
+  - link "Andy Pang , return to the atrium":
+    - /url: /
+  - button "Menu"
+- main:
+  - img "Interactive 3D atelier. All content is also available through the room guide and the text view."
+  - group "Points of interest in view":
+    - button "Go to Career Corridor": Career Corridor
+  - region "Andy Pang":
+    - paragraph: Lead Machine Learning Engineer , MRC Asia
+    - heading "Andy Pang" [level=1]
+    - paragraph: I solve problems through innovation using code.
+    - paragraph: AI/ML Engineer , Full Stack Developer , Data Scientist
+    - button "Explore the atelier"
+    - button "View projects"
+    - button "Get in touch"
+    - list:
+      - listitem:
+        - link "GitHub":
+          - /url: https://github.com/chunkhai96
+      - listitem:
+        - link "LinkedIn":
+          - /url: https://www.linkedin.com/in/chunkhai96/
+      - listitem:
+        - link "StackOverflow":
+          - /url: https://stackoverflow.com/users/6851848/andy-pang
+      - listitem:
+        - link "Email":
+          - /url: mailto:andypang96@gmail.com
+      - listitem:
+        - link "Google Cloud Skills Boost":
+          - /url: https://www.cloudskillsboost.google/public_profiles/6afcecb6-2169-472e-b3fc-68c97b626f0a
+      - listitem:
+        - link "Microsoft Learn":
+          - /url: https://learn.microsoft.com/en-us/users/andypang/
+  - status: Preparing the atelier 100%

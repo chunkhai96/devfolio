@@ -1,0 +1,16 @@
+- dialog "DevFolio":
+  - button "Close"
+  - region "DevFolio":
+    - article:
+      - paragraph: Exhibit 01 / Personal Projects
+      - heading "DevFolio" [level=2]
+      - paragraph: A dynamic personal portfolio website designed to introduce myself and showcase my creative and professional projects.
+      - figure:
+        - img "Screenshot of DevFolio"
+      - link "Live preview":
+        - /url: https://andypangdev.com
+      - link "Source code":
+        - /url: https://github.com/chunkhai96/devfolio
+      - navigation "Other exhibits":
+        - button "Previous Data Dashboard"
+        - button "Next I Have Chosen You"

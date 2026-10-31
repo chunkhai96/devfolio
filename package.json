@@ -7,23 +7,29 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "check:webkit": "node scripts/webkit-check.mjs"
   },
   "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/space-grotesk": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
     "@nuxtjs/seo": "^2.0.0-rc.18",
     "@vercel/analytics": "^1.3.2",
-    "devicon": "^2.16.0",
     "nuxt": "^3.12.4",
-    "nuxt-marquee": "^1.0.4",
-    "vue": "latest",
-    "vue3-lottie": "^3.3.0"
+    "postprocessing": "6.39.5",
+    "three": "0.186.0",
+    "vue": "latest"
   },
   "devDependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
-    "@vesp/nuxt-fontawesome": "^1.0.4",
+    "@types/three": "^0.186.0",
     "autoprefixer": "^10.4.19",
+    "axe-core": "^4.14.0",
+    "html-to-image": "1.11.11",
     "nuxt-site-config": "^2.2.15",
     "nuxt-site-config-kit": "^2.2.15",
+    "playwright": "1.56.1",
     "postcss": "^8.4.39",
     "tailwindcss": "^3.4.6"
   }
