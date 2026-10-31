@@ -9,6 +9,7 @@ import { MaterialLibrary, patchMaterial, SPECS } from './materials'
 import { Sculpture } from './sculpture'
 import { createSky } from './sky'
 import { createShaft } from './shaft'
+import { loadProps } from './props'
 import { ShiftCamera, CameraRig } from './camera'
 import {
   type AtelierContent, drawProject, drawIndex, drawContact, drawCapability, drawStack, drawTalk, drawRole, drawCert, toTexture, screenMaterial,
@@ -284,6 +285,12 @@ export class AtelierEngine {
     this.sculpture.setStill(this.o.reducedMotion)
     this.scene.add(this.sculpture.group)
 
+    // scanned furniture (CC0, Poly Haven) — lit by the zone probes once they exist
+    const props = await loadProps(gltf, base, this.scene, z => this.envs.get(z)).catch((err) => {
+      console.warn('[atelier] props unavailable', err)
+      return null
+    })
+
     // screens get their content
     await document.fonts?.ready
     await this.buildScreens()
@@ -291,6 +298,7 @@ export class AtelierEngine {
     // reflection probes: two passes so metals see metals
     this.renderer.setSize(canvas.clientWidth || 1, canvas.clientHeight || 1, false)
     this.renderProbes(lowQuality ? 128 : 256)
+    props?.applyEnv()
 
     this.setupComposer()
     this.bindEvents()

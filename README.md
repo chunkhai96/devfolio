@@ -117,4 +117,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 * [Blender](https://www.blender.org/)
 * [Devicons](https://devicons.github.io/devicon/) (MIT) — technology and profile glyphs
 * Fonts: Space Grotesk, Inter, IBM Plex Mono (SIL OFL) via Fontsource
-* Scanned materials from [Poly Haven](https://polyhaven.com) (CC0): granite_tile (Charlotte Baglioni), plaster_grey_04, grey_plaster_02, white_plaster_02 (Rob Tuytel), caban (colormass / Rico Cilliers) — prepared by `blender/polyhaven.py`
+* Scanned materials from [Poly Haven](https://polyhaven.com) (CC0): granite_tile (Charlotte Baglioni), plaster_grey_04, grey_plaster_02, white_plaster_02 (Rob Tuytel), caban (colormass / Rico Cilliers) — prepared by `blender/polyhaven.py`; scanned furniture (CC0): mid_century_lounge_chair, modern_coffee_table_01, metal_stool_01 — placed by `three/props.ts`

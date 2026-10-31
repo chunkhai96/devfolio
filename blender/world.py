@@ -596,12 +596,10 @@ def build_lab(B):
   for lx in (tx0 + 0.5, (tx0 + tx1) / 2, tx1 - 0.5):
     B.box('metal', (lx, 0, 0.44), (0.05, 1.2, 0.86), 'titanium', 0.004)
   B.box('metal', ((tx0 + tx1) / 2, 0, 0.82), (tx1 - tx0 - 0.8, 0.06, 0.04), 'titanium_dark', 0.004)
-  # stools
+  # bar stools are scanned CC0 models placed at runtime (three/props.ts); proxies give them baked contact shadows
   for sx in (-20.6, -17.8, -15.0):
     for sy in (-1.25, 1.25):
-      B.lathe(o, [(0, 0.68), (0.2, 0.68), (0.2, 0.72), (0.19, 0.74), (0, 0.74)], 'basalt', segs=40, center=(sx, sy, 0))
-      B.lathe('metal', [(0.025, 0.0), (0.025, 0.68)], 'titanium', segs=12, center=(sx, sy, 0))
-      B.lathe('metal', [(0.0, 0.0), (0.17, 0.0), (0.17, 0.012), (0.0, 0.012)], 'titanium_dark', segs=32, center=(sx, sy, 0))
+      B.lathe('proxy', [(0, 0.0), (0.17, 0.0), (0.17, 0.02), (0.03, 0.05), (0.03, 0.74), (0.18, 0.74), (0.18, 0.80), (0, 0.80)], 'titanium', segs=16, center=(sx, sy, 0))
   # linear pendants over the table
   for py in (-0.35, 0.35):
     B.box('metal', ((tx0 + tx1) / 2, py, 3.0), (tx1 - tx0 - 0.6, 0.08, 0.06), 'titanium_dark', 0.004)
@@ -729,10 +727,11 @@ def build_terrace(B):
          bezel=0.012, depth=0.008, lean=math.pi / 2 - slope)
   B.spot('contact_sp', (cx - 1.5, cy - 2.6, 4.5), (cx, cy, 0.9), power=260, angle=26, blend=0.8, radius=0.06)
   hit(B, 'hit_contact', (cx, cy, 0.9), (1.8, 1.2, 1.9))
-  # a single bench facing the horizon, with a warm light washing the floor beneath it
-  bench(B, o, -5.8, 41.6, 3.6)
-  B.bx('fx', -7.2, -4.4, 41.45, 41.75, 0.286, 0.288, 'emit_warm')
-  B.area('bench_wash', (-5.8, 41.6, 0.28), (-5.8, 41.6, 0.0), size=2.8, size_y=0.25, power=40, color=WARM)
+  # lounge facing the horizon: scanned CC0 lounge chairs and table placed at runtime; proxies cast their baked shadows
+  for (lx, ly) in ((-7.1, 40.5), (-4.5, 40.5)):
+    B.box('proxy', (lx, ly, 0.28), (0.9, 0.95, 0.5), 'titanium', 0.05)
+  B.box('proxy', (-5.8, 41.7, 0.36), (1.2, 0.6, 0.05), 'titanium', 0.01)
+  B.area('lounge_lamp', (-5.8, 39.6, 4.55), (-5.8, 41.0, 0.0), size=1.6, size_y=1.6, power=120, color=WARM)
   # horizon portal: freestanding basalt frame on the building's axis, lined in titanium, washed from below
   pw_, ph_, pd_, t_ = 4.4, 5.2, 0.55, 0.55
   py_ = 42.75
