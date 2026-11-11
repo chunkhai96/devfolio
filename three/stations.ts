@@ -63,7 +63,7 @@ export const ZONE_STATIONS: Record<Zone, Station> = {
 export const FOCUS_POSES: Record<string, { landscape: Pose, portrait: Pose }> = {
   contact: {
     landscape: pose(b(-2.4, 37.0, 1.7), b(0.2, 42.0, 1.4), 46, 0.0, 0.06),
-    portrait: pose(b(-0.8, 36.8, 1.7), b(0.1, 42.0, 1.5), 62, 0.0, 0.04),
+    portrait: pose(b(-1.5, 35.2, 2.9), b(0.2, 41.0, 0.85), 60, 0.0, -0.04),
   },
 }
 

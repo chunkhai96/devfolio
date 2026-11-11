@@ -64,7 +64,12 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
 }
 .close:hover { color: #fff; border-color: var(--hairline); }
 kbd { font-family: var(--font-mono); font-size: 0.66rem; padding: 2px 6px; border-radius: 5px; border: 1px solid var(--hairline); color: var(--titanium); }
-.scroll { overflow-y: auto; padding: 4px 40px 40px; flex: 1; overscroll-behavior: contain; }
+.scroll {
+  overflow-y: auto; padding: 4px 40px 40px; flex: 1; overscroll-behavior: contain;
+  /* soft fade at the bottom edge signals more content below */
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 36px), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 36px), transparent);
+}
 .scroll :deep(#panel-title):focus { outline: none; }
 .scroll:focus-visible { outline: 2px solid var(--ice-cyan); outline-offset: -2px; border-radius: 0 0 16px 16px; }
 .panel-enter-active, .panel-leave-active { transition: opacity 320ms var(--ease-out), transform 380ms var(--ease-out); }

@@ -75,7 +75,7 @@ const ZONE_FILL: Record<Zone, [number, number, number]> = {
   atrium: [0.035, 0.04, 0.05], gallery: [0.05, 0.055, 0.065], lab: [0.2, 0.205, 0.22],
   corridor: [0.07, 0.075, 0.09], terrace: [0.14, 0.15, 0.2],
 }
-const ZONE_EMIT: Record<Zone, number> = { atrium: 5.0, gallery: 1.6, lab: 3.2, corridor: 2.2, terrace: 3.0 }
+const ZONE_EMIT: Record<Zone, number> = { atrium: 5.0, gallery: 0.95, lab: 3.2, corridor: 2.2, terrace: 3.0 }
 
 export class AtelierEngine {
   private renderer!: THREE.WebGLRenderer
@@ -447,7 +447,7 @@ export class AtelierEngine {
 
   private setupComposer() {
     const low = this.o.lowQuality
-    this.composer = new EffectComposer(this.renderer, { frameBufferType: THREE.HalfFloatType, multisampling: low ? 0 : 4 })
+    this.composer = new EffectComposer(this.renderer, { frameBufferType: THREE.HalfFloatType, multisampling: low ? 2 : 4 })
     this.composer.addPass(new RenderPass(this.scene, this.camera))
     const bloom = new BloomEffect({ mipmapBlur: true, luminanceThreshold: 1.15, luminanceSmoothing: 0.2, intensity: low ? 0.45 : 0.6, radius: 0.72, levels: low ? 5 : 7 })
     this.vignette = new VignetteEffect({ offset: 0.32, darkness: 0.42 })
