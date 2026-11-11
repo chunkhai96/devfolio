@@ -7,6 +7,7 @@ const st = useAtelier()
 const menuOpen = ref(false)
 const menuBtn = ref<HTMLButtonElement>()
 const items: { zone: Zone, label: string }[] = [
+  { zone: 'atrium', label: 'Atrium' },
   { zone: 'gallery', label: 'Work' },
   { zone: 'lab', label: 'Capabilities' },
   { zone: 'corridor', label: 'Experience' },
@@ -56,7 +57,6 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
     </div>
     <Transition name="sheet">
       <div v-if="menuOpen" id="site-menu" class="menu-sheet" role="dialog" aria-label="Site menu">
-        <button type="button" class="menu-item" @click="go('atrium')"><span class="idx">01</span>Atrium</button>
         <button v-for="it in items" :key="it.zone" type="button" class="menu-item" @click="go(it.zone)">
           <span class="idx">{{ ZONE_META[it.zone].index }}</span>{{ it.label }}
           <span class="room">{{ ZONE_META[it.zone].name }}</span>

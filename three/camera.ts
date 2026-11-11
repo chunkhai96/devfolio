@@ -113,7 +113,8 @@ export class CameraRig {
         const dir = ahead.sub(this.pose.pos)
         if (dir.lengthSq() > 0.25) {
           const lookAhead = this.pose.pos.clone().add(dir.normalize().multiplyScalar(8))
-          const w = Math.min(1, Math.sin(Math.PI * e) * 1.7)   // full weight through the middle of the route
+          // full weight mid-route, handing back to the final aim by 80 % so arrival is one movement, not a late yaw
+          const w = e < 0.8 ? Math.min(1, Math.sin(Math.PI * e / 0.8) * 1.7) : 0
           tgt.lerp(lookAhead, w)
         }
       }

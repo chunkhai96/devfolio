@@ -456,7 +456,7 @@ def build_atrium(B):
   for g in (-6.0, -3.0, 3.0, 6.0):
     for (u0, u1) in ((-e0, -oc - 0.4), (oc + 0.4, e0)) if abs(g) < oc else ((-e0, e0),):
       B.bx(o, g - 0.18, g + 0.18, u0, u1, 9.5, 10.0, 'plaster', 0.008)
-      B.bx(o, u0, u1, g - 0.18, g + 0.18, 9.5, 10.0, 'plaster', 0.008)
+      B.bx(o, u0, u1, g - 0.18, g + 0.18, 9.503, 10.0, 'plaster', 0.008)   # 3 mm up: crossings never share a plane
   # oculus: ceramic-lined light well 10 -> 12, with a trough lip hiding uplights
   w = 0.05
   B.bx(o, -oc, oc, oc - w, oc, 10.0, 12.0, 'ceramic')
@@ -666,7 +666,7 @@ def build_gallery(B):
   for side in (1, -1):
     B.area(f'gal_up_{side}', (21.8, side * 5.6, H_WING - 1.2), (21.8, side * 6.0, H_WING + 0.4), size=22.0, size_y=0.1, power=260, color=WARM_SOFT)
   # luminous ceiling slot light
-  B.area('gal_slot', (21.8, 0, H_WING + 0.7), (21.8, 0, 0), size=21.0, size_y=1.3, power=600, color=NEUTRAL)
+  B.area('gal_slot', (21.8, 0, H_WING + 0.7), (21.8, 0, 0), size=21.0, size_y=1.3, power=380, color=NEUTRAL)
 
 
 def build_lab(B):
@@ -728,11 +728,12 @@ def build_lab(B):
       B.lathe('proxy', [(0, 0.0), (0.17, 0.0), (0.17, 0.02), (0.03, 0.05), (0.03, 0.74), (0.18, 0.74), (0.18, 0.80), (0, 0.80)], 'titanium', segs=16, center=(sx, sy, 0))
   # linear pendants over the table
   for py in (-0.35, 0.35):
-    B.box('metal', ((tx0 + tx1) / 2, py, 3.0), (tx1 - tx0 - 0.6, 0.08, 0.06), 'titanium_dark', 0.004)
-    B.bx('fx', tx0 + 0.32, tx1 - 0.32, py - 0.03, py + 0.03, 2.968, 2.969, 'emit_warm')
-    for lx in (tx0 + 0.8, tx1 - 0.8):
+    pa, pb = tx0 + 1.5, tx1 - 0.3
+    B.box('metal', ((pa + pb) / 2, py, 3.0), (pb - pa, 0.08, 0.06), 'titanium_dark', 0.004)
+    B.bx('fx', pa + 0.02, pb - 0.02, py - 0.03, py + 0.03, 2.968, 2.969, 'emit_warm')
+    for lx in (pa + 0.5, pb - 0.5):
       B.lathe('metal', [(0.004, 3.03), (0.004, H_WING)], 'titanium', segs=6, center=(lx, py, 0))
-    B.area(f'pend_{py}', ((tx0 + tx1) / 2, py, 2.95), ((tx0 + tx1) / 2, py, 0), size=tx1 - tx0 - 0.8, size_y=0.06, power=290)
+    B.area(f'pend_{py}', ((pa + pb) / 2, py, 2.95), ((pa + pb) / 2, py, 0), size=pb - pa - 0.2, size_y=0.06, power=270)
   for side in (1, -1):
     B.area(f'lab_up_{side}', ((x0 + x1) / 2, side * 6.6, H_WING - 1.2), ((x0 + x1) / 2, side * 7.0, H_WING + 0.4), size=15.0, size_y=0.1, power=200, color=WARM_SOFT)
   for k in range(int((x1 - x0 - 1.2) / 0.36)):
@@ -767,10 +768,11 @@ def build_corridor(B):
   for cy, i in niches:
     # warm niche cut through the cladding; shallow enough that its returns never hide the display
     B.bx(o, x0 - nd, x0 - nd + 0.05, cy - nh, cy + nh, 0.9, 3.5, 'ceramic')
-    B.bx(o, x0 - nd, x0 + 0.06, cy - nh, cy + nh, 0.86, 0.9, 'ceramic', 0.004)
-    B.bx(o, x0 - nd, x0, cy - nh - 0.02, cy - nh, 0.86, 3.5, 'ceramic')
-    B.bx(o, x0 - nd, x0, cy + nh, cy + nh + 0.02, 0.86, 3.5, 'ceramic')
-    B.bx('metal', x0 - nd, x0, cy - nh - 0.02, cy + nh + 0.02, 3.5, 3.54, 'titanium_dark')   # dark reveal housing the downlight
+    # sill, returns and soffit all sit inside the opening (never sharing a plane with the wall core or cladding)
+    B.bx(o, x0 - nd, x0 + 0.075, cy - nh, cy + nh, 0.9, 0.94, 'ceramic', 0.004)
+    B.bx(o, x0 - nd, x0, cy - nh, cy - nh + 0.025, 0.94, 3.46, 'ceramic')
+    B.bx(o, x0 - nd, x0, cy + nh - 0.025, cy + nh, 0.94, 3.46, 'ceramic')
+    B.bx('metal', x0 - nd, x0, cy - nh, cy + nh, 3.46, 3.5, 'titanium_dark')   # dark reveal housing the downlight
     screen(B, f'screen_role_{i}', (x0 - nd + 0.1, cy, 2.2), 2.6, 1.3, (1, 0, 0), bezel=0.022, depth=0.03, standoff=0.02)
     hit(B, f'hit_role_{i}', (x0 - 0.15, cy, 2.2), (1.0, 2 * nh, 2.6))
     B.area(f'niche_{i}', (x0 - nd / 2, cy, 3.45), (x0 - nd + 0.1, cy, 0.9), size=0.4, size_y=2 * nh - 0.3, power=160 + 40 * i, color=WARM)
@@ -818,14 +820,11 @@ def build_terrace(B):
   for dx in (-9, -6, -3, 3, 6, 9):
     B.lathe('fx', [(0.0, 4.598), (0.06, 4.598)], 'emit_warm', segs=24, center=(dx, y0 + 2.6, 0), cap=False)
     B.spot(f'can_{dx}', (dx, y0 + 2.6, 4.55), (dx, y0 + 2.9, 0), power=420, angle=50, blend=0.85, radius=0.05)
-  # canopy hangers: paired titanium tie-rods from the façade to the canopy edge, with clevis plates
-  for dx in (-7.5, -2.5, 2.5, 7.5):
-    p0, p1 = Vector((dx, y0 + 0.02, 7.7)), Vector((dx, y0 + 4.9, 4.92))
-    d = p1 - p0
-    R = d.to_track_quat('Z', 'Y').to_matrix().to_4x4()
-    B.box('metal', None, (0.028, 0.028, d.length), 'titanium', 0.0, m=Matrix.Translation((p0 + p1) / 2) @ R)
-    B.box('metal', (dx, y0 + 0.03, 7.7), (0.12, 0.06, 0.18), 'titanium_dark', 0.004)
-    B.box('metal', (dx, y0 + 4.9, 4.95), (0.1, 0.16, 0.06), 'titanium_dark', 0.004)
+  # canopy support: slender titanium columns on basalt shoes at the front edge, clear of the doorway sightline
+  for dx in (-9.5, -4.6, 4.6, 9.5):
+    B.lathe('metal', [(0.0, 0.06), (0.055, 0.06), (0.055, 4.6), (0.0, 4.6)], 'titanium', segs=24, center=(dx, y0 + 4.85, 0))
+    B.box('metal', (dx, y0 + 4.85, 4.585), (0.2, 0.2, 0.03), 'titanium_dark', 0.004)
+    B.box(o, (dx, y0 + 4.85, 0.03), (0.26, 0.26, 0.06), 'basalt', 0.008)
   # concealed cove along the façade washing the canopy soffit
   B.area('canopy_cove', (0, y0 + 0.3, 4.3), (0, y0 + 1.6, 6.5), size=x1 - x0 - 1.0, size_y=0.08, power=900, color=WARM_SOFT)
   # side parapets: stone upstand + frameless glass + titanium cap

@@ -38,7 +38,7 @@ watch(showHero, (v) => {
       <ClientOnly><AtelierCanvas /></ClientOnly>
       <div class="scrim" :class="{ on: showHero }" aria-hidden="true" />
       <Transition name="fade"><HeroIntro v-if="showHero && st.webgl.value !== 'none'" /></Transition>
-      <Transition name="fade"><RoomGuide v-if="showGuide" /></Transition>
+      <Transition name="guide"><RoomGuide v-if="showGuide" /></Transition>
       <ExhibitPanel />
       <Transition name="fade">
         <div v-if="loading" class="loader" role="status" aria-live="polite">
@@ -92,6 +92,10 @@ watch(showHero, (v) => {
   padding: 7px 14px; border-radius: 999px; background: rgba(12, 16, 21, 0.72); border: 1px solid var(--hairline); backdrop-filter: blur(6px);
 }
 .fade-enter-active, .fade-leave-active { transition: opacity 400ms var(--ease-out); }
+/* the guide waits for an exhibit panel to finish leaving, and gets out of the way fast when one opens */
+.guide-enter-active { transition: opacity 360ms var(--ease-out) 300ms; }
+.guide-leave-active { transition: opacity 140ms var(--ease-out); }
+.guide-enter-from, .guide-leave-to { opacity: 0; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
 .fb-note { max-width: 1080px; margin: 88px auto 0; padding: 0 24px; color: var(--titanium); font-size: 0.875rem; }
 .fallback .fb-note + * :deep(.doc) { padding-top: 32px; }
