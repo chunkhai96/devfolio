@@ -124,7 +124,7 @@ function pick(it: Item) {
 .back:hover { color: #fff; }
 .collapsed { width: auto; padding-bottom: 16px; }
 @media (max-height: 760px) { .plan { display: none; } }
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .guide { left: 12px; right: 12px; bottom: 12px; width: auto; padding: 12px 14px; }
   .plan { display: none; }
   .blurb { display: none; }
@@ -135,5 +135,5 @@ function pick(it: Item) {
   .meta { min-width: 0; font-size: 0.64rem; }
   .item svg { display: none; }
 }
-@media (max-width: 760px) and (hover: hover) { .item:hover { padding-left: 12px; } }
+@media (max-width: 900px) and (hover: hover) { .item:hover { padding-left: 12px; } }
 </style>

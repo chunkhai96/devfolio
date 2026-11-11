@@ -87,7 +87,10 @@ watch(showHero, (v) => {
   position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 26; max-width: min(560px, calc(100% - 32px));
   padding: 12px 16px; border-radius: 12px; background: var(--panel); border: 1px solid var(--panel-border); color: var(--mist); font-size: 0.9rem; line-height: 1.5;
 }
-.hint { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 14; font-size: 0.8125rem; color: var(--mist); opacity: 0.8; white-space: nowrap; }
+.hint {
+  position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 14; font-size: 0.8125rem; color: var(--mist); white-space: nowrap;
+  padding: 7px 14px; border-radius: 999px; background: rgba(12, 16, 21, 0.72); border: 1px solid var(--hairline); backdrop-filter: blur(6px);
+}
 .fade-enter-active, .fade-leave-active { transition: opacity 400ms var(--ease-out); }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
 .fb-note { max-width: 1080px; margin: 88px auto 0; padding: 0 24px; color: var(--titanium); font-size: 0.875rem; }

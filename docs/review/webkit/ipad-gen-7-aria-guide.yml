@@ -15,8 +15,6 @@
     - paragraph: 02 / 05
     - heading "Project Gallery" [level=2]
     - button "Hide room guide" [expanded]
-    - group "Floor plan"
-    - paragraph: 6 personal projects — web platforms, a mobile app, and data & AI tools.
     - list:
       - listitem:
         - button "01 DevFolio"

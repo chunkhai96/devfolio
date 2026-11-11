@@ -14,7 +14,7 @@ function insets() {
   const w = window.innerWidth
   const h = window.innerHeight
   if (w > 900) return { right: Math.min(560, w * 0.42) + 16, bottom: 0, left: 324, guideBottom: 0 }
-  return { right: 0, bottom: h * 0.62, left: 0, guideBottom: w <= 760 ? 190 : 0 }
+  return { right: 0, bottom: h * 0.62, left: 0, guideBottom: w <= 760 ? 190 : 230 }
 }
 
 function onActivate(it: Interactable) {

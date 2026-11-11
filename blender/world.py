@@ -369,7 +369,7 @@ def build_atrium(B):
   B.bx(o, -oc + w, oc - w, -oc + w, -t0, 9.78, 9.82, 'plaster')
   B.bx(o, t0, oc - w, -t0, t0, 9.78, 9.82, 'plaster')
   B.bx(o, -oc + w, -t0, -t0, t0, 9.78, 9.82, 'plaster')
-  for (x0_, x1_, y0_, y1_) in ((-t0, t0, t0, t0 + 0.02), (-t0, t0, -t0 - 0.02, -t0),
+  for (x0_, x1_, y0_, y1_) in ((-t0 - 0.02, t0 + 0.02, t0, t0 + 0.02), (-t0 - 0.02, t0 + 0.02, -t0 - 0.02, -t0),   # closes the corners
                                (t0, t0 + 0.02, -t0, t0), (-t0 - 0.02, -t0, -t0, t0)):
     B.bx('metal', x0_, x1_, y0_, y1_, 9.78, 10.12, 'titanium', 0.003)
   B.quad('fx', [(-oc, -oc, 12.0), (-oc, oc, 12.0), (oc, oc, 12.0), (oc, -oc, 12.0)], 'sky')
@@ -487,7 +487,7 @@ def build_gallery(B):
       B.bx(o, cx - bay_w / 2, cx + bay_w / 2, ya, yb, 0.0, 0.14, 'ceramic', 0.006)
       B.bx(o, cx - bay_w / 2, cx + bay_w / 2, ya, yb, bay_h - 0.25, bay_h, 'plaster')
       B.bx('fx', cx - bay_w / 2 + 0.1, cx + bay_w / 2 - 0.1, ya + 0.05, yb - 0.05, bay_h - 0.252, bay_h - 0.25, 'emit_warm')
-      B.area(f'bay_{cx}_{side}', (cx, (ya + yb) / 2, bay_h - 0.3), (cx, back, 1.0), size=4.6, size_y=0.12, power=300, color=WARM)
+      B.area(f'bay_{cx}_{side}', (cx, (ya + yb) / 2, bay_h - 0.3), (cx, back, 1.0), size=4.6, size_y=0.12, power=190, color=WARM)
       # portal frame trims
       B.bx('metal', cx - bay_w / 2 - 0.012, cx - bay_w / 2, ya - 0.002, yb, 0, bay_h, 'titanium')
       B.bx('metal', cx + bay_w / 2, cx + bay_w / 2 + 0.012, ya - 0.002, yb, 0, bay_h, 'titanium')
@@ -506,8 +506,13 @@ def build_gallery(B):
         B.box(o, (cx, cy, 0.07), (tw + 0.3, 0.62, 0.14), 'ceramic', 0.008)
         B.box(o, (cx, cy, 0.035), (tw + 0.18, 0.5, 0.07), 'black')
         for dx in (-tw / 2, tw / 2):
-          B.box('metal', (cx + dx, cy, 0.14 + th / 2), (0.045, 0.09, th), 'titanium', 0.004)
-        B.box('metal', (cx, cy, 0.14 + th), (tw + 0.045, 0.09, 0.045), 'titanium', 0.004)
+          for gx in (-0.016, 0.016):   # each post: two bars either side of a shadow gap
+            B.box('metal', (cx + dx + gx, cy, 0.14 + th / 2), (0.02, 0.09, th), 'titanium', 0.003)
+          B.box('metal', (cx + dx, cy, 0.14 + th / 2), (0.014, 0.06, th - 0.02), 'titanium_dark')
+          B.box('metal', (cx + dx, cy, 0.146), (0.13, 0.17, 0.012), 'titanium', 0.003)          # shoe plate
+        B.box('metal', (cx, cy, 0.14 + th), (tw + 0.052, 0.09, 0.045), 'titanium', 0.004)
+        for dx in (-tw / 2, tw / 2):
+          B.box('metal', (cx + dx, cy, 0.14 + th + 0.03), (0.07, 0.1, 0.016), 'titanium_dark', 0.003)  # cap blocks
         B.box('metal', (cx, cy, 1.02), (tw, 0.07, 0.03), 'titanium_dark', 0.003)
         screen(B, f'screen_project_{idx}', (cx, cy - side * 0.012, 1.95), 2.55, 1.13, face, bezel=0.02, depth=0.03)
         hit(B, f'hit_project_{idx}', (cx, cy, 1.5), (3.2, 1.0, 3.0))
@@ -572,13 +577,18 @@ def build_lab(B):
   # capability consoles along the north wall: ceramic foot, single tapered titanium blade, cantilevered display
   for i, cx in enumerate((-21.5, -17.8, -14.1)):
     cy = y1 - 1.6
-    B.box(o, (cx, cy + 0.05, 0.045), (1.36, 0.68, 0.09), 'basalt', 0.008)
+    B.box(o, (cx, cy + 0.05, 0.045), (1.36, 0.68, 0.09), 'basalt', 0.018)
     B.box(o, (cx, cy + 0.05, 0.02), (1.24, 0.56, 0.04), 'black')
     B.box(o, (cx, cy + 0.05, 0.12), (0.9, 0.42, 0.06), 'ceramic', 0.008)
-    B.prism('metal', [(cx - 0.16, cy + 0.02, 0.12), (cx + 0.16, cy + 0.02, 0.12), (cx + 0.16, cy + 0.14, 0.12), (cx - 0.16, cy + 0.14, 0.12),
-                      (cx - 0.09, cy + 0.04, 1.14), (cx + 0.09, cy + 0.04, 1.14), (cx + 0.09, cy + 0.12, 1.14), (cx - 0.09, cy + 0.12, 1.14)], 'titanium', 0.006)
+    for bdx in (-0.36, 0.36):
+      for bdy in (-0.14, 0.14):
+        B.lathe('metal', [(0.0, 0.15), (0.02, 0.15), (0.02, 0.157), (0.014, 0.163), (0.0, 0.163)], 'titanium', segs=12, center=(cx + bdx, cy + 0.05 + bdy, 0))
+    for pdx in (-0.17, 0.17):
+      B.prism('metal', [(cx + pdx - 0.045, cy + 0.0, 0.15), (cx + pdx + 0.045, cy + 0.0, 0.15), (cx + pdx + 0.045, cy + 0.14, 0.15), (cx + pdx - 0.045, cy + 0.14, 0.15),
+                        (cx + pdx - 0.026, cy + 0.03, 1.14), (cx + pdx + 0.026, cy + 0.03, 1.14), (cx + pdx + 0.026, cy + 0.11, 1.14), (cx + pdx - 0.026, cy + 0.11, 1.14)], 'titanium', 0.005)
+    B.box('metal', (cx, cy + 0.07, 0.46), (0.32, 0.05, 0.04), 'titanium_dark', 0.004)       # stretcher
+    B.lathe('metal', [(0.009, 0.15), (0.009, 1.13)], 'titanium_dark', segs=8, center=(cx, cy + 0.12, 0), cap=False)   # cable spine
     B.box('metal', (cx, cy + 0.06, 1.16), (0.5, 0.1, 0.06), 'titanium_dark', 0.006)
-    B.box('metal', (cx, cy + 0.02, 0.62), (0.012, 0.13, 0.9), 'titanium_dark')            # groove down the blade face
     B.box('metal', (cx, cy + 0.1, 1.3), (0.36, 0.12, 0.16), 'titanium_dark', 0.01)        # hinge block behind the display
     screen(B, f'screen_cap_{i}', (cx, cy - 0.02, 1.5), 1.6, 0.9, (0, -1, 0), lean=math.radians(12))
     hit(B, f'hit_cap_{i}', (cx, cy, 1.1), (1.9, 1.1, 2.2))
@@ -637,16 +647,17 @@ def build_corridor(B):
   clad(B, o, 'y', x1, -1, y0, y1, PANEL_Z0, H_WING, pw, 3, [], 'stone_wall')
   # back of atrium north wall
   clad(B, o, 'x', 9.6, 1, x0, x1, PANEL_Z0, H_WING, 1.4, 3, [(-2.25, 2.25, 0, PORTAL_H)], 'stone_wall')
+  nd = 0.6
   for cy, i in niches:
-    # deep warm niche cut through the cladding
-    B.bx(o, x0 - 0.9, x0 - 0.85, cy - nh, cy + nh, 0.9, 3.5, 'ceramic')
-    B.bx(o, x0 - 0.9, x0 + 0.06, cy - nh, cy + nh, 0.86, 0.9, 'ceramic', 0.004)
-    B.bx(o, x0 - 0.9, x0, cy - nh - 0.02, cy - nh, 0.86, 3.5, 'ceramic')
-    B.bx(o, x0 - 0.9, x0, cy + nh, cy + nh + 0.02, 0.86, 3.5, 'ceramic')
-    B.bx('metal', x0 - 0.9, x0, cy - nh - 0.02, cy + nh + 0.02, 3.5, 3.54, 'titanium_dark')   # dark reveal housing the downlight
-    screen(B, f'screen_role_{i}', (x0 - 0.8, cy, 2.2), 2.6, 1.3, (1, 0, 0), bezel=0.015, depth=0.03)
-    hit(B, f'hit_role_{i}', (x0 - 0.3, cy, 2.2), (1.2, 2 * nh, 2.6))
-    B.area(f'niche_{i}', (x0 - 0.45, cy, 3.45), (x0 - 0.8, cy, 0.9), size=0.4, size_y=2 * nh - 0.3, power=160 + 40 * i, color=WARM)
+    # warm niche cut through the cladding; shallow enough that its returns never hide the display
+    B.bx(o, x0 - nd, x0 - nd + 0.05, cy - nh, cy + nh, 0.9, 3.5, 'ceramic')
+    B.bx(o, x0 - nd, x0 + 0.06, cy - nh, cy + nh, 0.86, 0.9, 'ceramic', 0.004)
+    B.bx(o, x0 - nd, x0, cy - nh - 0.02, cy - nh, 0.86, 3.5, 'ceramic')
+    B.bx(o, x0 - nd, x0, cy + nh, cy + nh + 0.02, 0.86, 3.5, 'ceramic')
+    B.bx('metal', x0 - nd, x0, cy - nh - 0.02, cy + nh + 0.02, 3.5, 3.54, 'titanium_dark')   # dark reveal housing the downlight
+    screen(B, f'screen_role_{i}', (x0 - nd + 0.1, cy, 2.2), 2.6, 1.3, (1, 0, 0), bezel=0.015, depth=0.03)
+    hit(B, f'hit_role_{i}', (x0 - 0.15, cy, 2.2), (1.0, 2 * nh, 2.6))
+    B.area(f'niche_{i}', (x0 - nd / 2, cy, 3.45), (x0 - nd + 0.1, cy, 0.9), size=0.4, size_y=2 * nh - 0.3, power=160 + 40 * i, color=WARM)
   for k in range(1, 19):
     fy = y0 + k * pw
     if any(abs(fy - (13.0 + c * 5.0)) < 0.95 for c in range(4)):
@@ -716,8 +727,23 @@ def build_terrace(B):
   # contact plinth: tapered cast-stone lectern, sloped titanium top, slim cyan seam (the one interactive accent)
   cx, cy = 0.0, 40.6
   w0, d0, w1, d1, hf, hb = 0.62, 0.34, 0.54, 0.28, 1.0, 1.12
+  def wd(z):   # taper of the body at height z
+    t = (z - 0.08) / (hf - 0.08)
+    return w0 + (w1 - w0) * t, d0 + (d1 - d0) * t
+  zg0, zg1 = 0.74, 0.77
+  wa, da = wd(zg0)
+  wb, db = wd(zg1)
   B.prism(o, [(cx - w0, cy - d0, 0.08), (cx + w0, cy - d0, 0.08), (cx + w0, cy + d0, 0.08), (cx - w0, cy + d0, 0.08),
-              (cx - w1, cy - d1, hf), (cx + w1, cy - d1, hf), (cx + w1, cy + d1, hb), (cx - w1, cy + d1, hb)], 'ceramic', 0.01)
+              (cx - wa, cy - da, zg0), (cx + wa, cy - da, zg0), (cx + wa, cy + da, zg0), (cx - wa, cy + da, zg0)], 'ceramic', 0.008)
+  B.box(o, (cx, cy, (zg0 + zg1) / 2), (2 * wa - 0.05, 2 * da - 0.05, zg1 - zg0 + 0.01), 'black')
+  B.prism(o, [(cx - wb, cy - db, zg1), (cx + wb, cy - db, zg1), (cx + wb, cy + db, zg1), (cx - wb, cy + db, zg1),
+              (cx - w1, cy - d1, hf), (cx + w1, cy - d1, hf), (cx + w1, cy + d1, hb), (cx - w1, cy + d1, hb)], 'ceramic', 0.008)
+  for sxc in (-1, 1):   # brushed cheeks following the taper, bridging both courses
+    pts = []
+    for z, wz, dz, zf_, zb_ in ((0.08, w0, d0, 0.08, 0.08), (hf, w1, d1, hf, hb)):
+      xi, xo = sorted((cx + sxc * (wz - 0.004), cx + sxc * (wz + 0.014)))
+      pts.append([(xi, cy - dz + 0.05, zf_), (xo, cy - dz + 0.05, zf_), (xo, cy + dz - 0.05, zb_), (xi, cy + dz - 0.05, zb_)])
+    B.prism('metal', pts[0] + pts[1], 'titanium', 0.003)
   B.prism(o, [(cx - w0 + 0.06, cy - d0 + 0.06, 0.0), (cx + w0 - 0.06, cy - d0 + 0.06, 0.0), (cx + w0 - 0.06, cy + d0 - 0.06, 0.0), (cx - w0 + 0.06, cy + d0 - 0.06, 0.0),
               (cx - w0 + 0.06, cy - d0 + 0.06, 0.08), (cx + w0 - 0.06, cy - d0 + 0.06, 0.08), (cx + w0 - 0.06, cy + d0 - 0.06, 0.08), (cx - w0 + 0.06, cy + d0 - 0.06, 0.08)], 'black')
   ins = 0.05
@@ -742,14 +768,31 @@ def build_terrace(B):
   # horizon portal: freestanding basalt frame on the building's axis, lined in titanium, washed from below
   pw_, ph_, pd_, t_ = 4.4, 5.2, 0.55, 0.55
   py_ = 42.75
+  j = 0.012                      # stone joint
+  zb, zt = 0.12, ph_ - t_        # legs stand on plinth blocks and carry the lintel
   for sx in (-1, 1):
-    B.box(o, (sx * (pw_ / 2 + t_ / 2), py_, ph_ / 2), (t_, pd_, ph_), 'basalt', 0.03)
-    B.box(o, (sx * (pw_ / 2 + t_ / 2), py_ - pd_ / 2 - 0.002, ph_ / 2 - 0.2), (0.03, 0.02, ph_ - 1.2), 'black')
-    B.box(o, (sx * (pw_ / 2 + t_ / 2), py_ + pd_ / 2 + 0.002, ph_ / 2 - 0.2), (0.03, 0.02, ph_ - 1.2), 'black')
-    B.box('metal', (sx * (pw_ / 2 + 0.006), py_, ph_ / 2 - t_ / 2), (0.012, pd_ - 0.04, ph_ - t_), 'titanium')
+    lcx = sx * (pw_ / 2 + t_ / 2)
+    B.box(o, (lcx, py_, (zb + zt) / 2), (t_ - 0.05, pd_ - 0.05, zt - zb), 'black')            # core seen through joints
+    sw = (t_ - 2 * j) / 3
+    for k in range(3):           # three staves per leg, middle one in running bond
+      x0s = lcx - t_ / 2 + k * (sw + j)
+      n = 7
+      ch = (zt - zb) / n
+      zs = [zb] + [zb + ch * (c + (0.5 if k == 1 else 0.0)) for c in range(1, n)] + [zt]
+      for za, zc in zip(zs[:-1], zs[1:]):
+        B.bx(o, x0s, x0s + sw, py_ - pd_ / 2, py_ + pd_ / 2, za + j / 2, zc - j / 2, 'basalt', 0.006)
+    B.box(o, (lcx, py_, 0.09), (t_ + 0.12, pd_ + 0.12, 0.06), 'basalt', 0.012)                 # plinth block
+    B.box('metal', (sx * (pw_ / 2 + 0.006), py_, (zb + zt) / 2), (0.012, pd_ - 0.04, zt - zb), 'titanium')
     B.area(f'portal_up_{sx}', (sx * (pw_ / 2 + t_ / 2), py_ - pd_ / 2 - 0.5, 0.06), (sx * (pw_ / 2 + t_ / 2), py_ - pd_ / 2, ph_ * 0.8), size=0.5, size_y=0.16, power=95, color=WARM)
-  B.box(o, (0, py_, ph_ - t_ / 2), (pw_ + 2 * t_ - 0.002, pd_ - 0.002, t_), 'basalt', 0.03)
-  B.box(o, (0, py_, ph_ - t_ - 0.03), (pw_ + 2 * t_ - 0.12, pd_ - 0.1, 0.06), 'black')
+  # lintel: five voussoir blocks on a dark core, a shadow reveal and a proud basalt cap
+  B.box(o, (0, py_, ph_ - t_ / 2), (pw_ + 2 * t_ - 0.05, pd_ - 0.05, t_ - 0.03), 'black')
+  span = pw_ + 2 * t_
+  bw = (span - 4 * j) / 5
+  for k in range(5):
+    xa = -span / 2 + k * (bw + j)
+    B.bx(o, xa, xa + bw, py_ - pd_ / 2, py_ + pd_ / 2, ph_ - t_ + j / 2, ph_, 'basalt', 0.006)
+  B.box(o, (0, py_, ph_ + 0.008), (span - 0.06, pd_ - 0.06, 0.016), 'black')
+  B.box(o, (0, py_, ph_ + 0.056), (span + 0.1, pd_ + 0.1, 0.08), 'basalt', 0.012)
   B.box('metal', (0, py_, ph_ - t_ - 0.006), (pw_, pd_ - 0.04, 0.012), 'titanium')
   B.box(o, (0, py_, 0.03), (pw_ + 2 * t_ + 0.2, pd_ + 0.2, 0.06), 'basalt', 0.006)
   # low titanium bollards along the side parapets: the terrace's practical lights at dusk

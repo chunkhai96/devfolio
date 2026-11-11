@@ -52,7 +52,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
 </template>
 <style scoped>
 .panel {
-  position: absolute; top: 84px; right: 16px; bottom: 16px; z-index: 30;
+  position: absolute; top: 84px; right: 16px; z-index: 30; max-height: calc(100% - 100px);
   width: min(560px, 42vw); display: flex; flex-direction: column;
   background: var(--panel); border: 1px solid var(--panel-border); border-radius: 16px;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
