@@ -63,6 +63,7 @@ My own earlier self-assessment (4.3) was not confirmed. Four independent art-dir
 | 9 (coursed portal, assembled lectern, engineered stands, tablet sheet) | 3.6 | 3 | 3 | 3 | 4 | fail |
 | 10 (header legibility, corridor framing, honed portal stone, fluted lecterns) | 3.6 | 3 | 3 | 3 | 4 | fail |
 | 11 (bespoke display fixtures, limestone niches, reeded lectern/plinth, motion strips) | 3.65 | 3.5 | 3 | 3 | 3.5 | fail |
+| 12 (closed light wells, stone-only portal, canopy tie-rods, doorway-led 1.8 s travel, named gallery markers) | 3.75 | 3.5 | 3.5 | 3.5 | 3.5 | fail |
 
 Non-visual dimensions are consistently 4 (typography/UI, exploration, content, responsive/a11y). No dimension has ever scored ≤ 2. Every round's concrete defects were fixed before the next (hover cue, overlaid titles, Tailwind class collisions, culled canopy, NaN shaft, marker clutter, contrast, phone layout, etc.), but the four core visual scores did not move: the gap is material/modeling density, not individual bugs.
 
@@ -74,7 +75,7 @@ Performance: ~3 ms per frame (forced GPU sync) at 2520×1575 with MSAA ×4 on M2
 
 ## Open items for the owner
 
-- **Visual gate (§8):** eleven independent reviews: 3.4–3.5 through round 7, then 3.8 / 3.6 / 3.6 / 3.65 after the framing, lighting and modeling passes (round-to-round variance is about ±0.2). Lighting scores 3.5–4 and composition 3–3.5; modeling and materials remain at 3; reviewers describe it as a competent real-time archviz piece rather than a memorable one. Reaching 4+ on composition/modeling/materials/lighting most likely needs authored hero assets per room from a 3D artist (or a sculpted, higher-poly modeling pass), not more procedural iteration. Previously: Scanned materials (round 5) improved realism but not the core scores; reviewers now ask for room-specific identities (distinct material palettes and a hero object per room), constructed detail on the portal/displays/plinths, and stronger light hierarchy. That is a larger art-direction pass rather than further polish.
+- **Visual gate (§8):** twelve independent reviews: 3.4–3.5 through round 7, then 3.8 / 3.6 / 3.6 / 3.65 / 3.75 after the framing, lighting and modeling passes (round-to-round variance is about ±0.2). In round 12 all four core visual dimensions reached 3.5 for the first time (gate needs 4); reviewers describe it as a competent real-time archviz piece rather than a memorable one. Reaching 4+ on composition/modeling/materials/lighting most likely needs authored hero assets per room from a 3D artist (or a sculpted, higher-poly modeling pass), not more procedural iteration. Previously: Scanned materials (round 5) improved realism but not the core scores; reviewers now ask for room-specific identities (distinct material palettes and a hero object per room), constructed detail on the portal/displays/plinths, and stronger light hierarchy. That is a larger art-direction pass rather than further polish.
 
 - Project data has no per-project technologies, contribution or outcomes — panels show only what `data/project.ts` contains.
 - `public/images/project-devfolio.webp` now shows the redesigned site (full-res capture of the live 3D frame + UI); the previous image is in git history.
