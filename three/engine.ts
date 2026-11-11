@@ -766,6 +766,7 @@ export class AtelierEngine {
     const W = this.size.x
     const H = this.size.y
     const moving = this.rig.moving
+    const placed: { x: number, y: number }[] = []   // labels placed this frame (stacked so chips never overlap)
     for (const [id, el] of this.markers) {
       const it = this.interactables.find(i => i.id === id)
       const h = it && this.hitMeshes.get(it.hit)
@@ -791,13 +792,19 @@ export class AtelierEngine {
       this.v.copy(anchor).project(this.camera)
       const behind = this.v.z > 1
       const x = (this.v.x * 0.5 + 0.5) * W
-      const y = (-this.v.y * 0.5 + 0.5) * H
+      let y = (-this.v.y * 0.5 + 0.5) * H
+      for (let k = 0; k < 4; k++) {
+        const hit = placed.find(p => Math.abs(p.y - y) < 32 && Math.abs(p.x - x) < 250)
+        if (!hit) break
+        y = hit.y - 34
+      }
       const clearOfGuide = !(x < this.inset.left + 16 && y > H * 0.12)
       const onScreen = !behind && !far && clearOfGuide && x > 24 && x < W - 24 && y > 72 && y < H - 24
       if (!onScreen) {
         if (el.dataset.vis !== '0') { el.dataset.vis = '0'; el.style.opacity = '0'; el.style.pointerEvents = 'none'; el.tabIndex = -1; el.setAttribute('aria-hidden', 'true') }
         continue
       }
+      placed.push({ x, y })
       el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`
       const flip = x > W - 280 ? '1' : '0'
       if (el.dataset.flip !== flip) el.dataset.flip = flip

@@ -73,7 +73,8 @@ function explore() {
   .hero-roles { font-size: 0.875rem; margin-top: 6px; }
   .hero-actions { margin-top: 16px; gap: 8px; }
   .hero-foot { margin-top: 10px; }
-  .resume, .rule { display: none; }
+  .rule { display: none; }
+  .resume { height: 32px; font-size: 0.8125rem; }
   .hero-foot :deep(.social) { flex-wrap: nowrap; gap: 0; }
 }
 </style>

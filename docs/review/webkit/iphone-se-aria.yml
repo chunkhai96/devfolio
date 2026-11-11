@@ -19,6 +19,8 @@
     - button "Explore the atelier"
     - button "View projects"
     - button "Get in touch"
+    - link "Résumé":
+      - /url: https://drive.google.com/file/d/1hWBVXXyK6ykCb8c82DddwkF0XtBQGswn/view?usp=sharing
     - list:
       - listitem:
         - link "GitHub":

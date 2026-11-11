@@ -29,8 +29,8 @@ await shot(p, '02a-desktop-explore-markers')
 await p.close()
 p = await open(desk, '/?r=1#gallery')
 await shot(p, '04a-gallery')
-const m = p.locator('[data-marker="project-2"]')
-if (await m.isVisible()) { await m.hover(); await settle(900) }
+const m = p.locator('[data-marker^="project-"][data-vis="1"]').first()
+if (await m.count()) { await m.hover({ force: true }); await settle(900) }
 await shot(p, '02b-desktop-hover-exhibit')
 await p.close()
 for (const [hash, name] of [['#work/i-have-chosen-you', '03a-desktop-project-panel'], ['#lab', '04b-lab'], ['#corridor', '04c-corridor'], ['#terrace', '04d-terrace'], ['#contact', '04e-contact-panel'], ['#capabilities/0', '03b-capabilities-panel']]) {

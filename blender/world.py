@@ -329,7 +329,7 @@ def screen(B, name, center, w, h, normal, bezel=0.02, depth=0.035, frame_mat='ti
     o_ = lw / 2 - 0.0005                  # 0.5 mm over the recess wall so the two never share a plane
     for (fx_, fz_, sx_, sz_) in ((0, hh + o_, w + 2 * lw, lw), (0, -hh - o_, w + 2 * lw, lw),
                                  (hw + o_, 0, lw, h), (-hw - o_, 0, lw, h)):
-      B.box('metal', None, (sx_, lip + 0.001, sz_), 'titanium', 0.0, m=M @ T((fx_, (lip - 0.001) / 2, fz_)))
+      B.box('metal', None, (sx_, lip + 0.001, sz_), 'titanium_dark', 0.0, m=M @ T((fx_, (lip - 0.001) / 2, fz_)))
   if w > 0.9 and depth >= 0.025:          # brushed seam: a 1 mm proud band around the shell edge
     B.box('metal', None, (W + 0.002, 0.004, H + 0.002), 'titanium', 0.0, m=M @ T((0, depth * 0.55, 0)))
   if standoff > 0.012:                    # hidden wall plate, 6 mm clear of the wall so it never touches it
@@ -401,6 +401,23 @@ def superslab(B, obj, M, a, b, t, mat, n=4.0, segs=64, ch=0.008):
       faces.append([k * segs + i, k * segs + i2, (k + 1) * segs + i2, (k + 1) * segs + i])
   faces.append([2 * segs + i for i in range(segs)])
   B._emit(obj, verts, faces, mat, [False] + [True] * segs + [False] * segs + [False])
+
+
+def architrave(B, o, axis, front, facing, hw, h, w=0.26, proud=0.055):
+  """Stone door casing on a clad wall: jambs over the panel edges, plinth blocks, a lintel with a shadow line."""
+  def bxa(a0, a1, d0, d1, z0, z1, mat, bev=0.006):
+    p0, p1 = sorted((front + facing * d0, front + facing * d1))
+    if axis == 'x':
+      B.bx(o, a0, a1, p0, p1, z0, z1, mat, bev)
+    else:
+      B.bx(o, p0, p1, a0, a1, z0, z1, mat, bev)
+  for sgn in (-1, 1):
+    a0, a1 = sorted((sgn * (hw - 0.03), sgn * (hw + w)))
+    bxa(a0, a1, 0.0, proud, 0.32, h + 0.02, 'basalt')
+    b0, b1 = sorted((sgn * (hw - 0.03), sgn * (hw + w + 0.03)))
+    bxa(b0, b1, 0.0, proud + 0.025, 0.0, 0.32, 'basalt', 0.01)                  # plinth block
+  bxa(-hw - w - 0.04, hw + w + 0.04, 0.0, proud + 0.02, h, h + w, 'basalt', 0.008)  # lintel
+  bxa(-hw - w - 0.06, hw + w + 0.06, 0.0, proud + 0.04, h + w, h + w + 0.06, 'basalt', 0.01)   # cornice
 
 
 def hit(B, name, c, s):
@@ -521,6 +538,9 @@ def build_atrium(B):
   portal(B, 'x', 9.06, 9.6, -2.25, 2.25, PORTAL_H)
   portal(B, 'y', 9.06, 9.6, -2.25, 2.25, PORTAL_H)
   portal(B, 'y', -9.6, -9.06, -2.25, 2.25, PORTAL_H)
+  # honed basalt architraves framing each doorway as seen from the atrium (jambs on plinth blocks, a lintel)
+  for axis, front, facing in (('x', 9.0, -1), ('y', 9.0, -1), ('y', -9.0, 1)):
+    architrave(B, o, axis, front, facing, 1.506, PORTAL_H)
 
 
 def wing_ceiling(B, o, x0, x1, y0, y1, slot_axis, slot_w=1.2, slot_from=None, slot_to=None):
@@ -578,7 +598,7 @@ def build_gallery(B):
     ops = [(cx - bay_w / 2, cx + bay_w / 2, 0.0, bay_h) for cx, s, _ in GALLERY_BAYS if s == side]
     yb0, yb1 = (yi, yi + 1.2) if side > 0 else (yi - 1.2, yi)
     solid_wall_x(B, o, x0, x1, yb0, yb1, 0, H_WING, ops, 'black')
-    clad(B, o, 'x', yi, -side, x0, x1, PANEL_Z0, H_WING, 1.525, 3, ops, 'stone_wall', clip=True)
+    clad(B, o, 'x', yi, -side, x0, x1, PANEL_Z0, H_WING, 0.61, [PANEL_Z0, 0.9, H_WING - 0.55, H_WING], ops, 'stone_wall', clip=True, gap=0.01)   # gallery identity: vertical coursing
     for cx, s, kind in GALLERY_BAYS:
       if s != side:
         continue
@@ -653,7 +673,7 @@ def build_gallery(B):
         B.spot(f'sp_{idx}', (cx, cy - side * 3.0, H_WING - 0.2), (cx, cy, 0.9), power=780, angle=26, blend=0.7, radius=0.1)
   # end wall
   solid_wall_y(B, o, y0 - 1.2, y1 + 1.2, x1, x1 + 0.6, 0, H_WING, [], 'black')
-  clad(B, o, 'y', x1, -1, y0, y1, PANEL_Z0, H_WING, 1.5, 3, [], 'stone_wall')
+  clad(B, o, 'y', x1, -1, y0, y1, PANEL_Z0, H_WING, 0.6, [PANEL_Z0, 0.9, H_WING - 0.55, H_WING], [], 'stone_wall', gap=0.01)
   B.area('gal_end', (x1 - 0.5, 0, H_WING - 0.15), (x1, 0, 2.0), size=0.1, size_y=11.0, power=320)
   # index wall: the hall's terminus, a large display listing every exhibit
   screen(B, 'screen_gallery_index', (x1 - 0.14, 0, 2.75), 6.6, 2.75, (-1, 0, 0), bezel=0.035, depth=0.05, standoff=0.03)
@@ -662,7 +682,7 @@ def build_gallery(B):
   # long museum bench down the hall's axis: a resting point facing the exhibits
   bench(B, o, 21.6, 0.0, 6.0, along='x', depth=0.6)
   # atrium-side wall of the gallery (back of atrium east wall) cladding
-  clad(B, o, 'y', 9.6, 1, y0, y1, PANEL_Z0, H_WING, 1.5, 3, [(-2.25, 2.25, 0, PORTAL_H)], 'stone_wall')
+  clad(B, o, 'y', 9.6, 1, y0, y1, PANEL_Z0, H_WING, 0.6, [PANEL_Z0, 0.9, H_WING - 0.55, H_WING], [(-2.25, 2.25, 0, PORTAL_H)], 'stone_wall', clip=True, gap=0.01)
   for side in (1, -1):
     B.area(f'gal_up_{side}', (21.8, side * 5.6, H_WING - 1.2), (21.8, side * 6.0, H_WING + 0.4), size=22.0, size_y=0.1, power=260, color=WARM_SOFT)
   # luminous ceiling slot light
@@ -687,6 +707,14 @@ def build_lab(B):
     # shadow-line trim between dado and fabric
     ya, yb = sorted((yi, yi - side * 0.075))
     B.bx('metal', x0, x1, ya, yb, 1.19, 1.215, 'titanium')
+    # lab identity: vertical acoustic battens standing off the fabric (shadowed gaps read as a slat wall)
+    sa, sb = sorted((yi - side * 0.058, yi - side * 0.098))
+    nb = int((x1 - x0 - 0.3) / 0.16)
+    for k in range(nb):
+      bx_ = x0 + 0.15 + k * 0.16 + 0.08
+      B.bx('metal', bx_ - 0.018, bx_ + 0.018, sa, sb, 1.26, H_WING - 0.66, 'titanium_dark', 0.002)
+    B.bx('metal', x0, x1, sa - (0.004 if side > 0 else 0), sb + (0.0 if side > 0 else 0.004), 1.23, 1.26, 'titanium_dark', 0.002)
+    B.bx('metal', x0, x1, sa - (0.004 if side > 0 else 0), sb + (0.0 if side > 0 else 0.004), H_WING - 0.66, H_WING - 0.63, 'titanium_dark', 0.002)
   clad(B, o, 'y', x0, 1, y0, y1, PANEL_Z0, H_WING, 1.4, 3, [], 'stone_wall')
   clad(B, o, 'y', -9.6, -1, y0, y1, PANEL_Z0, H_WING, 1.5, 3, [(-2.25, 2.25, 0, PORTAL_H)], 'stone_wall')
 
@@ -814,7 +842,10 @@ def build_terrace(B):
   clad(B, o, 'x', y0, 1, x0, x1, PANEL_Z0, 8.2, 1.6, 3, [(-3.5, 3.5, 0, H_WING)], 'stone_wall')
   # cantilevered canopy with downlights
   B.box(o, (0, y0 + 2.6, 4.75), (x1 - x0, 5.2, 0.3), 'plaster', 0.01)
-  B.box('metal', (0, y0 + 5.2, 4.75), (x1 - x0 + 0.02, 0.02, 0.32), 'titanium')
+  B.box(o, (0, y0 + 5.27, 4.73), (x1 - x0 + 0.04, 0.14, 0.44), 'basalt', 0.01)            # deep fascia
+  B.box('metal', (0, y0 + 5.345, 4.52), (x1 - x0 + 0.04, 0.012, 0.02), 'titanium')          # drip line
+  for dx in (-9.5, -4.6, 4.6, 9.5):
+    B.bx(o, dx - 0.11, dx + 0.11, y0 + 0.05, y0 + 5.2, 4.36, 4.6, 'plaster', 0.008)        # downstand beams
   for jx in range(-11, 12, 2):   # soffit panel joints (odd metres: never under a face centre, which the culler probes)
     B.bx(o, jx - 0.008, jx + 0.008, y0 + 0.1, y0 + 5.15, 4.597, 4.6, 'black')
   for dx in (-9, -6, -3, 3, 6, 9):
@@ -822,8 +853,8 @@ def build_terrace(B):
     B.spot(f'can_{dx}', (dx, y0 + 2.6, 4.55), (dx, y0 + 2.9, 0), power=420, angle=50, blend=0.85, radius=0.05)
   # canopy support: slender titanium columns on basalt shoes at the front edge, clear of the doorway sightline
   for dx in (-9.5, -4.6, 4.6, 9.5):
-    B.lathe('metal', [(0.0, 0.06), (0.055, 0.06), (0.055, 4.6), (0.0, 4.6)], 'titanium', segs=24, center=(dx, y0 + 4.85, 0))
-    B.box('metal', (dx, y0 + 4.85, 4.585), (0.2, 0.2, 0.03), 'titanium_dark', 0.004)
+    B.lathe('metal', [(0.0, 0.06), (0.055, 0.06), (0.055, 4.36), (0.0, 4.36)], 'titanium', segs=24, center=(dx, y0 + 4.85, 0))
+    B.box('metal', (dx, y0 + 4.85, 4.345), (0.2, 0.2, 0.03), 'titanium_dark', 0.004)
     B.box(o, (dx, y0 + 4.85, 0.03), (0.26, 0.26, 0.06), 'basalt', 0.008)
   # concealed cove along the façade washing the canopy soffit
   B.area('canopy_cove', (0, y0 + 0.3, 4.3), (0, y0 + 1.6, 6.5), size=x1 - x0 - 1.0, size_y=0.08, power=900, color=WARM_SOFT)

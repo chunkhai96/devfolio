@@ -39,12 +39,14 @@ export const ZONE_STATIONS: Record<Zone, Station> = {
   },
   gallery: {
     id: 'gallery', zone: 'gallery',
-    landscape: pose(b(11.4, -2.8, 1.65), b(28.0, 1.6, 1.65), 52, 0.0, 0.12),
+    // low, close to the bench: it runs as a foreground diagonal into the index wall on the right third
+    landscape: pose(b(16.6, -2.4, 1.3), b(28.0, 1.4, 1.55), 58, 0.0, 0.12),
     portrait: pose(b(11.2, 0, 1.65), b(34.0, 0, 1.65), 70, 0.0, 0.12),
   },
   lab: {
     id: 'lab', zone: 'lab',
-    landscape: pose(b(-11.6, -6.8, 1.9), b(-20.5, 3.6, 1.75), 57, -0.13, 0.12),
+    // table and pendants as converging lines into the tool wall; consoles hold the right edge
+    landscape: pose(b(-11.2, -2.0, 1.5), b(-21.5, 1.6, 1.4), 60, -0.05, 0.12),
     portrait: pose(b(-10.4, -3.8, 1.75), b(-21.0, 1.4, 1.75), 68, 0.0, 0.12),
   },
   corridor: {

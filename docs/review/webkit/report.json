@@ -1,9 +1,9 @@
 [
   {
     "device": "iPhone SE",
-    "heroVisibleMs": 232,
+    "heroVisibleMs": 236,
     "webgl2": true,
-    "readyMs": 1348,
+    "readyMs": 1380,
     "axeArrival": [],
     "axeGuide": [],
     "panelOpen": true,
@@ -15,15 +15,15 @@
     "contactFields": 3,
     "axeContact": [],
     "reducedMotionDetected": true,
-    "reducedTapToHashMs": 55,
+    "reducedTapToHashMs": 62,
     "reducedCssTransitionsOff": "0.001s",
     "errors": []
   },
   {
     "device": "iPhone 15",
-    "heroVisibleMs": 211,
+    "heroVisibleMs": 221,
     "webgl2": true,
-    "readyMs": 1361,
+    "readyMs": 1358,
     "axeArrival": [],
     "axeGuide": [],
     "panelOpen": true,
@@ -35,15 +35,15 @@
     "contactFields": 3,
     "axeContact": [],
     "reducedMotionDetected": true,
-    "reducedTapToHashMs": 48,
+    "reducedTapToHashMs": 53,
     "reducedCssTransitionsOff": "0.001s",
     "errors": []
   },
   {
     "device": "iPad (gen 7)",
-    "heroVisibleMs": 232,
+    "heroVisibleMs": 253,
     "webgl2": true,
-    "readyMs": 1353,
+    "readyMs": 1383,
     "axeArrival": [],
     "axeGuide": [],
     "panelOpen": true,
@@ -55,7 +55,7 @@
     "contactFields": 3,
     "axeContact": [],
     "reducedMotionDetected": true,
-    "reducedTapToHashMs": 60,
+    "reducedTapToHashMs": 51,
     "reducedCssTransitionsOff": "0.001s",
     "errors": []
   }
