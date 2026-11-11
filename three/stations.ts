@@ -39,8 +39,8 @@ export const ZONE_STATIONS: Record<Zone, Station> = {
   },
   gallery: {
     id: 'gallery', zone: 'gallery',
-    // low, close to the bench: it runs as a foreground diagonal into the index wall on the right third
-    landscape: pose(b(16.6, -2.4, 1.3), b(28.0, 1.4, 1.55), 58, 0.0, 0.12),
+    // bench as a leading line (not a foreground wall) into the index wall on the right third
+    landscape: pose(b(13.8, -2.6, 1.5), b(28.0, 1.2, 1.6), 54, 0.0, 0.12),
     portrait: pose(b(11.2, 0, 1.65), b(34.0, 0, 1.65), 70, 0.0, 0.12),
   },
   lab: {

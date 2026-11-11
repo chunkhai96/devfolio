@@ -76,7 +76,9 @@ export class CameraRig {
     const curve = new THREE.CatmullRomCurve3(pts, false, 'centripetal', 0.5)
     const len = curve.getLength()
     // DESIGN §6: 0.7–1.4 s for a room change; long multi-room routes are capped so they never drag
-    const duration = Math.min(1.8, Math.max(0.8, 0.7 + len * 0.028))
+    const base = Math.min(1.6, Math.max(0.8, 0.7 + len * 0.028))
+    // multi-room routes get time per doorway leg so each room registers before the next
+    const duration = via.length > 1 ? Math.min(2.8, Math.max(base, 0.5 + 0.45 * via.length)) : base
     return new Promise((resolve) => {
       this.travel = {
         curve, from: this.clonePose(this.pose), to: this.clonePose(to),

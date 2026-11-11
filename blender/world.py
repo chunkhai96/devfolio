@@ -521,6 +521,15 @@ def build_atrium(B):
   B.lathe(o, [(0, 0.47), (2.18, 0.47), (2.18, 0.50), (0, 0.50)], 'basalt', segs=128)
   B.lathe('metal', [(2.362, 0.40), (2.372, 0.40), (2.372, 0.43), (2.362, 0.43)], 'titanium', segs=128, cap=False)
   B.lathe('fx', [(2.21, 0.135), (2.21, 0.165)], 'emit_warm', segs=128, smooth=True, cap=False)
+  # hero object on the plinth: a brushed-titanium drop, point up, on a basalt boss
+  # (the "one that landed" from the field above; it mirrors the oculus and the droplets)
+  prof = []
+  pts = [(math.sin(th) * math.sin(th / 2) ** 1.5, (1 + math.cos(th)) / 2) for th in (math.pi * k / 48 for k in range(49))]
+  rmax = max(p_[0] for p_ in pts)
+  for r_, h_ in reversed(pts):        # bottom (th = pi) to tip (th = 0)
+    prof.append((0.36 * r_ / rmax, 0.06 + 1.14 * h_))
+  B.lathe('metal', [(r, z + 0.5) for r, z in prof], 'titanium', segs=96)
+  B.lathe(o, [(0.0, 0.5), (0.5, 0.5), (0.5, 0.53), (0.47, 0.56), (0.0, 0.56)], 'basalt', segs=96)
   # sculpture suspension: titanium ring + 4 hangers
   ring_z = 9.2
   B.lathe('metal', [(2.95, ring_z - 0.05), (3.05, ring_z - 0.05), (3.05, ring_z + 0.05), (2.95, ring_z + 0.05), (2.95, ring_z - 0.05)],
