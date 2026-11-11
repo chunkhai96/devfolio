@@ -12,6 +12,10 @@ onMounted(() => {
   emit('ready', map)
 })
 
+function hasNum(it: Interactable) {
+  return it.kind === 'exhibit' && !!idx(it) && !it.id.startsWith('cert')
+}
+
 function idx(it: Interactable) {
   const m = it.id.match(/-(\d+)$/)
   return m ? String(+m[1] + 1).padStart(2, '0') : ''
@@ -19,15 +23,15 @@ function idx(it: Interactable) {
 </script>
 <template>
   <div ref="root" class="markers" :class="{ 'is-hidden': !st.exploring.value && st.zone.value === 'atrium' }" role="group" aria-label="Points of interest in view">
-    <button v-for="it in visible" :key="it.id" type="button" class="marker" :class="it.kind" :data-marker="it.id"
+    <button v-for="it in visible" :key="it.id" type="button" class="marker" :class="[it.kind, { numbered: hasNum(it) }]" :data-marker="it.id"
       tabindex="-1" aria-hidden="true" style="opacity: 0"
-      :aria-label="it.kind === 'destination' ? `Go to ${it.label}` : `Open ${it.label}`"
+      :aria-label="it.kind === 'destination' ? `Go to ${it.label}` : hasNum(it) ? `Open ${idx(it)} ${it.label}` : `Open ${it.label}`"
       @click="st.engine.value?.activate(it.id)"
       @mouseenter="st.engine.value?.setFocus(it.id)" @mouseleave="st.engine.value?.setFocus(null)"
       @focus="st.engine.value?.setFocus(it.id)" @blur="st.engine.value?.setFocus(null)">
       <span class="pin" aria-hidden="true"><span class="pin-ring" /><span class="core" /></span>
       <span class="tag">
-        <span v-if="it.kind === 'exhibit' && idx(it) && !it.id.startsWith('cert')" class="num">{{ idx(it) }}</span>
+        <span v-if="hasNum(it)" class="num">{{ idx(it) }}</span>
         <span class="txt">{{ it.label }}</span>
         <Icon v-if="it.kind === 'destination'" :name="it.dest === 'atrium' ? 'arrow-left' : 'arrow-right'" :size="13" />
       </span>
@@ -46,6 +50,7 @@ function idx(it: Interactable) {
 .pin-ring { position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid #f2f0e9; background: rgba(16, 20, 25, 0.55); -webkit-appearance: none; transition: transform 200ms var(--ease-out), border-color 200ms; }
 .core { position: absolute; inset: 7px; border-radius: 50%; background: var(--porcelain); transition: background-color 200ms, inset 200ms var(--ease-out); }
 .tag {
+  transition-property: opacity, transform, border-color, height, padding;
   margin-top: -11px; display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 12px;
   border-radius: 8px; background: rgba(14, 18, 23, 0.88); border: 1px solid var(--panel-border);
   font-size: 0.8125rem; font-weight: 500; color: var(--porcelain); white-space: nowrap;
@@ -54,6 +59,11 @@ function idx(it: Interactable) {
 }
 .num { font-family: var(--font-mono); font-size: 0.68rem; color: var(--titanium); }
 .exhibit .tag { opacity: 0; transform: translateX(-4px); pointer-events: none; }
+/* numbered exhibits keep a small index chip on screen (matches the room guide); the title opens on hover */
+.exhibit.numbered .tag { opacity: 0.9; transform: none; height: 22px; padding: 0 7px; gap: 0; }
+.exhibit.numbered .txt { max-width: 0; opacity: 0; overflow: hidden; transition: max-width 260ms var(--ease-out), opacity 200ms var(--ease-out), margin 260ms var(--ease-out); }
+.exhibit.numbered[data-hover='1'] .tag, .exhibit.numbered:focus-visible .tag { height: 30px; padding: 0 12px; gap: 8px; }
+.exhibit.numbered[data-hover='1'] .txt, .exhibit.numbered:focus-visible .txt { max-width: 22rem; opacity: 1; }
 .marker[data-hover='1'] .tag, .marker:focus-visible .tag { opacity: 1; transform: none; border-color: rgba(154, 216, 214, 0.6); }
 .marker[data-hover='1'] .pin-ring, .marker:focus-visible .pin-ring { border-color: var(--ice-cyan); transform: scale(1.15); }
 .marker[data-hover='1'] .core, .marker:focus-visible .core { background: var(--ice-cyan); inset: 6px; }

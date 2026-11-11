@@ -128,7 +128,7 @@ class Builder:
              (abs(x1 - x0), abs(y1 - y0), abs(z1 - z0)), mat, bevel)
 
   def lathe(self, obj, profile, mat, segs=64, center=(0, 0, 0), smooth=True, cap=True,
-            arc=(0, 2 * math.pi), m=None):
+            arc=(0, 2 * math.pi), m=None, tilt=None):
     """profile: list of (r, z) from bottom to top."""
     cx, cy, cz = center
     full = abs(arc[1] - arc[0] - 2 * math.pi) < 1e-6
@@ -155,6 +155,8 @@ class Builder:
         faces.append([i * P + P - 1 for i in range(n)]); sm.append(False)
     if m is not None:
       verts = [m @ v for v in verts]
+    if tilt is not None:
+      verts = apply_tilt(verts, tilt)
     self._emit(obj, verts, faces, mat, sm)
 
   def quad(self, obj, corners, mat, uvs=((0, 0), (1, 0), (1, 1), (0, 1))):
@@ -208,10 +210,11 @@ def solid_wall_y(B, obj, y0, y1, x0, x1, z0, z1, openings, mat):
 
 
 def clad(B, obj, axis, plane, facing, a0, a1, z0, z1, pw, rows, openings, mat,
-         depth=0.06, gap=0.008, bevel=0.004, jitter=0.0):
+         depth=0.06, gap=0.008, bevel=0.004, jitter=0.0, clip=False):
   """Stone panel cladding on a wall plane.
   axis 'x': wall runs along X at y=plane, facing +1/-1 in Y. axis 'y': along Y at x=plane.
-  Panels whose centre falls in an opening are skipped."""
+  Panels whose centre falls in an opening are skipped; with clip=True panels are instead cut
+  around openings (stone dressed to the reveal, no overhang and no gap above a niche)."""
   n = max(1, round((a1 - a0) / pw))
   w = (a1 - a0) / n
   zs = rows if isinstance(rows, (list, tuple)) else [z0 + (z1 - z0) * k / rows for k in range(rows + 1)]
@@ -220,22 +223,43 @@ def clad(B, obj, axis, plane, facing, a0, a1, z0, z1, pw, rows, openings, mat,
       ca = a0 + (i + 0.5) * w
       cz = (zs[r] + zs[r + 1]) / 2
       h = zs[r + 1] - zs[r]
-      if any(o[0] < ca < o[1] and o[2] < cz < o[3] for o in openings):
-        continue
-      dd = depth
-      cn = plane + facing * dd / 2
-      size_a, size_z = w - gap, h - gap
-      # natural stone: each slab has its own tone (deterministic hash)
-      hsh = math.sin(ca * 12.9898 + cz * 78.233 + plane * 37.719) * 43758.5453
-      hsh -= math.floor(hsh)
-      hs2 = math.sin(ca * 93.989 + cz * 67.345 + plane * 11.13) * 24634.6345
-      hs2 -= math.floor(hs2)
-      t = 0.70 + 0.30 * hsh
-      tone = (t * (0.98 + 0.02 * hs2), t * 0.99, t * (1.0 - 0.02 * hs2) + 0.01, 1.0)
-      if axis == 'x':
-        B.box(obj, (ca, cn, cz), (size_a, dd, size_z), mat, bevel, tone=tone)
+      if clip:
+        pieces = [(ca - w / 2, ca + w / 2, zs[r], zs[r + 1])]
+        for o in openings:
+          nxt = []
+          for (p0, p1, q0, q1) in pieces:
+            if p0 >= o[1] or p1 <= o[0] or q0 >= o[3] or q1 <= o[2]:
+              nxt.append((p0, p1, q0, q1)); continue
+            if p0 < o[0]: nxt.append((p0, o[0], q0, q1))
+            if p1 > o[1]: nxt.append((o[1], p1, q0, q1))
+            m0, m1 = max(p0, o[0]), min(p1, o[1])
+            if q0 < o[2]: nxt.append((m0, m1, q0, o[2]))
+            if q1 > o[3]: nxt.append((m0, m1, o[3], q1))
+          pieces = nxt
+        pieces = [pc for pc in pieces if pc[1] - pc[0] > 0.03 and pc[3] - pc[2] > 0.03]
       else:
-        B.box(obj, (cn, ca, cz), (dd, size_a, size_z), mat, bevel, tone=tone)
+        if any(o[0] < ca < o[1] and o[2] < cz < o[3] for o in openings):
+          continue
+        pieces = [(ca - w / 2, ca + w / 2, zs[r], zs[r + 1])]
+      for (p0, p1, q0, q1) in pieces:
+        _clad_panel(B, obj, axis, plane, facing, (p0 + p1) / 2, (q0 + q1) / 2, p1 - p0, q1 - q0, ca, cz, depth, gap, bevel, mat)
+
+
+def _clad_panel(B, obj, axis, plane, facing, ca, cz, w, h, ka, kz, depth, gap, bevel, mat):
+  dd = depth
+  cn = plane + facing * dd / 2
+  size_a, size_z = w - gap, h - gap
+  # natural stone: each slab has its own tone (deterministic hash)
+  hsh = math.sin(ka * 12.9898 + kz * 78.233 + plane * 37.719) * 43758.5453
+  hsh -= math.floor(hsh)
+  hs2 = math.sin(ka * 93.989 + kz * 67.345 + plane * 11.13) * 24634.6345
+  hs2 -= math.floor(hs2)
+  t = 0.70 + 0.30 * hsh
+  tone = (t * (0.98 + 0.02 * hs2), t * 0.99, t * (1.0 - 0.02 * hs2) + 0.01, 1.0)
+  if axis == 'x':
+    B.box(obj, (ca, cn, cz), (size_a, dd, size_z), mat, bevel, tone=tone)
+  else:
+    B.box(obj, (cn, ca, cz), (dd, size_a, size_z), mat, bevel, tone=tone)
 
 
 def portal(B, axis, plane0, plane1, a0, a1, z1, frame=0.05, cl=0.06):
@@ -281,27 +305,102 @@ def bench(B, obj, cx, cy, length, along='x', depth=0.52, h=0.44):
   B.box('metal', P(0, 0, 0.14), S(length - 0.64, rail * 0.8, rail * 0.8), 'titanium_dark', 0.003)
 
 
-def screen(B, name, center, w, h, normal, bezel=0.02, depth=0.035, frame_mat='titanium_dark', lean=0.0):
-  """Display: thin housing + emissive OLED quad (own object, UV 0..1).
-  normal = horizontal facing direction (towards viewer); lean = radians the top leans back."""
+def screen(B, name, center, w, h, normal, bezel=0.02, depth=0.035, frame_mat='titanium_dark', lean=0.0, standoff=0.0):
+  """Display fixture: matte anodized shell, a front bezel ring with the OLED recessed behind it,
+  a brushed seam around the edge only, and (wall units) a shadowed mounting plate.
+  normal = horizontal facing direction (towards viewer); lean = radians the top leans back;
+  standoff = gap from the shell's back to the wall it hangs on."""
   n = Vector(normal).normalized()
   upv = Vector((0, 0, 1))
   right = upv.cross(n).normalized()
   back = -n
   rot = Matrix((right, back, upv)).transposed().to_4x4()   # local: x right, y into wall, z up
   M = Matrix.Translation(Vector(center)) @ rot @ Matrix.Rotation(-lean, 4, 'X')
-  B.box('metal', None, (w + 2 * bezel, depth, h + 2 * bezel), frame_mat, 0.006,
-        m=M @ Matrix.Translation((0, depth / 2, 0)))
+  T = Matrix.Translation
   hw, hh = w / 2, h / 2
-  if w > 1.0:
-    fw, gap, proud = 0.016, 0.006, 0.006
-    ox, oz = hw + bezel + gap + fw / 2, hh + bezel + gap + fw / 2
-    for (fx_, fz_, sx_, sz_) in ((0, oz, 2 * ox + fw, fw), (0, -oz, 2 * ox + fw, fw), (ox, 0, fw, 2 * oz - fw), (-ox, 0, fw, 2 * oz - fw)):
-      B.box('metal', None, (sx_, depth + proud, sz_), 'titanium', 0.003,
-            m=M @ Matrix.Translation((fx_, (depth - proud) / 2, fz_)))
-  cs = [M @ Vector((x, -0.0015, z)) for x, z in ((-hw, -hh), (hw, -hh), (hw, hh), (-hw, hh))]
+  W, H = w + 2 * bezel, h + 2 * bezel
+  lip = min(0.008, depth * 0.4)          # bezel thickness = how far the panel sits recessed
+  B.box('metal', None, (W, depth - lip, H), frame_mat, min(0.008, depth * 0.3), m=M @ T((0, lip + (depth - lip) / 2, 0)))
+  for (fx_, fz_, sx_, sz_) in ((0, hh + bezel / 2, W, bezel), (0, -hh - bezel / 2, W, bezel),
+                               (hw + bezel / 2, 0, bezel, h), (-hw - bezel / 2, 0, bezel, h)):
+    B.box('metal', None, (sx_, lip, sz_), frame_mat, 0.0015, m=M @ T((fx_, lip / 2, fz_)))
+  if w > 0.9:                              # brushed liner: a 6 mm bright fillet framing the image inside the dark bezel
+    lw = 0.006
+    o_ = lw / 2 - 0.0005                  # 0.5 mm over the recess wall so the two never share a plane
+    for (fx_, fz_, sx_, sz_) in ((0, hh + o_, w + 2 * lw, lw), (0, -hh - o_, w + 2 * lw, lw),
+                                 (hw + o_, 0, lw, h), (-hw - o_, 0, lw, h)):
+      B.box('metal', None, (sx_, lip + 0.001, sz_), 'titanium', 0.0, m=M @ T((fx_, (lip - 0.001) / 2, fz_)))
+  if w > 0.9 and depth >= 0.025:          # brushed seam: a 1 mm proud band around the shell edge
+    B.box('metal', None, (W + 0.002, 0.004, H + 0.002), 'titanium', 0.0, m=M @ T((0, depth * 0.55, 0)))
+  if standoff > 0.012:                    # hidden wall plate, 6 mm clear of the wall so it never touches it
+    B.box(f'{B.zone}_lm', None, (W * 0.62, standoff - 0.006, H * 0.55), 'black', 0.0,
+          m=M @ T((0, depth + (standoff - 0.006) / 2, 0)))
+  cs = [M @ Vector((x, lip - 0.0008, z)) for x, z in ((-hw, -hh), (hw, -hh), (hw, hh), (-hw, hh))]
   B.quad(name, cs, 'oled')
   return M
+
+
+def apply_tilt(verts, tilt):
+  """Shear the top of a solid onto a sloped plane: z += k * (y - y0), ramped in from z_from to z_to."""
+  z_from, z_to, k, y0 = tilt
+  out = []
+  for v in verts:
+    w_ = min(1.0, max(0.0, (v.z - z_from) / (z_to - z_from)))
+    out.append(Vector((v.x, v.y, v.z + k * (v.y - y0) * w_)))
+  return out
+
+
+def fluted(B, obj, profile, mat, flutes, fdepth, z0, z1, center=(0, 0, 0), spf=6, fillet=0.18, m=None, cap=True, tilt=None):
+  """Lathe with concave flutes cut between z0 and z1, e.g. reeded drums and columns. A profile point may carry
+  a third value (0/1) to force flute depth; repeat a point with 0 then 1 for a flat, planar flute stop."""
+  segs = flutes * spf
+  cx, cy, cz = center
+  P = len(profile)
+  verts, faces, sm = [], [], []
+  for i in range(segs):
+    a = 2 * math.pi * i / segs
+    u = (i % spf) / spf
+    d = math.sin(math.pi * (u - fillet / 2) / (1 - fillet)) if fillet / 2 <= u <= 1 - fillet / 2 else 0.0
+    ca, sa = math.cos(a), math.sin(a)
+    for pt in profile:
+      r, z = pt[0], pt[1]
+      e = pt[2] if len(pt) > 2 else (1.0 if z0 <= z <= z1 else 0.0)
+      rr = r - fdepth * d * e
+      verts.append(Vector((cx + rr * ca, cy + rr * sa, cz + z)))
+  for i in range(segs):
+    i2 = (i + 1) % segs
+    for j in range(P - 1):
+      faces.append([i * P + j, i2 * P + j, i2 * P + j + 1, i * P + j + 1])
+      sm.append(abs(profile[j + 1][1] - profile[j][1]) > 1e-6)
+  if cap:
+    if profile[0][0] > 1e-6:
+      faces.append([i * P for i in reversed(range(segs))]); sm.append(False)
+    if profile[-1][0] > 1e-6:
+      faces.append([i * P + P - 1 for i in range(segs)]); sm.append(False)
+  if m is not None:
+    verts = [m @ v for v in verts]
+  if tilt is not None:
+    verts = apply_tilt(verts, tilt)
+  B._emit(obj, verts, faces, mat, sm)
+
+
+def superslab(B, obj, M, a, b, t, mat, n=4.0, segs=64, ch=0.008):
+  """Superellipse slab (half-axes a, b; thickness t; chamfered top edge) in local coords of M (z up)."""
+  ring = []
+  for i in range(segs):
+    th = 2 * math.pi * i / segs
+    c, s_ = math.cos(th), math.sin(th)
+    ring.append((math.copysign(abs(c) ** (2 / n), c), math.copysign(abs(s_) ** (2 / n), s_)))
+  verts = [M @ Vector((a * x, b * y, 0.0)) for x, y in ring]
+  verts += [M @ Vector((a * x, b * y, t - ch)) for x, y in ring]
+  verts += [M @ Vector(((a - ch) * x, (b - ch) * y, t)) for x, y in ring]
+  faces = [list(reversed(range(segs)))]
+  for k in (0, 1):
+    for i in range(segs):
+      i2 = (i + 1) % segs
+      faces.append([k * segs + i, k * segs + i2, (k + 1) * segs + i2, (k + 1) * segs + i])
+  faces.append([2 * segs + i for i in range(segs)])
+  B._emit(obj, verts, faces, mat, [False] + [True] * segs + [False] * segs + [False])
 
 
 def hit(B, name, c, s):
@@ -399,7 +498,9 @@ def build_atrium(B):
   # polished basalt top inset (mirrors the sculpture above)
   B.lathe(o, [(0, 0), (3.2, 0), (3.2, 0.10), (3.17, 0.13), (0, 0.13)], 'basalt', segs=128)
   B.lathe(o, [(0, 0.13), (2.20, 0.13), (2.20, 0.17), (0, 0.17)], 'black', segs=128)
-  B.lathe(o, [(2.36, 0.17), (2.36, 0.50), (2.34, 0.52), (2.18, 0.52), (2.18, 0.47)], 'ceramic', segs=128, cap=False)
+  # reeded ceramic drum: 144 flutes with rounded stops below the titanium band
+  fluted(B, o, [(2.36, 0.17), (2.36, 0.205, 0), (2.36, 0.205, 1), (2.36, 0.375, 1), (2.36, 0.375, 0), (2.36, 0.50), (2.34, 0.52), (2.18, 0.52), (2.18, 0.47)],
+         'ceramic', flutes=144, fdepth=0.014, z0=0.205, z1=0.375, cap=False)
   B.lathe(o, [(0, 0.47), (2.18, 0.47), (2.18, 0.50), (0, 0.50)], 'basalt', segs=128)
   B.lathe('metal', [(2.362, 0.40), (2.372, 0.40), (2.372, 0.43), (2.362, 0.43)], 'titanium', segs=128, cap=False)
   B.lathe('fx', [(2.21, 0.135), (2.21, 0.165)], 'emit_warm', segs=128, smooth=True, cap=False)
@@ -473,30 +574,36 @@ def build_gallery(B):
     ops = [(cx - bay_w / 2, cx + bay_w / 2, 0.0, bay_h) for cx, s, _ in GALLERY_BAYS if s == side]
     yb0, yb1 = (yi, yi + 1.2) if side > 0 else (yi - 1.2, yi)
     solid_wall_x(B, o, x0, x1, yb0, yb1, 0, H_WING, ops, 'black')
-    clad(B, o, 'x', yi, -side, x0, x1, PANEL_Z0, H_WING, 1.525, 3, ops, 'stone_wall')
+    clad(B, o, 'x', yi, -side, x0, x1, PANEL_Z0, H_WING, 1.525, 3, ops, 'stone_wall', clip=True)
     for cx, s, kind in GALLERY_BAYS:
       if s != side:
         continue
       back = yi + side * bay_d
-      # niche: fabric back, ceramic sill, stone returns, concealed head light
+      # niche: limestone-panelled back, stone-lined returns, ceramic sill, concealed head light
       if side > 0:
-        B.bx(o, cx - bay_w / 2, cx + bay_w / 2, back, back + 0.05, 0, bay_h, 'ceramic')
+        B.bx(o, cx - bay_w / 2, cx + bay_w / 2, back, back + 0.05, 0, bay_h, 'black')
       else:
-        B.bx(o, cx - bay_w / 2, cx + bay_w / 2, back - 0.05, back, 0, bay_h, 'ceramic')
+        B.bx(o, cx - bay_w / 2, cx + bay_w / 2, back - 0.05, back, 0, bay_h, 'black')
+      clad(B, o, 'x', back, -side, cx - bay_w / 2 + 0.05, cx + bay_w / 2 - 0.05, 0.14, bay_h - 0.25, 1.28, [0.14, 1.2, 3.2, bay_h - 0.25], [], 'stone_wall',
+           depth=0.04, gap=0.006)
       ya, yb = sorted((yi, back))
+      la, lb = sorted((yi - side * 0.056, back))
+      for jx in (cx - bay_w / 2, cx + bay_w / 2 - 0.05):   # returns: solid stone linings, no black wall core on show
+        B.bx(o, jx, jx + 0.05, la, lb, 0.14, bay_h - 0.25, 'stone_wall', 0.004)
       B.bx(o, cx - bay_w / 2, cx + bay_w / 2, ya, yb, 0.0, 0.14, 'ceramic', 0.006)
       B.bx(o, cx - bay_w / 2, cx + bay_w / 2, ya, yb, bay_h - 0.25, bay_h, 'plaster')
-      B.bx('fx', cx - bay_w / 2 + 0.1, cx + bay_w / 2 - 0.1, ya + 0.05, yb - 0.05, bay_h - 0.252, bay_h - 0.25, 'emit_warm')
-      B.area(f'bay_{cx}_{side}', (cx, (ya + yb) / 2, bay_h - 0.3), (cx, back, 1.0), size=4.6, size_y=0.12, power=190, color=WARM)
-      # portal frame trims
-      B.bx('metal', cx - bay_w / 2 - 0.012, cx - bay_w / 2, ya - 0.002, yb, 0, bay_h, 'titanium')
-      B.bx('metal', cx + bay_w / 2, cx + bay_w / 2 + 0.012, ya - 0.002, yb, 0, bay_h, 'titanium')
-      B.bx('metal', cx - bay_w / 2, cx + bay_w / 2, ya - 0.002, yb, bay_h, bay_h + 0.012, 'titanium')
+      B.bx('fx', cx - bay_w / 2 + 0.16, cx + bay_w / 2 - 0.16, ya + 0.05, yb - 0.05, bay_h - 0.252, bay_h - 0.25, 'emit_warm')
+      B.area(f'bay_{cx}_{side}', (cx, (ya + yb) / 2, bay_h - 0.3), (cx, back, 1.0), size=4.4, size_y=0.12, power=115, color=WARM)
+      # proud anodized frame around the niche mouth, standing just off the cladding face
+      yf0, yf1 = sorted((yi - side * 0.075, yi - side * 0.055))
+      B.bx('metal', cx - bay_w / 2 - 0.035, cx - bay_w / 2 + 0.05, yf0, yf1, 0, bay_h + 0.035, 'titanium_dark', 0.003)
+      B.bx('metal', cx + bay_w / 2 - 0.05, cx + bay_w / 2 + 0.035, yf0, yf1, 0, bay_h + 0.035, 'titanium_dark', 0.003)
+      B.bx('metal', cx - bay_w / 2 - 0.035, cx + bay_w / 2 + 0.035, yf0, yf1, bay_h - 0.05, bay_h + 0.035, 'titanium_dark', 0.003)
       idx = PROJECT_ORDER[GALLERY_BAYS.index((cx, s, kind))]
       face = (0, -side, 0)
       if kind == 'wall':
-        cy = back - side * 0.06
-        screen(B, f'screen_project_{idx}', (cx, cy, 2.2), 3.4, 1.5, face, bezel=0.025, depth=0.04)
+        cy = back - side * (0.04 + 0.03 + 0.045)
+        screen(B, f'screen_project_{idx}', (cx, cy, 2.2), 3.4, 1.5, face, bezel=0.05, depth=0.045, standoff=0.03)
         hit(B, f'hit_project_{idx}', (cx, (yi + back) / 2, 2.2), (4.0, 1.2, 2.4))
         B.spot(f'sp_{idx}', (cx, yi - side * 3.2, H_WING - 0.2), (cx, back, 2.2), power=700, angle=30, blend=0.7, radius=0.1)
       elif kind == 'easel':
@@ -545,7 +652,7 @@ def build_gallery(B):
   clad(B, o, 'y', x1, -1, y0, y1, PANEL_Z0, H_WING, 1.5, 3, [], 'stone_wall')
   B.area('gal_end', (x1 - 0.5, 0, H_WING - 0.15), (x1, 0, 2.0), size=0.1, size_y=11.0, power=320)
   # index wall: the hall's terminus, a large display listing every exhibit
-  screen(B, 'screen_gallery_index', (x1 - 0.12, 0, 2.75), 6.6, 2.75, (-1, 0, 0), bezel=0.03, depth=0.05)
+  screen(B, 'screen_gallery_index', (x1 - 0.14, 0, 2.75), 6.6, 2.75, (-1, 0, 0), bezel=0.035, depth=0.05, standoff=0.03)
   hit(B, 'hit_gallery_index', (x1 - 0.6, 0, 2.75), (1.0, 7.0, 3.2))
   bench(B, o, 31.4, 0, 3.4, along='y')
   # long museum bench down the hall's axis: a resting point facing the exhibits
@@ -599,11 +706,11 @@ def build_lab(B):
     hit(B, f'hit_cap_{i}', (cx, cy, 1.1), (1.9, 1.1, 2.2))
     B.spot(f'cap_sp_{i}', (cx, cy - 3.2, H_WING - 0.2), (cx, cy, 0.8), power=320, angle=30, blend=0.8, radius=0.1)
   # tool wall (west end): large framed display for the tech stack
-  screen(B, 'screen_stack', (x0 + 0.13, 0, 2.7), 6.4, 2.8, (1, 0, 0), bezel=0.03, depth=0.05)
+  screen(B, 'screen_stack', (x0 + 0.13, 0, 2.7), 6.4, 2.8, (1, 0, 0), bezel=0.035, depth=0.05, standoff=0.02)
   hit(B, 'hit_stack', (x0 + 0.6, 0, 2.7), (1.0, 7.0, 3.2))
   B.area('lab_end', (x0 + 1.6, 0, H_WING - 0.2), (x0, 0, 2.5), size=0.1, size_y=11, power=300)
   # lecture screen on the south wall (talks)
-  screen(B, 'screen_talk', (-17.8, y0 + 0.12, 2.6), 3.6, 2.02, (0, 1, 0), bezel=0.025, depth=0.04)
+  screen(B, 'screen_talk', (-17.8, y0 + 0.12, 2.6), 3.6, 2.02, (0, 1, 0), bezel=0.03, depth=0.04, standoff=0.03)
   hit(B, 'hit_talk', (-17.8, y0 + 0.6, 2.6), (4.2, 1.0, 2.6))
   # central worktable: ceramic top on titanium blade legs
   tx0, tx1 = -22.4, -13.2
@@ -660,7 +767,7 @@ def build_corridor(B):
     B.bx(o, x0 - nd, x0, cy - nh - 0.02, cy - nh, 0.86, 3.5, 'ceramic')
     B.bx(o, x0 - nd, x0, cy + nh, cy + nh + 0.02, 0.86, 3.5, 'ceramic')
     B.bx('metal', x0 - nd, x0, cy - nh - 0.02, cy + nh + 0.02, 3.5, 3.54, 'titanium_dark')   # dark reveal housing the downlight
-    screen(B, f'screen_role_{i}', (x0 - nd + 0.1, cy, 2.2), 2.6, 1.3, (1, 0, 0), bezel=0.015, depth=0.03)
+    screen(B, f'screen_role_{i}', (x0 - nd + 0.1, cy, 2.2), 2.6, 1.3, (1, 0, 0), bezel=0.022, depth=0.03, standoff=0.02)
     hit(B, f'hit_role_{i}', (x0 - 0.15, cy, 2.2), (1.0, 2 * nh, 2.6))
     B.area(f'niche_{i}', (x0 - nd / 2, cy, 3.45), (x0 - nd + 0.1, cy, 0.9), size=0.4, size_y=2 * nh - 0.3, power=160 + 40 * i, color=WARM)
   for k in range(1, 19):
@@ -673,7 +780,7 @@ def build_corridor(B):
     col, row = k % 4, k // 4
     cy = 13.0 + col * 5.0
     cz = 2.95 - row * 1.15
-    screen(B, f'screen_cert_{k}', (x1 - 0.1, cy, cz), 1.3, 0.72, (-1, 0, 0), bezel=0.025, depth=0.03, frame_mat='titanium_dark')
+    screen(B, f'screen_cert_{k}', (x1 - 0.115, cy, cz), 1.3, 0.72, (-1, 0, 0), bezel=0.025, depth=0.03, standoff=0.025)
     hit(B, f'hit_cert_{k}', (x1 - 0.4, cy, cz), (0.8, 1.8, 1.0))
   for col in range(4):
     cy = 13.0 + col * 5.0
@@ -729,40 +836,28 @@ def build_terrace(B):
   B.quad('fx', [(x0 + 0.35, py0 + 0.4, wz), (x1 - 0.35, py0 + 0.4, wz), (x1 - 0.35, y1 + 0.02, wz), (x0 + 0.35, y1 + 0.02, wz)], 'water')
   B.bx('fx', x0 + 0.5, x1 - 0.5, py0 + 0.4, py0 + 0.41, wz - 0.06, wz - 0.03, 'emit_warm')
   B.area('pool_edge', (0, py0 + 0.45, wz - 0.02), (0, py0 + 3.0, 0.0), size=x1 - x0 - 1.2, size_y=0.04, power=120, color=WARM)
-  # contact plinth: tapered cast-stone lectern, sloped titanium top, slim cyan seam (the one interactive accent)
+  # contact lectern: an elliptical reeded cast-stone column on a basalt foot; its head is raked to
+  # the reading angle and carries a chamfered superellipse slab over a cyan-lit shadow gap
   cx, cy = 0.0, 40.6
-  w0, d0, w1, d1, hf, hb = 0.62, 0.34, 0.54, 0.28, 1.0, 1.12
-  def wd(z):   # taper of the body at height z
-    t = (z - 0.08) / (hf - 0.08)
-    return w0 + (w1 - w0) * t, d0 + (d1 - d0) * t
-  zg0, zg1 = 0.74, 0.77
-  wa, da = wd(zg0)
-  wb, db = wd(zg1)
-  B.prism(o, [(cx - w0, cy - d0, 0.08), (cx + w0, cy - d0, 0.08), (cx + w0, cy + d0, 0.08), (cx - w0, cy + d0, 0.08),
-              (cx - wa, cy - da, zg0), (cx + wa, cy - da, zg0), (cx + wa, cy + da, zg0), (cx - wa, cy + da, zg0)], 'ceramic', 0.008)
-  B.box(o, (cx, cy, (zg0 + zg1) / 2), (2 * wa - 0.05, 2 * da - 0.05, zg1 - zg0 + 0.01), 'black')
-  B.prism(o, [(cx - wb, cy - db, zg1), (cx + wb, cy - db, zg1), (cx + wb, cy + db, zg1), (cx - wb, cy + db, zg1),
-              (cx - w1, cy - d1, hf), (cx + w1, cy - d1, hf), (cx + w1, cy + d1, hb), (cx - w1, cy + d1, hb)], 'ceramic', 0.008)
-  for sxc in (-1, 1):   # brushed cheeks following the taper, bridging both courses
-    pts = []
-    for z, wz, dz, zf_, zb_ in ((0.08, w0, d0, 0.08, 0.08), (hf, w1, d1, hf, hb)):
-      xi, xo = sorted((cx + sxc * (wz - 0.004), cx + sxc * (wz + 0.014)))
-      pts.append([(xi, cy - dz + 0.05, zf_), (xo, cy - dz + 0.05, zf_), (xo, cy + dz - 0.05, zb_), (xi, cy + dz - 0.05, zb_)])
-    B.prism('metal', pts[0] + pts[1], 'titanium', 0.003)
-  B.prism(o, [(cx - w0 + 0.06, cy - d0 + 0.06, 0.0), (cx + w0 - 0.06, cy - d0 + 0.06, 0.0), (cx + w0 - 0.06, cy + d0 - 0.06, 0.0), (cx - w0 + 0.06, cy + d0 - 0.06, 0.0),
-              (cx - w0 + 0.06, cy - d0 + 0.06, 0.08), (cx + w0 - 0.06, cy - d0 + 0.06, 0.08), (cx + w0 - 0.06, cy + d0 - 0.06, 0.08), (cx - w0 + 0.06, cy + d0 - 0.06, 0.08)], 'black')
-  ins = 0.05
-  B.prism('metal', [(cx - w1 + ins, cy - d1 + ins, hf + (hb - hf) * (ins / (2 * d1)) - 0.004), (cx + w1 - ins, cy - d1 + ins, hf + (hb - hf) * (ins / (2 * d1)) - 0.004),
-                    (cx + w1 - ins, cy + d1 - ins, hb - (hb - hf) * (ins / (2 * d1)) - 0.004), (cx - w1 + ins, cy + d1 - ins, hb - (hb - hf) * (ins / (2 * d1)) - 0.004),
-                    (cx - w1 + ins, cy - d1 + ins, hf + (hb - hf) * (ins / (2 * d1)) + 0.006), (cx + w1 - ins, cy - d1 + ins, hf + (hb - hf) * (ins / (2 * d1)) + 0.006),
-                    (cx + w1 - ins, cy + d1 - ins, hb - (hb - hf) * (ins / (2 * d1)) + 0.006), (cx - w1 + ins, cy + d1 - ins, hb - (hb - hf) * (ins / (2 * d1)) + 0.006)], 'titanium', 0.002)
-  B.bx('fx', cx - w1 + 0.04, cx + w1 - 0.04, cy - d1 - 0.004, cy - d1 - 0.001, hf - 0.06, hf - 0.045, 'emit_cyan')
-  B.box(o, (cx, cy, 0.04), (2 * w0 + 0.24, 2 * d0 + 0.24, 0.08), 'basalt', 0.008)
-
-  # display set into the sloped top (content drawn at runtime)
-  slope = math.atan2(hb - hf, 2 * d1)
-  screen(B, 'screen_contact', (cx, cy, (hf + hb) / 2 + 0.012), 2 * w1 - 0.2, 2 * d1 / math.cos(slope) - 0.16, (0, -1, 0),
-         bezel=0.012, depth=0.008, lean=math.pi / 2 - slope)
+  rx0, rx1, ey, zt = 0.42, 0.36, 0.62, 0.86
+  slope = math.radians(17)
+  k = math.tan(slope)
+  Me = Matrix.Translation((cx, cy, 0)) @ Matrix.Diagonal((1.0, ey, 1.0, 1.0))
+  rake = (0.62, zt, k, cy)
+  fluted(B, o, [(rx0 + 0.02, 0.08), (rx0, 0.11), (rx0, 0.16, 0), (rx0, 0.16, 1), (rx0 - 0.012, 0.32), (rx1 + 0.012, 0.62), (rx1, 0.79),
+                (rx1, zt - 0.03, 1), (rx1, zt - 0.03, 0), (rx1 - 0.012, zt), (0.0, zt)], 'ceramic', flutes=26, fdepth=0.022, z0=0.16, z1=zt - 0.03,
+         spf=8, m=Me, tilt=rake)
+  B.lathe(o, [(rx1 - 0.07, zt), (rx1 - 0.07, zt + 0.045), (0.0, zt + 0.045)], 'black', segs=48, m=Me, tilt=(zt - 1.0, zt - 0.5, k, cy))   # recessed neck
+  B.lathe('fx', [(rx1 - 0.066, zt + 0.012), (rx1 - 0.066, zt + 0.03)], 'emit_cyan', segs=48, smooth=True, cap=False, m=Me, tilt=(zt - 1.0, zt - 0.5, k, cy))
+  B.lathe('metal', [(rx0 + 0.026, 0.074), (rx0 + 0.034, 0.074), (rx0 + 0.034, 0.084), (rx0 + 0.026, 0.084)], 'titanium', segs=64, cap=False, m=Me)
+  B.lathe(o, [(0.0, 0.0), (rx0 + 0.16, 0.0), (rx0 + 0.16, 0.06), (rx0 + 0.14, 0.08), (0.0, 0.08)], 'basalt', segs=64, m=Me)
+  sa, sb, st = 0.6, 0.36, 0.055
+  Ms = Matrix.Translation((cx, cy, zt + 0.045)) @ Matrix.Rotation(slope, 4, 'X')
+  superslab(B, o, Ms, sa, sb, st, 'ceramic', n=5.0, segs=72, ch=0.01)
+  superslab(B, 'metal', Ms @ Matrix.Translation((0, 0, -0.004)), sa + 0.004, sb + 0.004, 0.012, 'titanium', n=5.0, segs=72, ch=0.0)   # brushed edge band
+  # display set into the slab top (content drawn at runtime)
+  sc = Ms @ Vector((0, 0.01, st + 0.0105))   # glass 6.5 mm proud of the slab (clear of the culler's 4 mm probe)
+  screen(B, 'screen_contact', tuple(sc), 0.88, 0.42, (0, -1, 0), bezel=0.014, depth=0.012, lean=math.pi / 2 - slope)
   B.spot('contact_sp', (cx - 1.5, cy - 2.6, 4.5), (cx, cy, 0.9), power=260, angle=26, blend=0.8, radius=0.06)
   hit(B, 'hit_contact', (cx, cy, 0.9), (1.8, 1.2, 1.9))
   # lounge facing the horizon: scanned CC0 lounge chairs and table placed at runtime; proxies cast their baked shadows

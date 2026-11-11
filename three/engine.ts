@@ -73,7 +73,7 @@ const ZONE_COLOR: Partial<Record<Zone, Record<string, string>>> = {
 }
 const ZONE_FILL: Record<Zone, [number, number, number]> = {
   atrium: [0.035, 0.04, 0.05], gallery: [0.05, 0.055, 0.065], lab: [0.2, 0.205, 0.22],
-  corridor: [0.07, 0.075, 0.09], terrace: [0.14, 0.15, 0.2],
+  corridor: [0.1, 0.105, 0.125], terrace: [0.14, 0.15, 0.2],
 }
 const ZONE_EMIT: Record<Zone, number> = { atrium: 5.0, gallery: 0.95, lab: 3.2, corridor: 2.2, terrace: 3.0 }
 

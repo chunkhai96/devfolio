@@ -45,11 +45,11 @@ function canvas(w: number, h: number) {
   return [c, c.getContext('2d')!] as const
 }
 
-function cover(ctx: CanvasRenderingContext2D, im: HTMLImageElement, x: number, y: number, w: number, h: number, alignY = 0.3) {
+function cover(ctx: CanvasRenderingContext2D, im: HTMLImageElement, x: number, y: number, w: number, h: number, alignY = 0.3, alignX = 0.5) {
   const s = Math.max(w / im.width, h / im.height)
   const iw = im.width * s
   const ih = im.height * s
-  ctx.drawImage(im, x + (w - iw) / 2, y + (h - ih) * alignY, iw, ih)
+  ctx.drawImage(im, x + (w - iw) * alignX, y + (h - ih) * alignY, iw, ih)
 }
 
 function contain(ctx: CanvasRenderingContext2D, im: HTMLImageElement, x: number, y: number, w: number, h: number) {
@@ -95,7 +95,8 @@ export async function drawProject(p: AtelierContent['projects'][0], _index: numb
   const [c, ctx] = canvas(W, H)
   ctx.fillStyle = C.ink
   ctx.fillRect(0, 0, W, H)
-  try { cover(ctx, await loadImage(p.imageSrc), 0, 0, W, H, 0.25) } catch { /* keep dark */ }
+  // left-anchored: site logos sit top-left, so crop the right edge instead
+  try { cover(ctx, await loadImage(p.imageSrc), 0, 0, W, H, 0.25, 0) } catch { /* keep dark */ }
   vignette(ctx, W, H)
   return c
 }

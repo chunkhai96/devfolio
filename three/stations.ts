@@ -34,7 +34,8 @@ export const ZONE_STATIONS: Record<Zone, Station> = {
     id: 'atrium', zone: 'atrium',
     landscape: pose(b(-6.2, -8.6, 2.15), b(1.6, 3.2, 2.15), 52, -0.2, 0.48),
     portrait: pose(b(-0.6, -8.6, 1.7), b(0.3, 4.0, 1.7), 64, 0.0, 0.36),
-    tablet: pose(b(-0.6, -8.8, 1.7), b(0.3, 4.0, 1.7), 62, 0.0, 0.52),
+    // tablets: wider lens, less rise, so the lit corridor doorway (a destination) sits above the copy
+    tablet: pose(b(-0.6, -8.8, 1.7), b(0.3, 4.0, 1.7), 74, 0.0, 0.15),
   },
   gallery: {
     id: 'gallery', zone: 'gallery',

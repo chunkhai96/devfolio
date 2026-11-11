@@ -10,7 +10,7 @@
 - main:
   - img "Interactive 3D atelier. All content is also available through the room guide and the text view."
   - group "Points of interest in view":
-    - button "Open RideS": 03 RideS
+    - button "Open 03 RideS": 03 RideS
   - region "Room guide":
     - paragraph: 02 / 05
     - heading "Project Gallery" [level=2]
