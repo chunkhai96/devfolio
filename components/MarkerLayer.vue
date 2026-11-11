@@ -23,7 +23,7 @@ function idx(it: Interactable) {
 </script>
 <template>
   <div ref="root" class="markers" :class="{ 'is-hidden': !st.exploring.value && st.zone.value === 'atrium' }" role="group" aria-label="Points of interest in view">
-    <button v-for="it in visible" :key="it.id" type="button" class="marker" :class="[it.kind, { numbered: hasNum(it) }]" :data-marker="it.id"
+    <button v-for="it in visible" :key="it.id" type="button" class="marker" :class="[it.kind, { numbered: hasNum(it), named: hasNum(it) && it.zone === 'gallery' }]" :data-marker="it.id"
       tabindex="-1" aria-hidden="true" style="opacity: 0"
       :aria-label="it.kind === 'destination' ? `Go to ${it.label}` : hasNum(it) ? `Open ${idx(it)} ${it.label}` : `Open ${it.label}`"
       @click="st.engine.value?.activate(it.id)"
@@ -31,7 +31,7 @@ function idx(it: Interactable) {
       @focus="st.engine.value?.setFocus(it.id)" @blur="st.engine.value?.setFocus(null)">
       <span class="pin" aria-hidden="true"><span class="pin-ring" /><span class="core" /></span>
       <span class="tag">
-        <span v-if="hasNum(it)" class="num">{{ idx(it) }}</span>
+        <span v-if="hasNum(it)" class="num">{{ idx(it) }}</span>{{ hasNum(it) ? ' ' : '' }}
         <span class="txt">{{ it.label }}</span>
         <Icon v-if="it.kind === 'destination'" :name="it.dest === 'atrium' ? 'arrow-left' : 'arrow-right'" :size="13" />
       </span>
@@ -64,6 +64,9 @@ function idx(it: Interactable) {
 .exhibit.numbered .txt { max-width: 0; opacity: 0; overflow: hidden; transition: max-width 260ms var(--ease-out), opacity 200ms var(--ease-out), margin 260ms var(--ease-out); }
 .exhibit.numbered[data-hover='1'] .tag, .exhibit.numbered:focus-visible .tag { height: 30px; padding: 0 12px; gap: 8px; }
 .exhibit.numbered[data-hover='1'] .txt, .exhibit.numbered:focus-visible .txt { max-width: 22rem; opacity: 1; }
+/* gallery exhibits carry their project name at all times (index + title), like a museum label */
+.exhibit.named .tag { height: 26px; padding: 0 10px; gap: 7px; font-size: 0.75rem; }
+.exhibit.named .txt { max-width: 22rem; opacity: 1; }
 .marker[data-hover='1'] .tag, .marker:focus-visible .tag { opacity: 1; transform: none; border-color: rgba(154, 216, 214, 0.6); }
 .marker[data-hover='1'] .pin-ring, .marker:focus-visible .pin-ring { border-color: var(--ice-cyan); transform: scale(1.15); }
 .marker[data-hover='1'] .core, .marker:focus-visible .core { background: var(--ice-cyan); inset: 6px; }

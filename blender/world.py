@@ -539,6 +539,8 @@ def wing_ceiling(B, o, x0, x1, y0, y1, slot_axis, slot_w=1.2, slot_from=None, sl
     B.bx(o, a, b, cy - slot_w / 2, cy + slot_w / 2, z1 + 0.5, z1 + 0.6, 'plaster')
     B.bx(o, a, b, cy - slot_w / 2 - 0.02, cy - slot_w / 2, z1, z1 + 0.5, 'ceramic')
     B.bx(o, a, b, cy + slot_w / 2, cy + slot_w / 2 + 0.02, z1, z1 + 0.5, 'ceramic')
+    for ex in (a - 0.02, b):   # close the light well's ends so the slot never opens onto the void
+      B.bx(o, ex, ex + 0.02, cy - slot_w / 2 - 0.02, cy + slot_w / 2 + 0.02, z1, z1 + 0.5, 'ceramic')
     B.quad('fx', [(a, cy - slot_w / 2 + 0.05, z1 + 0.35), (b, cy - slot_w / 2 + 0.05, z1 + 0.35),
                   (b, cy + slot_w / 2 - 0.05, z1 + 0.35), (a, cy + slot_w / 2 - 0.05, z1 + 0.35)][::-1], 'emit_warm')
   else:
@@ -551,6 +553,8 @@ def wing_ceiling(B, o, x0, x1, y0, y1, slot_axis, slot_w=1.2, slot_from=None, sl
     B.bx(o, cx - slot_w / 2, cx + slot_w / 2, a, b, z1 + 0.5, z1 + 0.6, 'plaster')
     B.bx(o, cx - slot_w / 2 - 0.02, cx - slot_w / 2, a, b, z1, z1 + 0.5, 'ceramic')
     B.bx(o, cx + slot_w / 2, cx + slot_w / 2 + 0.02, a, b, z1, z1 + 0.5, 'ceramic')
+    for ey in (a - 0.02, b):
+      B.bx(o, cx - slot_w / 2 - 0.02, cx + slot_w / 2 + 0.02, ey, ey + 0.02, z1, z1 + 0.5, 'ceramic')
     B.quad('fx', [(cx - slot_w / 2 + 0.05, a, z1 + 0.35), (cx + slot_w / 2 - 0.05, a, z1 + 0.35),
                   (cx + slot_w / 2 - 0.05, b, z1 + 0.35), (cx - slot_w / 2 + 0.05, b, z1 + 0.35)][::-1], 'emit_warm')
 
@@ -590,8 +594,8 @@ def build_gallery(B):
       la, lb = sorted((yi - side * 0.056, back))
       for jx in (cx - bay_w / 2, cx + bay_w / 2 - 0.05):   # returns: solid stone linings, no black wall core on show
         B.bx(o, jx, jx + 0.05, la, lb, 0.14, bay_h - 0.25, 'stone_wall', 0.004)
-      B.bx(o, cx - bay_w / 2, cx + bay_w / 2, ya, yb, 0.0, 0.14, 'ceramic', 0.006)
-      B.bx(o, cx - bay_w / 2, cx + bay_w / 2, ya, yb, bay_h - 0.25, bay_h, 'plaster')
+      B.bx(o, cx - bay_w / 2, cx + bay_w / 2, ya, yb, 0.0, 0.14, 'basalt', 0.006)
+      B.bx(o, cx - bay_w / 2, cx + bay_w / 2, ya, yb, bay_h - 0.25, bay_h, 'basalt')
       B.bx('fx', cx - bay_w / 2 + 0.16, cx + bay_w / 2 - 0.16, ya + 0.05, yb - 0.05, bay_h - 0.252, bay_h - 0.25, 'emit_warm')
       B.area(f'bay_{cx}_{side}', (cx, (ya + yb) / 2, bay_h - 0.3), (cx, back, 1.0), size=4.4, size_y=0.12, power=115, color=WARM)
       # proud anodized frame around the niche mouth, standing just off the cladding face
@@ -728,7 +732,7 @@ def build_lab(B):
     B.bx('fx', tx0 + 0.32, tx1 - 0.32, py - 0.03, py + 0.03, 2.968, 2.969, 'emit_warm')
     for lx in (tx0 + 0.8, tx1 - 0.8):
       B.lathe('metal', [(0.004, 3.03), (0.004, H_WING)], 'titanium', segs=6, center=(lx, py, 0))
-    B.area(f'pend_{py}', ((tx0 + tx1) / 2, py, 2.95), ((tx0 + tx1) / 2, py, 0), size=tx1 - tx0 - 0.8, size_y=0.06, power=430)
+    B.area(f'pend_{py}', ((tx0 + tx1) / 2, py, 2.95), ((tx0 + tx1) / 2, py, 0), size=tx1 - tx0 - 0.8, size_y=0.06, power=290)
   for side in (1, -1):
     B.area(f'lab_up_{side}', ((x0 + x1) / 2, side * 6.6, H_WING - 1.2), ((x0 + x1) / 2, side * 7.0, H_WING + 0.4), size=15.0, size_y=0.1, power=200, color=WARM_SOFT)
   for k in range(int((x1 - x0 - 1.2) / 0.36)):
@@ -814,6 +818,14 @@ def build_terrace(B):
   for dx in (-9, -6, -3, 3, 6, 9):
     B.lathe('fx', [(0.0, 4.598), (0.06, 4.598)], 'emit_warm', segs=24, center=(dx, y0 + 2.6, 0), cap=False)
     B.spot(f'can_{dx}', (dx, y0 + 2.6, 4.55), (dx, y0 + 2.9, 0), power=420, angle=50, blend=0.85, radius=0.05)
+  # canopy hangers: paired titanium tie-rods from the façade to the canopy edge, with clevis plates
+  for dx in (-7.5, -2.5, 2.5, 7.5):
+    p0, p1 = Vector((dx, y0 + 0.02, 7.7)), Vector((dx, y0 + 4.9, 4.92))
+    d = p1 - p0
+    R = d.to_track_quat('Z', 'Y').to_matrix().to_4x4()
+    B.box('metal', None, (0.028, 0.028, d.length), 'titanium', 0.0, m=Matrix.Translation((p0 + p1) / 2) @ R)
+    B.box('metal', (dx, y0 + 0.03, 7.7), (0.12, 0.06, 0.18), 'titanium_dark', 0.004)
+    B.box('metal', (dx, y0 + 4.9, 4.95), (0.1, 0.16, 0.06), 'titanium_dark', 0.004)
   # concealed cove along the façade washing the canopy soffit
   B.area('canopy_cove', (0, y0 + 0.3, 4.3), (0, y0 + 1.6, 6.5), size=x1 - x0 - 1.0, size_y=0.08, power=900, color=WARM_SOFT)
   # side parapets: stone upstand + frameless glass + titanium cap
@@ -844,9 +856,9 @@ def build_terrace(B):
   k = math.tan(slope)
   Me = Matrix.Translation((cx, cy, 0)) @ Matrix.Diagonal((1.0, ey, 1.0, 1.0))
   rake = (0.62, zt, k, cy)
-  fluted(B, o, [(rx0 + 0.02, 0.08), (rx0, 0.11), (rx0, 0.16, 0), (rx0, 0.16, 1), (rx0 - 0.012, 0.32), (rx1 + 0.012, 0.62), (rx1, 0.79),
-                (rx1, zt - 0.03, 1), (rx1, zt - 0.03, 0), (rx1 - 0.012, zt), (0.0, zt)], 'ceramic', flutes=26, fdepth=0.022, z0=0.16, z1=zt - 0.03,
-         spf=8, m=Me, tilt=rake)
+  B.lathe(o, [(rx0 + 0.02, 0.08), (rx0, 0.11), (rx0 - 0.02, 0.6), (rx0 - 0.026, 0.6), (rx0 - 0.026, 0.63), (rx0 - 0.021, 0.63),
+               (rx1, zt - 0.012), (rx1 - 0.012, zt), (0.0, zt)], 'ceramic', segs=96, m=Me, tilt=rake)
+  B.lathe('metal', [(rx0 - 0.027, 0.602), (rx0 - 0.022, 0.602), (rx0 - 0.022, 0.628), (rx0 - 0.027, 0.628)], 'titanium', segs=96, cap=False, m=Me)
   B.lathe(o, [(rx1 - 0.07, zt), (rx1 - 0.07, zt + 0.045), (0.0, zt + 0.045)], 'black', segs=48, m=Me, tilt=(zt - 1.0, zt - 0.5, k, cy))   # recessed neck
   B.lathe('fx', [(rx1 - 0.066, zt + 0.012), (rx1 - 0.066, zt + 0.03)], 'emit_cyan', segs=48, smooth=True, cap=False, m=Me, tilt=(zt - 1.0, zt - 0.5, k, cy))
   B.lathe('metal', [(rx0 + 0.026, 0.074), (rx0 + 0.034, 0.074), (rx0 + 0.034, 0.084), (rx0 + 0.026, 0.084)], 'titanium', segs=64, cap=False, m=Me)
@@ -882,8 +894,7 @@ def build_terrace(B):
       for za, zc in zip(zs[:-1], zs[1:]):
         B.bx(o, x0s, x0s + sw, py_ - pd_ / 2, py_ + pd_ / 2, za + j / 2, zc - j / 2, 'stone_wall', 0.006)
     B.box(o, (lcx, py_, 0.09), (t_ + 0.12, pd_ + 0.12, 0.06), 'basalt', 0.012)                 # plinth block
-    B.box('metal', (sx * (pw_ / 2 + 0.006), py_, (zb + zt) / 2), (0.012, pd_ - 0.04, zt - zb), 'titanium')
-    B.area(f'portal_up_{sx}', (sx * (pw_ / 2 + t_ / 2), py_ - pd_ / 2 - 0.5, 0.06), (sx * (pw_ / 2 + t_ / 2), py_ - pd_ / 2, ph_ * 0.8), size=0.5, size_y=0.16, power=95, color=WARM)
+    B.area(f'portal_up_{sx}', (sx * (pw_ / 2 + t_ / 2), py_ - pd_ / 2 - 0.5, 0.06), (sx * (pw_ / 2 + t_ / 2), py_ - pd_ / 2, ph_ * 0.8), size=0.6, size_y=0.2, power=55, color=WARM)
   # lintel: five voussoir blocks on a dark core, a shadow reveal and a proud basalt cap
   B.box(o, (0, py_, ph_ - t_ / 2), (pw_ + 2 * t_ - 0.05, pd_ - 0.05, t_ - 0.03), 'black')
   span = pw_ + 2 * t_
@@ -893,7 +904,6 @@ def build_terrace(B):
     B.bx(o, xa, xa + bw, py_ - pd_ / 2, py_ + pd_ / 2, ph_ - t_ + j / 2, ph_, 'stone_wall', 0.006)
   B.box(o, (0, py_, ph_ + 0.008), (span - 0.06, pd_ - 0.06, 0.016), 'black')
   B.box(o, (0, py_, ph_ + 0.056), (span + 0.1, pd_ + 0.1, 0.08), 'basalt', 0.012)
-  B.box('metal', (0, py_, ph_ - t_ - 0.006), (pw_, pd_ - 0.04, 0.012), 'titanium')
   B.box(o, (0, py_, 0.03), (pw_ + 2 * t_ + 0.2, pd_ + 0.2, 0.06), 'basalt', 0.006)
   # low titanium bollards along the side parapets: the terrace's practical lights at dusk
   for bx_ in (x0 + 0.75, x1 - 0.75):

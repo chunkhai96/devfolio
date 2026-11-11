@@ -88,7 +88,7 @@ watch(showHero, (v) => {
   padding: 12px 16px; border-radius: 12px; background: var(--panel); border: 1px solid var(--panel-border); color: var(--mist); font-size: 0.9rem; line-height: 1.5;
 }
 .hint {
-  position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 14; font-size: 0.8125rem; color: var(--mist); white-space: nowrap;
+  position: absolute; left: 50%; top: 84px; transform: translateX(-50%); z-index: 14; font-size: 0.8125rem; color: var(--mist); white-space: nowrap;
   padding: 7px 14px; border-radius: 999px; background: rgba(12, 16, 21, 0.72); border: 1px solid var(--hairline); backdrop-filter: blur(6px);
 }
 .fade-enter-active, .fade-leave-active { transition: opacity 400ms var(--ease-out); }

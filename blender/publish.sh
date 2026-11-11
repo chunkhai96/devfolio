@@ -11,7 +11,8 @@ for f in "$BUILD"/lm_*.png; do
   z=$(basename "$f" .png)
   cwebp -quiet -q 98 -m 6 -sharp_yuv "$f" -o "$OUT/$z.webp"
   w=$(sips -g pixelWidth "$f" | awk '/pixelWidth/ {print $2}')
-  cwebp -quiet -q 90 -m 6 -sharp_yuv -resize $((w / 2)) 0 "$f" -o "$OUT/${z}_m.webp"
+  mw=$((w / 2)); [[ "$z" == "lm_terrace" ]] && mw=$w   # terrace: small coursed stone needs full texel density on phones
+  cwebp -quiet -q 90 -m 6 -sharp_yuv -resize $mw 0 "$f" -o "$OUT/${z}_m.webp"
 done
 
 if [[ "${1:-}" == "textures" ]]; then

@@ -29,6 +29,8 @@ interface Travel {
   t: number
   duration: number
   routed: boolean
+  via: THREE.Vector3[]
+  next: number
   resolve: () => void
 }
 
@@ -73,12 +75,13 @@ export class CameraRig {
     }
     const curve = new THREE.CatmullRomCurve3(pts, false, 'centripetal', 0.5)
     const len = curve.getLength()
-    const duration = Math.min(3.2, Math.max(0.9, 0.75 + len * 0.055))
+    // DESIGN §6: 0.7–1.4 s for a room change; long multi-room routes are capped so they never drag
+    const duration = Math.min(1.8, Math.max(0.8, 0.7 + len * 0.028))
     return new Promise((resolve) => {
       this.travel = {
         curve, from: this.clonePose(this.pose), to: this.clonePose(to),
         fromTarget: this.pose.target.clone(), toTarget: to.target.clone(),
-        t: 0, duration, routed: via.length > 0, resolve,
+        t: 0, duration, routed: via.length > 0, via: via.map(v => v.clone()), next: 0, resolve,
       }
     })
   }
@@ -100,12 +103,17 @@ export class CameraRig {
       // look target: blend from->to; when routed through doorways, look along the path mid-way
       const tgt = tr.fromTarget.clone().lerp(tr.toTarget, smootherstep(Math.min(1, Math.max(0, (e - 0.15) / 0.7))))
       if (tr.routed) {
-        const ahead = tr.curve.getPointAt(Math.min(1, e + 0.12))
+        // aim at the next doorway still ahead (then the destination), never the local tangent,
+        // so the camera always looks through the opening it is about to pass
+        while (tr.next < tr.via.length && this.pose.pos.distanceTo(tr.via[tr.next]) < 1.2) tr.next++
+        let li = tr.next
+        if (li < tr.via.length && this.pose.pos.distanceTo(tr.via[li]) < 6) li++   // nearly there: look through to the one after
+        const ahead = li < tr.via.length ? tr.via[li].clone() : tr.toTarget.clone()
         ahead.y = this.pose.pos.y
         const dir = ahead.sub(this.pose.pos)
-        if (dir.lengthSq() > 1e-6) {
-          const lookAhead = this.pose.pos.clone().add(dir.normalize().multiplyScalar(6))
-          const w = Math.sin(Math.PI * e) ** 2 * 0.85
+        if (dir.lengthSq() > 0.25) {
+          const lookAhead = this.pose.pos.clone().add(dir.normalize().multiplyScalar(8))
+          const w = Math.min(1, Math.sin(Math.PI * e) * 1.7)   // full weight through the middle of the route
           tgt.lerp(lookAhead, w)
         }
       }

@@ -33,7 +33,7 @@ export const ZONE_STATIONS: Record<Zone, Station> = {
   atrium: {
     id: 'atrium', zone: 'atrium',
     landscape: pose(b(-6.2, -8.6, 2.15), b(1.6, 3.2, 2.15), 52, -0.2, 0.48),
-    portrait: pose(b(-0.6, -8.6, 1.7), b(0.3, 4.0, 1.7), 64, 0.0, 0.36),
+    portrait: pose(b(-0.6, -8.8, 1.7), b(0.3, 4.0, 1.7), 76, 0.0, 0.16),
     // tablets: wider lens, less rise, so the lit corridor doorway (a destination) sits above the copy
     tablet: pose(b(-0.6, -8.8, 1.7), b(0.3, 4.0, 1.7), 74, 0.0, 0.15),
   },
@@ -88,10 +88,11 @@ export function routeOut(zone: Zone): Vector3[] {
 export function route(from: Zone, to: Zone): Vector3[] {
   if (from === to) return []
   if ((from === 'terrace' && to === 'corridor') || (from === 'corridor' && to === 'terrace')) return [b(0, 34.0, 1.8)]
-  if (from === 'corridor' && to !== 'atrium') return [...routeOut('corridor'), ...routeOut(to).slice().reverse()]
   const out = routeOut(from)
   const inn = routeOut(to).slice().reverse()
-  return [...out, ...inn]
+  // crossing the atrium between two wings: pass through its open centre so the spline never cuts a corner
+  const hub = out.length && inn.length ? [out[out.length - 1].clone().add(inn[0]).multiplyScalar(0.25).setY(1.8)] : []
+  return [...out, ...hub, ...inn]
 }
 
 /** Reflection probe positions per zone. */

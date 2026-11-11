@@ -65,7 +65,7 @@ f = await sample(page, () => page.getByRole('button', { name: /Close/ }).click()
 await sheet('07c-close-exhibit', 'Close: panel exits, camera returns to the gallery overview', f)
 
 // 4. long route: gallery -> corridor -> terrace
-f = await sample(page, () => page.evaluate(() => { location.hash = '#terrace' }), 6200, 180)
+f = await sample(page, () => page.evaluate(() => { location.hash = '#terrace' }), 2800, 110)
 await sheet('07d-travel-gallery-to-terrace', 'Camera travel: gallery → atrium → corridor → terrace', f, 12)
 
 await settle(500)
