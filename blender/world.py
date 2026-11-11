@@ -530,6 +530,11 @@ def build_gallery(B):
           B.prism('metal', [(xa, y_lo, 0.0), (xb, y_lo, 0.0), (xb, y_hi, 0.0), (xa, y_hi, 0.0),
                             (xa, y_lo, zf), (xb, y_lo, zf), (xb, y_hi, zb), (xa, y_hi, zb)], 'titanium', 0.004)
         B.box('metal', (cx, cy, 0.2), (lw - 0.07, ld + 0.004, 0.012), 'titanium', 0.002)
+        # fluted visitor face: dark titanium reveals between the cheeks, and a brushed kick strip
+        yf = cy - side * (ld / 2 + 0.003)
+        for k in range(9):
+          B.box('metal', (cx - 0.72 + k * 0.18, yf, 0.56), (0.014, 0.006, 0.6), 'titanium_dark')
+        B.box('metal', (cx, yf, 0.125), (lw - 0.12, 0.006, 0.05), 'titanium', 0.002)
         screen(B, f'screen_project_{idx}', (cx, cy + side * 0.02, 1.16), 1.6, 0.72, face, bezel=0.02,
                lean=math.radians(56))
         B.box('metal', (cx, cy + side * 0.2, 1.06), (1.2, 0.08, 0.2), 'titanium_dark', 0.004)
@@ -780,7 +785,7 @@ def build_terrace(B):
       ch = (zt - zb) / n
       zs = [zb] + [zb + ch * (c + (0.5 if k == 1 else 0.0)) for c in range(1, n)] + [zt]
       for za, zc in zip(zs[:-1], zs[1:]):
-        B.bx(o, x0s, x0s + sw, py_ - pd_ / 2, py_ + pd_ / 2, za + j / 2, zc - j / 2, 'basalt', 0.006)
+        B.bx(o, x0s, x0s + sw, py_ - pd_ / 2, py_ + pd_ / 2, za + j / 2, zc - j / 2, 'stone_wall', 0.006)
     B.box(o, (lcx, py_, 0.09), (t_ + 0.12, pd_ + 0.12, 0.06), 'basalt', 0.012)                 # plinth block
     B.box('metal', (sx * (pw_ / 2 + 0.006), py_, (zb + zt) / 2), (0.012, pd_ - 0.04, zt - zb), 'titanium')
     B.area(f'portal_up_{sx}', (sx * (pw_ / 2 + t_ / 2), py_ - pd_ / 2 - 0.5, 0.06), (sx * (pw_ / 2 + t_ / 2), py_ - pd_ / 2, ph_ * 0.8), size=0.5, size_y=0.16, power=95, color=WARM)
@@ -790,7 +795,7 @@ def build_terrace(B):
   bw = (span - 4 * j) / 5
   for k in range(5):
     xa = -span / 2 + k * (bw + j)
-    B.bx(o, xa, xa + bw, py_ - pd_ / 2, py_ + pd_ / 2, ph_ - t_ + j / 2, ph_, 'basalt', 0.006)
+    B.bx(o, xa, xa + bw, py_ - pd_ / 2, py_ + pd_ / 2, ph_ - t_ + j / 2, ph_, 'stone_wall', 0.006)
   B.box(o, (0, py_, ph_ + 0.008), (span - 0.06, pd_ - 0.06, 0.016), 'black')
   B.box(o, (0, py_, ph_ + 0.056), (span + 0.1, pd_ + 0.1, 0.08), 'basalt', 0.012)
   B.box('metal', (0, py_, ph_ - t_ - 0.006), (pw_, pd_ - 0.04, 0.012), 'titanium')

@@ -48,7 +48,7 @@ export const ZONE_STATIONS: Record<Zone, Station> = {
   },
   corridor: {
     id: 'corridor', zone: 'corridor',
-    landscape: pose(b(2.7, 14.2, 1.75), b(-2.4, 27.5, 1.8), 56, -0.1, 0.04),
+    landscape: pose(b(2.8, 13.4, 1.75), b(-3.0, 24.6, 1.8), 58, -0.1, 0.04),
     portrait: pose(b(0.4, 10.6, 1.7), b(-0.2, 26.0, 1.7), 68, 0.0, 0.12),
   },
   terrace: {

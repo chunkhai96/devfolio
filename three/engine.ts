@@ -69,7 +69,7 @@ const ZONE_COLOR: Partial<Record<Zone, Record<string, string>>> = {
   gallery: { stone_wall: '#9e9b96', ceramic: '#e4ddd2', plaster: '#5d5c5a' },     // warm exhibition hall
   lab: { stone_wall: '#7c8998', fabric: '#4c5560', ceramic: '#a9a398' },           // cool acoustic studio
   corridor: { stone_wall: '#68737f', ceramic: '#b9b3a9' },                         // deep graphite procession
-  terrace: { plaster: '#d8d4cc' },
+  terrace: { plaster: '#d8d4cc', stone_wall: '#6a6f76' },
 }
 const ZONE_FILL: Record<Zone, [number, number, number]> = {
   atrium: [0.035, 0.04, 0.05], gallery: [0.05, 0.055, 0.065], lab: [0.2, 0.205, 0.22],

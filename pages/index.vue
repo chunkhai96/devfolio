@@ -42,7 +42,7 @@ watch(showHero, (v) => {
       <ExhibitPanel />
       <Transition name="fade">
         <div v-if="loading" class="loader" role="status" aria-live="polite">
-          <span class="ltxt">Preparing the atelier</span>
+          <span class="ltxt">{{ st.progress.value >= 1 ? 'Atelier ready' : 'Preparing the atelier' }}</span>
           <span class="lbar"><span :style="{ transform: `scaleX(${st.progress.value})` }" /></span>
           <span class="lpct">{{ Math.round(st.progress.value * 100) }}%</span>
         </div>

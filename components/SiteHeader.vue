@@ -79,9 +79,10 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
 /* keeps the wordmark legible over bright parts of the scene (oculus, skylight) */
 .site-header::before {
   content: ''; position: absolute; inset: 0 0 -36px 0; pointer-events: none; z-index: -1;
-  background: linear-gradient(180deg, rgba(10, 13, 17, 0.72) 0%, rgba(10, 13, 17, 0.4) 55%, rgba(10, 13, 17, 0) 100%);
+  background: linear-gradient(180deg, rgba(10, 13, 17, 0.86) 0%, rgba(10, 13, 17, 0.6) 55%, rgba(10, 13, 17, 0) 100%);
 }
-.wordmark { display: inline-flex; align-items: center; gap: 12px; color: var(--porcelain); }
+.wordmark { display: inline-flex; align-items: center; gap: 12px; color: var(--porcelain); text-shadow: 0 1px 12px rgba(0, 0, 0, 0.55); }
+.mono-mark { background: rgba(10, 13, 17, 0.55); }
 .mono-mark {
   display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 8px;
   border: 1px solid rgba(215, 223, 223, 0.3); font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em;

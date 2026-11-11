@@ -94,7 +94,7 @@ function pick(it: Item) {
 <style scoped>
 .guide {
   position: absolute; left: 24px; bottom: 24px; z-index: 20; width: 300px;
-  background: rgba(14, 18, 23, 0.985); border: 1px solid var(--panel-border); border-radius: 14px;
+  background: rgb(14, 18, 23); border: 1px solid var(--panel-border); border-radius: 14px;
   backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   padding: 16px 16px 14px; box-shadow: 0 18px 48px rgba(0, 0, 0, 0.35);
 }

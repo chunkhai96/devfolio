@@ -59,6 +59,7 @@ My own earlier self-assessment (4.3) was not confirmed. Four independent art-dir
 | 6 (room-identity pass: per-room palettes, lab baffles, corridor fins, framed displays) | 3.5 | 3 | 3 | 3 | 3 | fail |
 | 7 (scanned CC0 furniture: lab stools, terrace lounge) | 3.5 | 3 | 3 | 3 | 3 | fail |
 | 8 (framing fix, lab/corridor light, calmer finishes, terrace reframe) | 3.8 | 4 | 3 | 4 | 4 | fail (modeling, avg) |
+| 9 (coursed portal, assembled lectern, engineered stands, tablet sheet) | 3.6 | 3 | 3 | 3 | 4 | fail |
 
 Non-visual dimensions are consistently 4 (typography/UI, exploration, content, responsive/a11y). No dimension has ever scored ≤ 2. Every round's concrete defects were fixed before the next (hover cue, overlaid titles, Tailwind class collisions, culled canopy, NaN shaft, marker clutter, contrast, phone layout, etc.), but the four core visual scores did not move: the gap is material/modeling density, not individual bugs.
 
