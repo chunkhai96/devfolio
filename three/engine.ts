@@ -137,7 +137,8 @@ export class AtelierEngine {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance', stencil: false, depth: true })
     this.renderer.outputColorSpace = THREE.SRGBColorSpace
     this.renderer.toneMapping = THREE.NoToneMapping
-    this.dprCap = lowQuality ? 1.5 : 1.75
+    // phones: 2x keeps silhouettes crisp; the adaptive governor still drops it when frames run long
+    this.dprCap = lowQuality ? 2.0 : 1.75
     this.dpr = Math.min(window.devicePixelRatio || 1, this.dprCap)
     this.renderer.setPixelRatio(this.dpr)
     this.scene.fog = new THREE.FogExp2(new THREE.Color(0.012, 0.014, 0.018), 0.0045)
@@ -589,7 +590,9 @@ export class AtelierEngine {
     const guide = !this.portrait && zone !== 'atrium' ? this.inset.left / this.size.x : 0
     // on phones the guide is a bottom sheet: lift the room into the space above it
     const sheet = this.portrait && zone !== 'atrium' ? this.inset.guideBottom / this.size.y : 0
-    return { pos: p.pos.clone(), target: p.target.clone(), fov: p.fov, shiftX: p.shiftX - guide, shiftY: p.shiftY - sheet }
+    // short phones (iPhone SE class): the copy block takes more of the screen, so look further down
+    const short = this.portrait && !tablet && zone === 'atrium' && this.size.y < 700
+    return { pos: p.pos.clone(), target: p.target.clone(), fov: short ? p.fov + 6 : p.fov, shiftX: p.shiftX - guide, shiftY: p.shiftY - sheet - (short ? 0.12 : 0) }
   }
 
   /** Framing for an exhibit: subject centred in the free area left of / above the panel. */

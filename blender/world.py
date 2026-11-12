@@ -19,10 +19,10 @@ from mathutils import Vector, Matrix, Euler
 MATS = [
   'basalt_floor', 'stone_wall', 'plaster', 'ceramic', 'fabric', 'basalt', 'black',
   'titanium', 'titanium_dark',
-  'glass', 'oled', 'emit_warm', 'emit_cyan', 'sky', 'water',
+  'glass', 'oled', 'emit_warm', 'emit_cyan', 'sky', 'water', 'chrome',
 ]
 LIGHTMAPPED = {'basalt_floor', 'stone_wall', 'plaster', 'ceramic', 'fabric', 'basalt', 'black'}
-METAL = {'titanium', 'titanium_dark'}
+METAL = {'titanium', 'titanium_dark', 'chrome'}
 
 # Linear-ish base colours used for the bake (bounce colour) — runtime uses textures.
 BAKE_COLOR = {
@@ -30,6 +30,7 @@ BAKE_COLOR = {
   'plaster': (0.075, 0.08, 0.088), 'ceramic': (0.62, 0.58, 0.52), 'fabric': (0.10, 0.105, 0.11),
   'basalt': (0.035, 0.037, 0.04), 'black': (0.01, 0.01, 0.01),
   'titanium': (0.45, 0.47, 0.48), 'titanium_dark': (0.12, 0.13, 0.14), 'water': (0.01, 0.012, 0.015),
+  'chrome': (0.62, 0.63, 0.64),
 }
 
 WARM = (1.0, 0.80, 0.62)      # ~4000 K
@@ -528,7 +529,7 @@ def build_atrium(B):
   rmax = max(p_[0] for p_ in pts)
   for r_, h_ in reversed(pts):        # bottom (th = pi) to tip (th = 0)
     prof.append((0.5 * r_ / rmax, 0.06 + 1.62 * h_))
-  B.lathe('metal', [(r, z + 0.5) for r, z in prof], 'titanium', segs=96)
+  B.lathe('metal', [(r, z + 0.5) for r, z in prof], 'chrome', segs=128)   # polished, one look on every device tier
   B.lathe(o, [(0.0, 0.5), (0.68, 0.5), (0.68, 0.53), (0.65, 0.56), (0.0, 0.56)], 'basalt', segs=96)
   # sculpture suspension: titanium ring + 4 hangers
   ring_z = 9.2
@@ -721,7 +722,7 @@ def build_lab(B):
     nb = int((x1 - x0 - 0.3) / 0.16)
     for k in range(nb):
       bx_ = x0 + 0.15 + k * 0.16 + 0.08
-      B.bx('metal', bx_ - 0.018, bx_ + 0.018, sa, sb, 1.26, H_WING - 0.66, 'titanium_dark', 0.002)
+      B.bx(o, bx_ - 0.018, bx_ + 0.018, sa, sb, 1.26, H_WING - 0.66, 'basalt', 0.002)
     B.bx('metal', x0, x1, sa - (0.004 if side > 0 else 0), sb + (0.0 if side > 0 else 0.004), 1.23, 1.26, 'titanium_dark', 0.002)
     B.bx('metal', x0, x1, sa - (0.004 if side > 0 else 0), sb + (0.0 if side > 0 else 0.004), H_WING - 0.66, H_WING - 0.63, 'titanium_dark', 0.002)
   clad(B, o, 'y', x0, 1, y0, y1, PANEL_Z0, H_WING, 1.4, 3, [], 'stone_wall')
@@ -753,12 +754,26 @@ def build_lab(B):
   # lecture screen on the south wall (talks)
   screen(B, 'screen_talk', (-17.8, y0 + 0.12, 2.6), 3.6, 2.02, (0, 1, 0), bezel=0.03, depth=0.04, standoff=0.03)
   hit(B, 'hit_talk', (-17.8, y0 + 0.6, 2.6), (4.2, 1.0, 2.6))
-  # central worktable: ceramic top on titanium blade legs
+  # central worktable: honed stone top with a chamfered edge over a shadow gap and a recessed
+  # anodized apron, carried on three trestles (twin tapered posts, foot bar, top rail), with a
+  # cable tray along the spine and flush power/data inserts in the top
   tx0, tx1 = -22.4, -13.2
-  B.box(o, ((tx0 + tx1) / 2, 0, 0.9), (tx1 - tx0, 1.5, 0.05), 'ceramic', 0.008)
-  for lx in (tx0 + 0.5, (tx0 + tx1) / 2, tx1 - 0.5):
-    B.box('metal', (lx, 0, 0.44), (0.05, 1.2, 0.86), 'titanium', 0.004)
-  B.box('metal', ((tx0 + tx1) / 2, 0, 0.82), (tx1 - tx0 - 0.8, 0.06, 0.04), 'titanium_dark', 0.004)
+  tcx, tw, td = (tx0 + tx1) / 2, tx1 - tx0, 1.5
+  B.box(o, (tcx, 0, 0.905), (tw, td, 0.06), 'basalt', 0.012)                          # top: honed basalt slab
+  B.box(o, (tcx, 0, 0.862), (tw - 0.12, td - 0.12, 0.026), 'black')                    # shadow gap
+  B.box('metal', (tcx, 0, 0.8), (tw - 0.5, td - 0.42, 0.1), 'titanium_dark', 0.006)     # recessed apron
+  for lx in (tx0 + 0.7, tcx, tx1 - 0.7):
+    for py in (-0.42, 0.42):
+      B.prism('metal', [(lx - 0.035, py - 0.03, 0.03), (lx + 0.035, py - 0.03, 0.03), (lx + 0.035, py + 0.03, 0.03), (lx - 0.035, py + 0.03, 0.03),
+                        (lx - 0.025, py - 0.022, 0.75), (lx + 0.025, py - 0.022, 0.75), (lx + 0.025, py + 0.022, 0.75), (lx - 0.025, py + 0.022, 0.75)], 'titanium', 0.003)
+    B.box('metal', (lx, 0, 0.03), (0.09, 1.1, 0.06), 'titanium_dark', 0.006)            # foot bar
+    for py in (-0.5, 0.5):
+      B.box('metal', (lx, py, 0.007), (0.11, 0.09, 0.014), 'titanium', 0.003)            # levelling feet
+    B.box('metal', (lx, 0, 0.765), (0.07, 0.96, 0.03), 'titanium', 0.003)               # top rail
+  B.box('metal', (tcx, 0, 0.66), (tw - 1.6, 0.16, 0.05), 'titanium_dark', 0.004)        # cable tray
+  for k in range(6):                                                                    # flush power/data inserts
+    ix = tx0 + 0.9 + k * (tw - 1.8) / 5
+    B.box('metal', (ix, 0, 0.936), (0.22, 0.09, 0.004), 'titanium', 0.0015)
   # bar stools are scanned CC0 models placed at runtime (three/props.ts); proxies give them baked contact shadows
   for sx in (-20.6, -17.8, -15.0):
     for sy in (-1.25, 1.25):
@@ -916,7 +931,7 @@ def build_terrace(B):
     B.box('proxy', (lx, ly, 0.28), (0.9, 0.95, 0.5), 'titanium', 0.05)
   B.box('proxy', (-5.8, 41.7, 0.36), (1.2, 0.6, 0.05), 'titanium', 0.01)
   B.area('lounge_lamp', (-5.8, 39.6, 4.55), (-5.8, 41.0, 0.0), size=1.6, size_y=1.6, power=120, color=WARM)
-  # horizon portal: freestanding basalt frame on the building's axis, lined in titanium, washed from below
+  # horizon portal: freestanding dressed-limestone frame on the building's axis, washed from below
   pw_, ph_, pd_, t_ = 4.4, 5.2, 0.55, 0.55
   py_ = 42.75
   j = 0.012                      # stone joint
@@ -924,23 +939,20 @@ def build_terrace(B):
   for sx in (-1, 1):
     lcx = sx * (pw_ / 2 + t_ / 2)
     B.box(o, (lcx, py_, (zb + zt) / 2), (t_ - 0.05, pd_ - 0.05, zt - zb), 'black')            # core seen through joints
-    sw = (t_ - 2 * j) / 3
-    for k in range(3):           # three staves per leg, middle one in running bond
-      x0s = lcx - t_ / 2 + k * (sw + j)
-      n = 7
-      ch = (zt - zb) / n
-      zs = [zb] + [zb + ch * (c + (0.5 if k == 1 else 0.0)) for c in range(1, n)] + [zt]
-      for za, zc in zip(zs[:-1], zs[1:]):
-        B.bx(o, x0s, x0s + sw, py_ - pd_ / 2, py_ + pd_ / 2, za + j / 2, zc - j / 2, 'stone_wall', 0.006)
+    n = 4                        # four large dressed courses, separated by deep shadow reveals
+    rv = 0.03
+    ch = (zt - zb) / n
+    for c in range(n):
+      za, zc = zb + c * ch + rv / 2, zb + (c + 1) * ch - rv / 2
+      B.bx(o, lcx - t_ / 2, lcx + t_ / 2, py_ - pd_ / 2, py_ + pd_ / 2, za, zc, 'stone_wall', 0.014)
     B.box(o, (lcx, py_, 0.09), (t_ + 0.12, pd_ + 0.12, 0.06), 'basalt', 0.012)                 # plinth block
-    B.area(f'portal_up_{sx}', (sx * (pw_ / 2 + t_ / 2), py_ - pd_ / 2 - 0.5, 0.06), (sx * (pw_ / 2 + t_ / 2), py_ - pd_ / 2, ph_ * 0.8), size=0.6, size_y=0.2, power=55, color=WARM)
-  # lintel: five voussoir blocks on a dark core, a shadow reveal and a proud basalt cap
-  B.box(o, (0, py_, ph_ - t_ / 2), (pw_ + 2 * t_ - 0.05, pd_ - 0.05, t_ - 0.03), 'black')
+    B.area(f'portal_up_{sx}', (sx * (pw_ / 2 + t_ / 2), py_ - pd_ / 2 - 0.5, 0.06), (sx * (pw_ / 2 + t_ / 2), py_ - pd_ / 2, ph_ * 0.8), size=0.6, size_y=0.2, power=40, color=WARM)
+  # lintel: one dressed block over a shadow reveal (the leg cores show in the joint), a soffit reveal and a proud basalt cap
+  for sx in (-1, 1):
+    B.box(o, (sx * (pw_ / 2 + t_ / 2), py_, ph_ - t_ + 0.0), (t_ - 0.05, pd_ - 0.05, 0.06), 'black')
   span = pw_ + 2 * t_
-  bw = (span - 4 * j) / 5
-  for k in range(5):
-    xa = -span / 2 + k * (bw + j)
-    B.bx(o, xa, xa + bw, py_ - pd_ / 2, py_ + pd_ / 2, ph_ - t_ + j / 2, ph_, 'stone_wall', 0.006)
+  B.bx(o, -span / 2, span / 2, py_ - pd_ / 2, py_ + pd_ / 2, ph_ - t_ + 0.02, ph_, 'stone_wall', 0.014)   # single lintel block
+  B.bx(o, -pw_ / 2 + 0.06, pw_ / 2 - 0.06, py_ - pd_ / 2 + 0.08, py_ + pd_ / 2 - 0.08, ph_ - t_ - 0.004, ph_ - t_ + 0.02, 'black')   # soffit reveal
   B.box(o, (0, py_, ph_ + 0.008), (span - 0.06, pd_ - 0.06, 0.016), 'black')
   B.box(o, (0, py_, ph_ + 0.056), (span + 0.1, pd_ + 0.1, 0.08), 'basalt', 0.012)
   B.box(o, (0, py_, 0.03), (pw_ + 2 * t_ + 0.2, pd_ + 0.2, 0.06), 'basalt', 0.006)

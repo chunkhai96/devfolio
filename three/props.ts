@@ -10,9 +10,20 @@ interface Placement { file: string, zone: Zone, at: [number, number, number], ya
 
 /** Bring scanned finishes into the palette (DESIGN §2.1: no new saturated accents). */
 const TINT: Record<string, [number, number, number]> = {
-  mid_century_lounge_chair: [0.5, 0.44, 0.42],   // cognac leather -> deep espresso
-  metal_stool_01: [0.62, 0.66, 0.72],             // copper -> brushed steel
+  mid_century_lounge_chair: [0.62, 0.6, 0.6],    // red leather -> desaturated graphite-cognac
+  metal_stool_01: [0.78, 0.8, 0.84],              // copper -> brushed steel
   modern_coffee_table_01: [0.7, 0.68, 0.66],
+}
+/** Saturation kept from the scanned albedo (1 = untouched). */
+const SAT: Record<string, number> = { mid_century_lounge_chair: 0.28, metal_stool_01: 0.12 }
+
+function desaturate(m: THREE.MeshStandardMaterial, sat: number) {
+  m.onBeforeCompile = (sh) => {
+    sh.fragmentShader = sh.fragmentShader.replace('#include <map_fragment>',
+      `#include <map_fragment>\n  diffuseColor.rgb = mix( vec3( dot( diffuseColor.rgb, vec3( 0.299, 0.587, 0.114 ) ) ), diffuseColor.rgb, ${sat.toFixed(2)} );`)
+  }
+  m.customProgramCacheKey = () => `desat${sat}`
+  m.needsUpdate = true
 }
 
 const PLACEMENTS: Placement[] = [
@@ -40,7 +51,11 @@ export async function loadProps(loader: GLTFLoader, base: string, scene: THREE.S
     const tint = TINT[p.file]
     if (tint) obj.traverse((o) => {
       const m = (o as THREE.Mesh).material as THREE.MeshStandardMaterial | undefined
-      if (m?.color && !m.userData.tinted) { m.color.multiply(new THREE.Color(...tint)); m.userData.tinted = true }
+      if (m?.color && !m.userData.tinted) {
+        m.color.multiply(new THREE.Color(...tint))
+        if (SAT[p.file] !== undefined) desaturate(m, SAT[p.file])
+        m.userData.tinted = true
+      }
     })
     obj.position.copy(b(...p.at))
     obj.rotation.y = THREE.MathUtils.degToRad(p.yaw)

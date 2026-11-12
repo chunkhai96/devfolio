@@ -31,6 +31,8 @@ export const SPECS: Record<string, Spec> = {
   black: { color: '#0b0d10', roughness: 0.9, lightmapped: true, envIntensity: 0.1 },
   titanium: { color: '#c3c9cc', roughness: 0.9, metalness: 1, tex: 'brushed', tile: 0.35, normalScale: 0.6, envIntensity: 1.15, lightmapped: false, physical: true, anisotropy: 0.85 },
   titanium_dark: { color: '#3d434a', roughness: 0.55, metalness: 1, envIntensity: 1.0, lightmapped: false },
+  // the plinth drop: polished stainless, no texture or anisotropy, so it reads the same on every tier
+  chrome: { color: '#d4d8db', roughness: 0.14, metalness: 1, envIntensity: 1.6, lightmapped: false },
 }
 
 const LM_CHUNK = /* glsl */`

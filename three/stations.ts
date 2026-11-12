@@ -58,7 +58,8 @@ export const ZONE_STATIONS: Record<Zone, Station> = {
   terrace: {
     id: 'terrace', zone: 'terrace',
     // three-quarter view from under the canopy: soffit overhead, lounge and plinth in the middle ground, portal and sea beyond
-    landscape: pose(b(5.4, 34.9, 1.65), b(-1.6, 43.0, 1.8), 56, -0.1, 0.1),
+    // from beside the lounge, looking through the portal: kiosk framed in the opening, horizon behind
+    landscape: pose(b(-2.4, 35.4, 1.6), b(0.7, 44.0, 1.8), 56, 0.0, 0.1),
     portrait: pose(b(0.0, 35.2, 1.6), b(0.0, 46.0, 1.9), 70, 0.0, 0.14),
   },
 }

@@ -67,8 +67,9 @@ function explore() {
 /* short portrait screens (iPhone SE class): keep the whole intro below the header */
 @media (max-aspect-ratio: 4/5) and (max-height: 720px) {
   .hero { bottom: 14px; }
-  .hero-eyebrow { margin-bottom: 8px; }
-  .hero-name { font-size: 2.6rem; }
+  .hero-eyebrow { margin-bottom: 8px; font-size: 0.6rem; letter-spacing: 0.12em; white-space: nowrap; }
+  .hero-name { font-size: 2.35rem; }
+  .hero-roles { display: none; }   /* the eyebrow already carries the role; keeps the 3D hero visible above the copy */
   .hero-desc { margin-top: 10px; font-size: 1.02rem; }
   .hero-roles { font-size: 0.875rem; margin-top: 6px; }
   .hero-actions { margin-top: 16px; gap: 8px; }
