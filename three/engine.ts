@@ -67,15 +67,15 @@ const ZONE_LM: Record<Zone, number> = { atrium: 1.0, gallery: 0.95, lab: 1.25, c
 const ZONE_COLOR: Partial<Record<Zone, Record<string, string>>> = {
   // each room keeps the campus materials but shifts their emphasis (DESIGN §3.2)
   gallery: { stone_wall: '#8e9094', ceramic: '#cfc9bf', plaster: '#55575a' },     // graphite hall, warmth from the light only
-  lab: { stone_wall: '#7c8998', fabric: '#4c5560', ceramic: '#a9a398' },           // cool acoustic studio
+  lab: { stone_wall: '#7c8998', fabric: '#4c5560', ceramic: '#938e85' },           // cool acoustic studio
   corridor: { stone_wall: '#68737f', ceramic: '#b9b3a9' },                         // deep graphite procession
-  terrace: { plaster: '#d8d4cc', stone_wall: '#6a6f76' },
+  terrace: { plaster: '#d8d4cc', stone_wall: '#6a6f76', basalt_floor: '#7a736b' },   // warm dusk ground
 }
 const ZONE_FILL: Record<Zone, [number, number, number]> = {
   atrium: [0.045, 0.05, 0.062], gallery: [0.085, 0.09, 0.105], lab: [0.2, 0.205, 0.22],
-  corridor: [0.13, 0.135, 0.155], terrace: [0.14, 0.15, 0.2],
+  corridor: [0.13, 0.135, 0.155], terrace: [0.16, 0.145, 0.13],
 }
-const ZONE_EMIT: Record<Zone, number> = { atrium: 5.0, gallery: 0.6, lab: 3.2, corridor: 2.2, terrace: 3.0 }
+const ZONE_EMIT: Record<Zone, number> = { atrium: 5.0, gallery: 0.6, lab: 1.7, corridor: 2.2, terrace: 3.0 }
 
 export class AtelierEngine {
   private renderer!: THREE.WebGLRenderer
@@ -798,7 +798,7 @@ export class AtelierEngine {
         if (!hit) break
         y = hit.y - 34
       }
-      const clearOfGuide = !(x < this.inset.left + 16 && y > H * 0.12)
+      const clearOfGuide = !(x < 324 && y > H * 0.42 && this.inset.left > 0)   // guide card: lower-left only
       const onScreen = !behind && !far && clearOfGuide && x > 24 && x < W - 24 && y > 72 && y < H - 24
       if (!onScreen) {
         if (el.dataset.vis !== '0') { el.dataset.vis = '0'; el.style.opacity = '0'; el.style.pointerEvents = 'none'; el.tabIndex = -1; el.setAttribute('aria-hidden', 'true') }

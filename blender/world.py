@@ -527,9 +527,9 @@ def build_atrium(B):
   pts = [(math.sin(th) * math.sin(th / 2) ** 1.5, (1 + math.cos(th)) / 2) for th in (math.pi * k / 48 for k in range(49))]
   rmax = max(p_[0] for p_ in pts)
   for r_, h_ in reversed(pts):        # bottom (th = pi) to tip (th = 0)
-    prof.append((0.36 * r_ / rmax, 0.06 + 1.14 * h_))
+    prof.append((0.5 * r_ / rmax, 0.06 + 1.62 * h_))
   B.lathe('metal', [(r, z + 0.5) for r, z in prof], 'titanium', segs=96)
-  B.lathe(o, [(0.0, 0.5), (0.5, 0.5), (0.5, 0.53), (0.47, 0.56), (0.0, 0.56)], 'basalt', segs=96)
+  B.lathe(o, [(0.0, 0.5), (0.68, 0.5), (0.68, 0.53), (0.65, 0.56), (0.0, 0.56)], 'basalt', segs=96)
   # sculpture suspension: titanium ring + 4 hangers
   ring_z = 9.2
   B.lathe('metal', [(2.95, ring_z - 0.05), (3.05, ring_z - 0.05), (3.05, ring_z + 0.05), (2.95, ring_z + 0.05), (2.95, ring_z - 0.05)],

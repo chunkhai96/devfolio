@@ -93,7 +93,7 @@ function pick(it: Item) {
 </template>
 <style scoped>
 .guide {
-  position: absolute; left: 24px; bottom: 24px; z-index: 20; width: 300px;
+  position: absolute; left: 24px; bottom: 24px; z-index: 20; width: 284px;
   background: rgb(14, 18, 23); border: 1px solid var(--panel-border); border-radius: 14px;
   backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   padding: 16px 16px 14px; box-shadow: 0 18px 48px rgba(0, 0, 0, 0.35);
@@ -105,11 +105,12 @@ function pick(it: Item) {
 .guide-toggle { width: 36px; height: 36px; border-radius: 9px; display: grid; place-items: center; color: var(--mist); border: 1px solid var(--hairline); }
 .guide-toggle:hover { color: #fff; border-color: rgba(154, 216, 214, 0.45); }
 @media (pointer: coarse) { .guide-toggle { width: 44px; height: 44px; } }
-.plan { margin: 14px 0 4px; max-width: 200px; }
-.blurb { margin-top: 10px; font-size: 0.875rem; line-height: 1.5; color: var(--mist); opacity: 0.86; }
+/* compact card over the floor: no floor-plan diagram, tighter rows, so it never covers a wall exhibit */
+.plan { display: none; }
+.blurb { margin-top: 8px; font-size: 0.84rem; line-height: 1.5; color: var(--mist); opacity: 0.86; }
 .items { margin-top: 10px; border-top: 1px solid var(--hairline); }
 .item {
-  width: 100%; display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 8px 4px;
+  width: 100%; display: flex; align-items: center; gap: 12px; min-height: 34px; padding: 6px 4px;
   border-bottom: 1px solid var(--hairline); color: var(--porcelain); text-align: left; font-size: 0.9rem;
   transition: color 160ms, padding 200ms var(--ease-out);
 }
