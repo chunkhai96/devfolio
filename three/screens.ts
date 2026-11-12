@@ -330,7 +330,7 @@ export function drawRole(r: AtelierContent['experience'][0], step: number, total
   const [c, ctx] = canvas(W, H)
   ctx.fillStyle = C.ink
   ctx.fillRect(0, 0, W, H)
-  const pad = 84
+  const pad = 132   // generous margin: the recessed panel's bezel lip hides the edges at oblique angles
   ctx.fillStyle = C.titanium
   ctx.font = `500 26px ${MONO}`
   ctx.fillText(`${String(step).padStart(2, '0')} / ${String(total).padStart(2, '0')}`, pad, pad + 8)

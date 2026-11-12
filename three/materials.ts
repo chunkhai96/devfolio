@@ -148,7 +148,8 @@ export class MaterialLibrary {
     const usePhysical = spec.physical && !this.lowQuality
     const m = usePhysical ? new THREE.MeshPhysicalMaterial() : new THREE.MeshStandardMaterial()
     m.color.set(spec.color)
-    m.roughness = spec.roughness
+    // without anisotropy (low tier) brushed metal at full roughness turns dull black: polish it a little instead
+    m.roughness = spec.anisotropy && !usePhysical ? spec.roughness * 0.55 : spec.roughness
     m.metalness = spec.metalness ?? 0
     m.envMapIntensity = spec.envIntensity ?? 1
     if (spec.tex) {

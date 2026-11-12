@@ -67,7 +67,7 @@ const ZONE_LM: Record<Zone, number> = { atrium: 1.0, gallery: 0.95, lab: 1.25, c
 const ZONE_COLOR: Partial<Record<Zone, Record<string, string>>> = {
   // each room keeps the campus materials but shifts their emphasis (DESIGN §3.2)
   gallery: { stone_wall: '#8e9094', ceramic: '#cfc9bf', plaster: '#55575a' },     // graphite hall, warmth from the light only
-  lab: { stone_wall: '#7c8998', fabric: '#4c5560', ceramic: '#938e85' },           // cool acoustic studio
+  lab: { stone_wall: '#7c8998', fabric: '#4c5560', ceramic: '#7f7a72' },           // cool acoustic studio
   corridor: { stone_wall: '#68737f', ceramic: '#b9b3a9' },                         // deep graphite procession
   terrace: { plaster: '#d8d4cc', stone_wall: '#6a6f76', basalt_floor: '#7a736b' },   // warm dusk ground
 }
@@ -399,8 +399,9 @@ export class AtelierEngine {
 
   private makeOutline(g: ReturnType<AtelierEngine['screenGeom']>) {
     const grp = new THREE.Group() as unknown as THREE.Mesh
-    const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.6, 0.85, 0.84).multiplyScalar(3.2), transparent: true, opacity: 0, fog: false, depthWrite: false })
-    const t = 0.024
+    // controlled cyan edge (DESIGN §6): below the bloom threshold so it never reads as a white neon stroke
+    const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.6, 0.85, 0.84).multiplyScalar(1.05), transparent: true, opacity: 0, fog: false, depthWrite: false })
+    const t = 0.012
     const pad = 0.075
     const w = g.width + pad * 2
     const h = g.height + pad * 2

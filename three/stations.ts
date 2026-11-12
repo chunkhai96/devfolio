@@ -83,14 +83,15 @@ export function routeOut(zone: Zone): Vector3[] {
     case 'gallery': return [PORTAL.gallery]
     case 'lab': return [PORTAL.lab]
     case 'corridor': return [PORTAL.corridor]
-    case 'terrace': return [b(0, 34.0, 1.8), b(0, 22, 1.8), PORTAL.corridor]
+    case 'terrace': return [b(1.6, 33.2, 1.8), b(0, 22, 1.8), PORTAL.corridor]
     default: return []
   }
 }
 
 export function route(from: Zone, to: Zone): Vector3[] {
   if (from === to) return []
-  if ((from === 'terrace' && to === 'corridor') || (from === 'corridor' && to === 'terrace')) return [b(0, 34.0, 1.8)]
+  // one soft turn through the doorway, biased toward the terrace station so the arrival never reverses
+  if ((from === 'terrace' && to === 'corridor') || (from === 'corridor' && to === 'terrace')) return [b(1.6, 33.2, 1.8)]
   const out = routeOut(from)
   const inn = routeOut(to).slice().reverse()
   // crossing the atrium between two wings: pass through its open centre so the spline never cuts a corner
