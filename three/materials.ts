@@ -32,7 +32,7 @@ export const SPECS: Record<string, Spec> = {
   titanium: { color: '#c3c9cc', roughness: 0.9, metalness: 1, tex: 'brushed', tile: 0.35, normalScale: 0.6, envIntensity: 1.15, lightmapped: false, physical: true, anisotropy: 0.85 },
   titanium_dark: { color: '#3d434a', roughness: 0.55, metalness: 1, envIntensity: 1.0, lightmapped: false },
   // the plinth drop: polished stainless, no texture or anisotropy, so it reads the same on every tier
-  chrome: { color: '#d4d8db', roughness: 0.14, metalness: 1, envIntensity: 1.6, lightmapped: false },
+  chrome: { color: '#d4d8db', roughness: 0.3, metalness: 1, envIntensity: 2.3, lightmapped: false },   // satin: picks up the oculus from any camera angle
 }
 
 const LM_CHUNK = /* glsl */`
