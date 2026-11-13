@@ -5,7 +5,6 @@ import ContactPanel from './panels/ContactPanel.vue'
 <template>
   <div class="doc">
     <section class="intro" aria-labelledby="doc-name">
-      <p class="eyebrow cyan">{{ experience.timelineItems[0].title }} · {{ experience.timelineItems[0].company }}</p>
       <h1 id="doc-name" class="name">{{ landing.title }}</h1>
       <p class="desc">{{ landing.description }}</p>
       <p class="roles">{{ whatido.roles.join(' · ') }}</p>
@@ -91,11 +90,11 @@ import ContactPanel from './panels/ContactPanel.vue'
 <style scoped>
 .doc { max-width: 1080px; margin: 0 auto; padding: 120px 24px 48px; }
 .cyan { color: var(--ice-cyan); }
-.name { font-family: var(--font-display); font-weight: 600; font-size: clamp(3rem, 6vw, 5.5rem); letter-spacing: -0.025em; line-height: 0.98; margin-top: 18px; }
+.name { font-family: var(--font-display); font-weight: 600; font-size: clamp(3rem, 6vw, 5.5rem); letter-spacing: -0.025em; line-height: 0.98; }
 .desc { margin-top: 20px; font-size: 1.3rem; color: var(--porcelain); }
 .roles { margin-top: 8px; color: var(--mist); }
 .intro { text-align: center; }
-.row { margin-top: 28px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 16px; }
+.row { margin-top: 28px; display: flex; flex-direction: column; align-items: center; gap: 18px; }   /* Résumé, then the profile links */
 .sec { margin-top: 112px; scroll-margin-top: 88px; }
 .sec header { text-align: center; }
 .sec header h2 { font-family: var(--font-display); font-weight: 600; font-size: clamp(2rem, 3.4vw, 3.25rem); letter-spacing: -0.015em; margin-top: 10px; }
