@@ -90,8 +90,9 @@ export class CameraRig {
 
   /** drag-look in normalised units (fraction of viewport) */
   look(dx: number, dy: number) {
-    this.yawT = THREE.MathUtils.clamp(this.yawT - dx * 1.4, -0.42, 0.42)
-    this.pitchT = THREE.MathUtils.clamp(this.pitchT - dy * 0.8, -0.16, 0.2)
+    // "grab the world": the scene follows the pointer (like Street View / 360 photos), not FPS mouse-look
+    this.yawT = THREE.MathUtils.clamp(this.yawT + dx * 1.4, -0.42, 0.42)
+    this.pitchT = THREE.MathUtils.clamp(this.pitchT + dy * 0.8, -0.16, 0.2)
   }
 
   pointer(nx: number, ny: number) { this.parT.set(nx, ny) }
