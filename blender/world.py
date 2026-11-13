@@ -639,7 +639,7 @@ def build_gallery(B):
         cy = back - side * (0.04 + 0.03 + 0.045)
         screen(B, f'screen_project_{idx}', (cx, cy, 2.2), 3.4, 1.5, face, bezel=0.05, depth=0.045, standoff=0.03)
         hit(B, f'hit_project_{idx}', (cx, (yi + back) / 2, 2.2), (4.0, 1.2, 2.4))
-        B.spot(f'sp_{idx}', (cx, yi - side * 3.2, H_WING - 0.2), (cx, back, 2.2), power=700, angle=30, blend=0.7, radius=0.1)
+        B.spot(f'sp_{idx}', (cx, yi - side * 3.2, H_WING - 0.2), (cx, back, 2.2), power=1250, angle=24, blend=0.45, radius=0.08)
       elif kind == 'easel':
         # freestanding totem: slim titanium portal frame on a ceramic foot, display in the upper field
         cy = yi - side * 1.1
@@ -657,7 +657,7 @@ def build_gallery(B):
         B.box('metal', (cx, cy, 1.02), (tw, 0.07, 0.03), 'titanium_dark', 0.003)
         screen(B, f'screen_project_{idx}', (cx, cy - side * 0.012, 1.95), 2.55, 1.13, face, bezel=0.02, depth=0.03)
         hit(B, f'hit_project_{idx}', (cx, cy, 1.5), (3.2, 1.0, 3.0))
-        B.spot(f'sp_{idx}', (cx, cy - side * 3.0, H_WING - 0.2), (cx, cy, 1.4), power=820, angle=28, blend=0.7, radius=0.1)
+        B.spot(f'sp_{idx}', (cx, cy - side * 3.0, H_WING - 0.2), (cx, cy, 1.4), power=1400, angle=22, blend=0.45, radius=0.08)
       else:  # lectern: brushed-titanium cheeks holding a sloped ceramic desk over a recessed toe kick
         cy = yi - side * 1.0
         lw, ld = 1.9, 0.78
@@ -680,7 +680,7 @@ def build_gallery(B):
                lean=math.radians(56))
         B.box('metal', (cx, cy + side * 0.2, 1.06), (1.2, 0.08, 0.2), 'titanium_dark', 0.004)
         hit(B, f'hit_project_{idx}', (cx, cy, 1.0), (2.2, 1.2, 2.0))
-        B.spot(f'sp_{idx}', (cx, cy - side * 3.0, H_WING - 0.2), (cx, cy, 0.9), power=780, angle=26, blend=0.7, radius=0.1)
+        B.spot(f'sp_{idx}', (cx, cy - side * 3.0, H_WING - 0.2), (cx, cy, 0.9), power=1300, angle=21, blend=0.45, radius=0.08)
   # end wall
   solid_wall_y(B, o, y0 - 1.2, y1 + 1.2, x1, x1 + 0.6, 0, H_WING, [], 'black')
   clad(B, o, 'y', x1, -1, y0, y1, PANEL_Z0, H_WING, 0.6, [PANEL_Z0, 0.9, H_WING - 0.55, H_WING], [], 'stone_wall', gap=0.01)
@@ -694,9 +694,10 @@ def build_gallery(B):
   # atrium-side wall of the gallery (back of atrium east wall) cladding
   clad(B, o, 'y', 9.6, 1, y0, y1, PANEL_Z0, H_WING, 0.6, [PANEL_Z0, 0.9, H_WING - 0.55, H_WING], [(-2.25, 2.25, 0, PORTAL_H)], 'stone_wall', clip=True, gap=0.01)
   for side in (1, -1):
-    B.area(f'gal_up_{side}', (21.8, side * 5.6, H_WING - 1.2), (21.8, side * 6.0, H_WING + 0.4), size=22.0, size_y=0.1, power=260, color=WARM_SOFT)
+    B.area(f'gal_up_{side}', (21.8, side * 5.6, H_WING - 1.2), (21.8, side * 6.0, H_WING + 0.4), size=22.0, size_y=0.1, power=170, color=WARM_SOFT)
   # luminous ceiling slot light
-  B.area('gal_slot', (21.8, 0, H_WING + 0.7), (21.8, 0, 0), size=21.0, size_y=1.3, power=380, color=NEUTRAL)
+  B.area('gal_slot', (21.8, 0, H_WING + 0.7), (21.8, 0, 0), size=21.0, size_y=1.3, power=250, color=NEUTRAL)
+  B.spot('sp_index', (x1 - 4.0, 0, H_WING - 0.2), (x1, 0, 2.6), power=1500, angle=34, blend=0.5, radius=0.08)   # the hall's terminus gets its own pool
 
 
 def build_lab(B):
@@ -733,7 +734,7 @@ def build_lab(B):
     cy = y1 - 1.6
     B.box(o, (cx, cy + 0.05, 0.045), (1.36, 0.68, 0.09), 'basalt', 0.018)
     B.box(o, (cx, cy + 0.05, 0.02), (1.24, 0.56, 0.04), 'black')
-    B.box(o, (cx, cy + 0.05, 0.12), (0.9, 0.42, 0.06), 'ceramic', 0.008)
+    B.box(o, (cx, cy + 0.05, 0.12), (0.9, 0.42, 0.06), 'basalt', 0.008)
     for bdx in (-0.36, 0.36):
       for bdy in (-0.14, 0.14):
         B.lathe('metal', [(0.0, 0.15), (0.02, 0.15), (0.02, 0.157), (0.014, 0.163), (0.0, 0.163)], 'titanium', segs=12, center=(cx + bdx, cy + 0.05 + bdy, 0))
@@ -741,7 +742,6 @@ def build_lab(B):
       B.prism('metal', [(cx + pdx - 0.045, cy + 0.0, 0.15), (cx + pdx + 0.045, cy + 0.0, 0.15), (cx + pdx + 0.045, cy + 0.14, 0.15), (cx + pdx - 0.045, cy + 0.14, 0.15),
                         (cx + pdx - 0.026, cy + 0.03, 1.14), (cx + pdx + 0.026, cy + 0.03, 1.14), (cx + pdx + 0.026, cy + 0.11, 1.14), (cx + pdx - 0.026, cy + 0.11, 1.14)], 'titanium', 0.005)
     B.box('metal', (cx, cy + 0.07, 0.46), (0.32, 0.05, 0.04), 'titanium_dark', 0.004)       # stretcher
-    B.lathe('metal', [(0.009, 0.15), (0.009, 1.13)], 'titanium_dark', segs=8, center=(cx, cy + 0.12, 0), cap=False)   # cable spine
     B.box('metal', (cx, cy + 0.06, 1.16), (0.5, 0.1, 0.06), 'titanium_dark', 0.006)
     B.box('metal', (cx, cy + 0.1, 1.3), (0.36, 0.12, 0.16), 'titanium_dark', 0.01)        # hinge block behind the display
     screen(B, f'screen_cap_{i}', (cx, cy - 0.02, 1.5), 1.6, 0.9, (0, -1, 0), lean=math.radians(12))
@@ -946,7 +946,12 @@ def build_terrace(B):
       za, zc = zb + c * ch + rv / 2, zb + (c + 1) * ch - rv / 2
       B.bx(o, lcx - t_ / 2, lcx + t_ / 2, py_ - pd_ / 2, py_ + pd_ / 2, za, zc, 'stone_wall', 0.014)
     B.box(o, (lcx, py_, 0.09), (t_ + 0.12, pd_ + 0.12, 0.06), 'basalt', 0.012)                 # plinth block
-    B.area(f'portal_up_{sx}', (sx * (pw_ / 2 + t_ / 2), py_ - pd_ / 2 - 0.5, 0.06), (sx * (pw_ / 2 + t_ / 2), py_ - pd_ / 2, ph_ * 0.8), size=0.6, size_y=0.2, power=40, color=WARM)
+    B.box('metal', (lcx, py_, 0.17), (t_ + 0.03, pd_ + 0.03, 0.1), 'titanium_dark', 0.004)    # anodized shoe
+    jx = sx * (pw_ / 2 - 0.004)
+    B.bx('fx', min(jx, jx + sx * 0.0), max(jx, jx + sx * 0.0) + 0.003, py_ - 0.014, py_ + 0.014, 0.4, zt - 0.3, 'emit_warm')   # light seam
+    B.bx('metal', jx - 0.01 if sx < 0 else jx - 0.002, jx + 0.002 if sx < 0 else jx + 0.01, py_ - 0.03, py_ - 0.014, 0.38, zt - 0.28, 'titanium_dark')
+    B.bx('metal', jx - 0.01 if sx < 0 else jx - 0.002, jx + 0.002 if sx < 0 else jx + 0.01, py_ + 0.014, py_ + 0.03, 0.38, zt - 0.28, 'titanium_dark')
+    B.area(f'portal_up_{sx}', (sx * (pw_ / 2 + t_ / 2), py_ - pd_ / 2 - 0.5, 0.06), (sx * (pw_ / 2 + t_ / 2), py_ - pd_ / 2, ph_ * 0.8), size=0.6, size_y=0.2, power=22, color=WARM)
   # lintel: one dressed block over a shadow reveal (the leg cores show in the joint), a soffit reveal and a proud basalt cap
   for sx in (-1, 1):
     B.box(o, (sx * (pw_ / 2 + t_ / 2), py_, ph_ - t_ + 0.0), (t_ - 0.05, pd_ - 0.05, 0.06), 'black')

@@ -75,7 +75,7 @@ const ZONE_FILL: Record<Zone, [number, number, number]> = {
   atrium: [0.045, 0.05, 0.062], gallery: [0.085, 0.09, 0.105], lab: [0.2, 0.205, 0.22],
   corridor: [0.13, 0.135, 0.155], terrace: [0.16, 0.145, 0.13],
 }
-const ZONE_EMIT: Record<Zone, number> = { atrium: 5.0, gallery: 0.6, lab: 1.7, corridor: 2.2, terrace: 3.0 }
+const ZONE_EMIT: Record<Zone, number> = { atrium: 5.0, gallery: 0.6, lab: 0.85, corridor: 2.2, terrace: 3.0 }
 
 export class AtelierEngine {
   private renderer!: THREE.WebGLRenderer
