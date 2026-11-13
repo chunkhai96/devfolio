@@ -1,0 +1,30 @@
+- navigation "Skip links":
+  - link "Skip to content":
+    - /url: "#main-content"
+  - link "Text view":
+    - /url: /overview
+- banner:
+  - link "Andy Pang , return to the atrium":
+    - /url: /
+  - button "Menu"
+- main:
+  - img "Interactive 3D atelier. All content is also available through the room guide and the text view."
+  - group "Points of interest in view"
+  - region "Room guide":
+    - paragraph: 02 / 05
+    - heading "Project Gallery" [level=2]
+    - button "Hide room guide" [expanded]
+    - list:
+      - listitem:
+        - button "01 DevFolio"
+      - listitem:
+        - button "02 I Have Chosen You"
+      - listitem:
+        - button "03 RideS"
+      - listitem:
+        - button "04 Employee Policy Chatbot"
+      - listitem:
+        - button "05 Web Crawler"
+      - listitem:
+        - button "06 Data Dashboard"
+    - button "Back to the atrium"

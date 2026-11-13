@@ -8,7 +8,8 @@ const projectItems: Array<ProjectItem> = [
     description: 'A dynamic personal portfolio website designed to introduce myself and showcase my creative and professional projects.',
     imageSrc: 'images/project-devfolio.webp',
     codeLink: 'https://github.com/chunkhai96/devfolio',
-    liveLink: 'https://andypangdev.com'
+    liveLink: 'https://andypangdev.com',
+    stack: ['Nuxt', 'Vue', 'three.js', 'Blender', 'Tailwind CSS']
   },
   {
     title: 'I Have Chosen You',
@@ -21,7 +22,8 @@ const projectItems: Array<ProjectItem> = [
     description: 'An innovative carpooling app on Android that facilitates easy and affordable transportation solutions for university students.',
     imageSrc: 'images/project-rides.webp',
     codeLink: 'https://github.com/chunkhai96/RideS',
-    liveLink: 'https://youtu.be/UE8D9PCm3zk?si=wmFT6Wa4glJ9MZ-n'
+    liveLink: 'https://youtu.be/UE8D9PCm3zk?si=wmFT6Wa4glJ9MZ-n',
+    stack: ['Android', 'Java']
   },
   {
     title: 'Employee Policy Chatbot',

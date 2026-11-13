@@ -13,6 +13,7 @@ type ProjectItem = {
   imageSrc: string
   codeLink?: string
   liveLink?: string
+  stack?: Array<string>
 }
 
 export type ExperienceTimelineItem = {
