@@ -14,23 +14,24 @@
     "@fontsource-variable/inter": "^5.3.0",
     "@fontsource-variable/space-grotesk": "^5.3.0",
     "@fontsource/ibm-plex-mono": "^5.3.0",
-    "@nuxtjs/seo": "^2.0.0-rc.18",
-    "@vercel/analytics": "^1.3.2",
-    "nuxt": "^3.12.4",
-    "postprocessing": "6.39.5",
-    "three": "0.186.0",
-    "vue": "latest"
+    "@nuxtjs/seo": "^6.0.1",
+    "@vercel/analytics": "^2.0.1",
+    "nuxt": "^4.6.4",
+    "postprocessing": "6.39.6",
+    "three": "0.187.0",
+    "vue": "^3.5.45"
   },
   "devDependencies": {
-    "@fortawesome/free-solid-svg-icons": "^6.6.0",
-    "@types/three": "^0.186.0",
-    "autoprefixer": "^10.4.19",
+    "@fortawesome/free-solid-svg-icons": "^7.3.1",
+    "@types/three": "0.187.0",
+    "autoprefixer": "^10.6.2",
     "axe-core": "^4.14.0",
-    "html-to-image": "1.11.11",
-    "nuxt-site-config": "^2.2.15",
-    "nuxt-site-config-kit": "^2.2.15",
-    "playwright": "1.56.1",
-    "postcss": "^8.4.39",
-    "tailwindcss": "^3.4.6"
+    "html-to-image": "1.11.13",
+    "playwright": "1.65.0",
+    "postcss": "^8.5.32",
+    "tailwindcss": "^3.4.19"
+  },
+  "engines": {
+    "node": "26.x"
   }
 }
