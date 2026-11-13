@@ -94,7 +94,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
   backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
 }
 .dock-item {
-  display: inline-flex; align-items: baseline; gap: 8px; height: 36px; padding: 0 14px; border-radius: 8px;
+  display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border-radius: 8px;
   font-size: 0.875rem; font-weight: 500; color: var(--mist); transition: color 180ms, background-color 180ms;
 }
 .dock-item:hover { color: #fff; background: rgba(215, 223, 223, 0.06); }

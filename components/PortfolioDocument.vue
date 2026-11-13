@@ -94,8 +94,10 @@ import ContactPanel from './panels/ContactPanel.vue'
 .name { font-family: var(--font-display); font-weight: 600; font-size: clamp(3rem, 6vw, 5.5rem); letter-spacing: -0.025em; line-height: 0.98; margin-top: 18px; }
 .desc { margin-top: 20px; font-size: 1.3rem; color: var(--porcelain); }
 .roles { margin-top: 8px; color: var(--mist); }
-.row { margin-top: 28px; display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+.intro { text-align: center; }
+.row { margin-top: 28px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 16px; }
 .sec { margin-top: 112px; scroll-margin-top: 88px; }
+.sec header { text-align: center; }
 .sec header h2 { font-family: var(--font-display); font-weight: 600; font-size: clamp(2rem, 3.4vw, 3.25rem); letter-spacing: -0.015em; margin-top: 10px; }
 .projects { margin-top: 36px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
 .projects li { border: 1px solid var(--hairline); border-radius: 14px; overflow: hidden; background: rgba(26, 34, 41, 0.45); }
@@ -108,7 +110,7 @@ import ContactPanel from './panels/ContactPanel.vue'
 .plinks a:hover { color: var(--ice-cyan); }
 .caps { margin-top: 32px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
 .caps li { border-top: 1px solid var(--hairline); padding-top: 18px; }
-.tools { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 8px; }
+.tools { margin-top: 32px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
 .tools li { display: inline-flex; align-items: center; gap: 10px; height: 44px; padding: 0 14px; border: 1px solid var(--hairline); border-radius: 10px; }
 .ic { width: 18px; height: 18px; color: var(--mist); }
 .exp { margin-top: 28px; }
@@ -124,8 +126,8 @@ import ContactPanel from './panels/ContactPanel.vue'
 .certs small { display: block; color: var(--titanium); margin-top: 2px; }
 .logo { display: grid; place-items: center; height: 52px; border-radius: 8px; background: #ece9e1; padding: 6px 8px; }
 .logo img { max-width: 100%; max-height: 40px; object-fit: contain; }
-.contact { max-width: 640px; }
-.foot { margin-top: 96px; padding-top: 24px; border-top: 1px solid var(--hairline); font-size: 0.85rem; color: var(--titanium); }
+.contact { max-width: 640px; margin-left: auto; margin-right: auto; }
+.foot { margin-top: 96px; padding-top: 24px; border-top: 1px solid var(--hairline); font-size: 0.85rem; color: var(--titanium); text-align: center; }
 @media (max-width: 700px) {
   .doc { padding-top: 96px; }
   .exp li { grid-template-columns: 1fr; gap: 4px; }
