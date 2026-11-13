@@ -119,8 +119,9 @@ import ContactPanel from './panels/ContactPanel.vue'
 .org { margin-top: 2px !important; }
 .talk { margin-top: 28px; display: grid; grid-template-columns: minmax(0, 420px) 1fr; gap: 28px; align-items: center; }
 .talk img { width: 100%; border-radius: 12px; border: 1px solid var(--hairline); }
-.certs { margin-top: 28px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
-.certs a { display: grid; grid-template-columns: 76px 1fr; gap: 14px; align-items: center; padding: 10px; border: 1px solid var(--hairline); border-radius: 12px; color: var(--porcelain); }
+.certs { margin-top: 28px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); grid-auto-rows: 1fr; gap: 10px; }
+.certs li { display: flex; }   /* every card as tall as the tallest, regardless of title length */
+.certs a { flex: 1; display: grid; grid-template-columns: 76px 1fr; gap: 14px; align-items: center; padding: 10px; border: 1px solid var(--hairline); border-radius: 12px; color: var(--porcelain); }
 .certs a:hover { border-color: rgba(154, 216, 214, 0.5); }
 .certs strong { display: block; font-weight: 550; font-size: 0.95rem; line-height: 1.35; }
 .certs small { display: block; color: var(--titanium); margin-top: 2px; }
