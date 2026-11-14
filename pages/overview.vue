@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 useSeoMeta({
-  title: 'Andy Pang — Portfolio (text view)',
+  title: 'Andy Pang | Portfolio, Projects & Experience',
   description: 'Projects, capabilities, experience, talks, certifications and contact details for Andy Pang (Pang Chun Khai), machine learning engineer.',
 })
+useHead({ titleTemplate: '%s' })
 </script>
 <template>
   <div class="overview">

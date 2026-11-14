@@ -2,10 +2,11 @@
 import { landing } from '~/utils/atelier'
 
 useSeoMeta({
-  title: 'Andy Pang — Machine Learning Engineer',
+  title: 'Andy Pang | Full-Stack Developer & AI/ML Engineer',
   description: 'Andy Pang (Pang Chun Khai) — machine learning engineer, full stack developer and data scientist. Explore projects, capabilities and experience in an interactive 3D atelier.',
 })
 useHead({
+  titleTemplate: '%s',
   link: [{ rel: 'alternate', href: '/overview', title: 'Text view' }],
   noscript: [{ innerHTML: `<p style="position:fixed;bottom:16px;left:16px;z-index:99;color:#d7dfdf">JavaScript is off — <a href="/overview" style="color:#9ad8d6">open the text view of ${landing.title}'s portfolio</a>.</p>` }],
 })

@@ -7,7 +7,7 @@ const timelineItems: Array<ExperienceTimelineItem> = [
     title: 'Lead Machine Learning Engineer',
     company: 'Management Resources Consultants (MRC Asia)',
     duration: 'Apr 2022 - Present',
-    description: 'Crafted innovative machine learning solutions to analyze and predict global salary data, encompassing base pay, allowances, and bonuses, covering 140+ countries and 1,300+ unique job roles.'
+    description: 'Lead innovation in AI products for HR, developing machine learning models for global salary benchmarking, pay prediction, and employee risk assessment. Build full-stack salary planning tools, AI agents, and virtual assistants. Write and speak about HR technology.'
   },
   {
     title: 'Artificial Intelligence Engineer',

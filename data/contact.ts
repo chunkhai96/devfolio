@@ -3,7 +3,7 @@ import type { ExternalLinkItem } from '.'
 
 const show: boolean = true
 const title: string = 'Contact Me'
-const subtitle: string = 'I\'d love to connect! Reach out for questions, collaborations, or a chat.'
+const subtitle: string = 'Feel free to say hello, ask a question, or get in touch about freelance work.'
 const externalLinks: Array<ExternalLinkItem> = [
   {
     devicon: 'devicon-github-original',
