@@ -93,6 +93,8 @@ export class AtelierEngine {
   private contrastFx = new BrightnessContrastEffect({ contrast: 0.1 })
   private colliders: THREE.Object3D[] = []
   private hitMeshes = new Map<string, THREE.Mesh>()
+  /** world-space bounds of the static hit volumes, built lazily for picking */
+  private hitBoxes = new WeakMap<THREE.Object3D, THREE.Box3>()
   private screens = new Map<string, THREE.Mesh>()
   private highlights = new Map<string, THREE.Mesh>()
   private envs = new Map<Zone, THREE.Texture>()
@@ -521,9 +523,13 @@ export class AtelierEngine {
     if (this.pointerNdc.x > 2) return null
     this.raycaster.setFromCamera(this.pointerNdc, this.camera)
     const hits = this.raycaster.intersectObjects(this.colliders, false)
+    const eye = this.raycaster.ray.origin
     for (const h of hits) {
       const n = h.object.name
       if (n.startsWith('hit_')) {
+        // a camera standing inside a hit volume (e.g. the corridor overview inside a cert frame's box)
+        // would otherwise catch every ray on the box's inner face
+        if (this.hitBox(h.object).containsPoint(eye)) continue
         const it = this.activeFor(n)
         if (it) return it
         continue // inactive hit volumes are transparent to picking
@@ -531,6 +537,12 @@ export class AtelierEngine {
       return null
     }
     return null
+  }
+
+  private hitBox(o: THREE.Object3D) {
+    let box = this.hitBoxes.get(o)
+    if (!box) { box = new THREE.Box3().setFromObject(o); this.hitBoxes.set(o, box) }
+    return box
   }
 
   private sculptureHit() {
