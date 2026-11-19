@@ -23,3 +23,10 @@ logs
 .env.*
 !.env.example
 blender/build/
+
+# Review captures: regenerated locally by scripts/review-capture.mjs,
+# scripts/webkit-check.mjs and scripts/motion-capture.mjs (log stays in docs/review/README.md)
+docs/review/*/
+
+# Python bytecode from the Blender pipeline
+__pycache__/
