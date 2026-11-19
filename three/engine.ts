@@ -67,12 +67,12 @@ const ZONE_LM: Record<Zone, number> = { atrium: 1.0, gallery: 0.95, lab: 1.25, c
 const ZONE_COLOR: Partial<Record<Zone, Record<string, string>>> = {
   // each room keeps the campus materials but shifts their emphasis (DESIGN §3.2)
   gallery: { stone_wall: '#8e9094', ceramic: '#cfc9bf', plaster: '#55575a' },     // graphite hall, warmth from the light only
-  lab: { stone_wall: '#7c8998', fabric: '#4c5560', ceramic: '#7f7a72' },           // cool acoustic studio
+  lab: { stone_wall: '#8a8986', fabric: '#57575a', ceramic: '#7f7a72' },           // graphite studio on the shared warm-neutral key
   corridor: { stone_wall: '#68737f', ceramic: '#b9b3a9' },                         // deep graphite procession
   terrace: { plaster: '#d8d4cc', stone_wall: '#6a6f76', basalt_floor: '#7a736b' },   // warm dusk ground
 }
 const ZONE_FILL: Record<Zone, [number, number, number]> = {
-  atrium: [0.045, 0.05, 0.062], gallery: [0.085, 0.09, 0.105], lab: [0.2, 0.205, 0.22],
+  atrium: [0.045, 0.05, 0.062], gallery: [0.085, 0.09, 0.105], lab: [0.21, 0.2, 0.19],
   corridor: [0.13, 0.135, 0.155], terrace: [0.16, 0.145, 0.13],
 }
 const ZONE_EMIT: Record<Zone, number> = { atrium: 5.0, gallery: 0.6, lab: 0.85, corridor: 2.2, terrace: 3.0 }
