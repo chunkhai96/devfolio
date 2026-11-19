@@ -48,6 +48,22 @@ WebKit found three things Chrome had not: the intro overflowed under the header 
 
 Not done here: a physical handset (the iOS Simulator needs a one-time "Let Claude use it" grant in the simulator panel) and a live VoiceOver/NVDA session.
 
+### Load responsiveness on slow CPUs — `yarn check:perf`
+
+`scripts/perf-check.mjs` loads the page in headless Chrome or Edge with the CPU slowed down (DevTools-style throttling, default 6×), each run a cold first visit, and reports the longest main-thread freeze before the 3D space is ready. Options: `--mobile` (phone emulation, low-quality tier), `--cpu N`, `--runs N`, `--budget MS` (exit 1 when over, for CI), `--json FILE`; pass a base URL to test a production build, e.g. `yarn check:perf http://localhost:3400`. Throttling slows the CPU only, not the GPU, so confirm on a real phone too.
+
+Dev server, Edge on an M2 Max at 6× CPU slowdown, median of 3 runs:
+
+| | Before | After |
+|---|---|---|
+| Desktop: worst freeze | 5237 ms | 218 ms |
+| Desktop: total blocking time | 6305 ms | 914 ms |
+| Desktop: 3D ready | 8.5 s | 4.9 s |
+| Phone (`--mobile`): worst freeze | 1902 ms | 224 ms |
+| Phone: 3D ready | 5.4 s | 4.2 s |
+
+Causes fixed: every room texture decoded and uploaded inside the first frame (now decoded off-thread as ImageBitmaps and uploaded one per task); shaders compiled synchronously, twice (now once, in parallel, against a matching blank reflection probe); probe renders and screen canvases built in one go (now one per task); project screenshots decoded on first `drawImage` (now `img.decode()` first); and a 6000×4000 project screenshot (resized to 1800×1200, 474 KB → 86 KB). What remains is app start-up before the 3D loads and the synchronous part of shader setup, each about 200 ms at 6×.
+
 ## Rubric — independent reviews
 
 My own earlier self-assessment (4.3) was not confirmed. Four independent art-direction reviews, each run by a fresh reviewer that saw only DESIGN.md and the production captures (never this file), scored the build:

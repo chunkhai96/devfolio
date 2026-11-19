@@ -77,6 +77,32 @@ const ZONE_FILL: Record<Zone, [number, number, number]> = {
 }
 const ZONE_EMIT: Record<Zone, number> = { atrium: 5.0, gallery: 0.6, lab: 0.85, corridor: 2.2, terrace: 3.0 }
 
+/**
+ * Texture loading that decodes on a background thread where the browser can (ImageBitmap), so
+ * uploading a large webp no longer stalls the page. Same guards as GLTFLoader's ImageBitmap path.
+ * ImageBitmaps ignore Texture.flipY, so the orientation is baked in at decode time instead.
+ */
+function textureLoader() {
+  const ua = typeof navigator === 'undefined' ? '' : navigator.userAgent
+  const safari = /^((?!chrome|android).)*safari/i.test(ua) ? +(ua.match(/Version\/(\d+)/)?.[1] ?? -1) : Infinity
+  const firefox = ua.includes('Firefox') ? +(ua.match(/Firefox\/(\d+)\./)?.[1] ?? -1) : Infinity
+  if (typeof createImageBitmap === 'undefined' || safari < 17 || firefox < 98) {
+    const tl = new THREE.TextureLoader()
+    return async (url: string, flipY: boolean) => { const t = await tl.loadAsync(url); t.flipY = flipY; return t }
+  }
+  const flipped = new THREE.ImageBitmapLoader().setOptions({ imageOrientation: 'flipY', premultiplyAlpha: 'none' })
+  const upright = new THREE.ImageBitmapLoader().setOptions({ premultiplyAlpha: 'none' })
+  return async (url: string, flipY: boolean) => {
+    const t = new THREE.Texture(await (flipY ? flipped : upright).loadAsync(url))
+    t.flipY = false
+    t.needsUpdate = true
+    return t
+  }
+}
+
+/** Let the browser handle input and paint between chunks of startup work. */
+const yieldToMain = () => new Promise<void>(r => setTimeout(r, 0))
+
 export class AtelierEngine {
   private renderer!: THREE.WebGLRenderer
   private composer!: EffectComposer
@@ -152,7 +178,7 @@ export class AtelierEngine {
     this.rig.reducedMotion = this.o.reducedMotion
 
     // --- asset loading -------------------------------------------------------
-    const texLoader = new THREE.TextureLoader()
+    const loadTex = textureLoader()
     const gltf = new GLTFLoader()
     gltf.setMeshoptDecoder(MeshoptDecoder)
     const lmSuffix = lowQuality ? '_m' : ''
@@ -162,12 +188,12 @@ export class AtelierEngine {
     this.o.callbacks.onProgress?.(0, total)
 
     const lib = new MaterialLibrary(
-      { loadAsync: (url: string) => texLoader.loadAsync(url).then((t) => { tick(); return t }) } as unknown as THREE.TextureLoader,
+      { loadAsync: (url: string) => loadTex(url, true).then((t) => { tick(); return t }) } as unknown as THREE.TextureLoader,
       Math.min(8, this.renderer.capabilities.getMaxAnisotropy()), base + '/atelier', lowQuality)
 
     const [glb, lightmaps] = await Promise.all([
       gltf.loadAsync(base + '/atelier/world.glb').then((g) => { tick(); return g }),
-      Promise.all(ZONES.map(z => texLoader.loadAsync(`${base}/atelier/lm_${z}${lmSuffix}.webp`).then((t) => {
+      Promise.all(ZONES.map(z => loadTex(`${base}/atelier/lm_${z}${lmSuffix}.webp`, false).then((t) => {
         tick()
         t.flipY = false
         t.channel = 1
@@ -297,11 +323,12 @@ export class AtelierEngine {
     // screens get their content
     await document.fonts?.ready
     await this.buildScreens()
+    if (this.disposed) return
 
     // reflection probes: two passes so metals see metals
     this.renderer.setSize(canvas.clientWidth || 1, canvas.clientHeight || 1, false)
-    this.renderProbes(lowQuality ? 128 : 256)
-    props?.applyEnv()
+    await this.renderProbes(lowQuality ? 128 : 256, props)
+    if (this.disposed) return
 
     this.setupComposer()
     this.bindEvents()
@@ -360,6 +387,8 @@ export class AtelierEngine {
     const aniso = Math.min(8, this.renderer.capabilities.getMaxAnisotropy())
     const jobs: Promise<void>[] = []
     for (const [name, mesh] of this.screens) {
+      await yieldToMain() // each canvas draw is its own short task
+      if (this.disposed) return
       const g = this.screenGeom(mesh)
       const aspect = g.width / g.height
       const zone = zoneAt(g.center)
@@ -422,31 +451,78 @@ export class AtelierEngine {
     return grp
   }
 
-  private renderProbes(res: number) {
+  /**
+   * Zone reflection probes, built without freezing the page: shaders compile in parallel
+   * (KHR_parallel_shader_compile) and each probe render is its own short task, so the intro UI
+   * keeps answering input while the 3D space warms up.
+   */
+  private async renderProbes(res: number, props: { applyEnv(): void } | null) {
     const rt = new THREE.WebGLCubeRenderTarget(res, { type: THREE.HalfFloatType, generateMipmaps: false })
     const cube = new THREE.CubeCamera(0.05, 1000, rt)
     const pmrem = new THREE.PMREMGenerator(this.renderer)
-    const hiddenFx: THREE.Object3D[] = []
-    for (let pass = 0; pass < 2; pass++) {
+    // a black probe of the final size, so every material compiles the shader variant it ends with
+    // (no env map -> env map would otherwise compile everything twice, synchronously)
+    rt.clear(this.renderer)
+    const blank = pmrem.fromCubemap(rt.texture).texture
+    for (const z of ZONES) this.envs.set(z, blank)
+    this.applyEnvs()
+    props?.applyEnv()
+    // compile against a render target: probes and the composer never draw straight to the canvas
+    this.renderer.setRenderTarget(rt)
+    const compiled = this.renderer.compileAsync(this.scene, this.camera)
+    this.renderer.setRenderTarget(null)
+    await compiled
+    await this.uploadTextures()
+    // two passes so metals see metals
+    for (let pass = 0; pass < 2 && !this.disposed; pass++) {
+      const next = new Map<Zone, THREE.Texture>()
       for (const z of ZONES) {
+        await yieldToMain()
+        if (this.disposed) break
         cube.position.copy(PROBES[z])
         cube.update(this.renderer, this.scene)
-        const env = pmrem.fromCubemap(rt.texture).texture
-        this.envs.get(z)?.dispose()
-        this.envs.set(z, env)
+        next.set(z, pmrem.fromCubemap(rt.texture).texture)
       }
-      for (const [z, mats] of this.zoneMaterials) {
-        for (const m of mats) { m.envMap = this.envs.get(z)!; m.needsUpdate = true }
-      }
-      if (this.sculpture) this.sculpture.setEnvMap(this.envs.get('atrium')!)
-      for (const [, mesh] of this.screens) {
-        const m = mesh.material as THREE.MeshStandardMaterial
-        if (m.userData?.zone) { m.envMap = this.envs.get(m.userData.zone as Zone)!; m.needsUpdate = true }
-      }
+      const prev = new Set(this.envs.values())
+      for (const [z, env] of next) this.envs.set(z, env)
+      for (const t of prev) t.dispose()
+      if (this.disposed) break
+      this.applyEnvs()
+      props?.applyEnv()
     }
-    hiddenFx.forEach(o => (o.visible = true))
     rt.dispose()
     pmrem.dispose()
+  }
+
+  /** Upload every scene texture one per task, instead of all of them inside the first probe render. */
+  private async uploadTextures() {
+    const seen = new Set<THREE.Texture>()
+    this.scene.traverse((o) => {
+      const mat = (o as THREE.Mesh).material
+      if (!mat) return
+      for (const m of Array.isArray(mat) ? mat : [mat]) {
+        for (const v of Object.values(m)) if ((v as THREE.Texture)?.isTexture) seen.add(v as THREE.Texture)
+        const u = (m as THREE.ShaderMaterial).uniforms
+        if (u) for (const x of Object.values(u)) if ((x?.value as THREE.Texture)?.isTexture) seen.add(x.value as THREE.Texture)
+      }
+    })
+    for (const t of seen) {
+      if (this.disposed) return
+      if ((t as THREE.CubeTexture).isCubeTexture || (t as unknown as { isRenderTargetTexture?: boolean }).isRenderTargetTexture) continue
+      this.renderer.initTexture(t)
+      await yieldToMain()
+    }
+  }
+
+  private applyEnvs() {
+    for (const [z, mats] of this.zoneMaterials) {
+      for (const m of mats) { m.envMap = this.envs.get(z)!; m.needsUpdate = true }
+    }
+    if (this.sculpture) this.sculpture.setEnvMap(this.envs.get('atrium')!)
+    for (const [, mesh] of this.screens) {
+      const m = mesh.material as THREE.MeshStandardMaterial
+      if (m.userData?.zone) { m.envMap = this.envs.get(m.userData.zone as Zone)!; m.needsUpdate = true }
+    }
   }
 
   private setupComposer() {

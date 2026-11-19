@@ -30,7 +30,8 @@ function loadImage(src: string) {
     imageCache.set(src, new Promise((res, rej) => {
       const im = new Image()
       im.decoding = 'async'
-      im.onload = () => res(im)
+      // decode off the main thread before resolving; otherwise the first drawImage decodes synchronously
+      im.onload = () => im.decode().then(() => res(im), () => res(im))
       im.onerror = rej
       im.src = src.startsWith('/') || src.startsWith('http') || src.startsWith('data:') ? src : '/' + src
     }))
