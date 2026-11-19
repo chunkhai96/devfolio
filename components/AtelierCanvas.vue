@@ -72,7 +72,7 @@ onMounted(async () => {
     e = eng = new AtelierEngine({
       canvas: canvas.value!, content: buildContent(), interactables, lowQuality, reducedMotion: rm.matches,
       callbacks: {
-        onProgress: (l, t) => { st.progress.value = l / t },
+        onProgress: (p, stage) => { st.progress.value = p; st.loadStage.value = stage },
         onHover: (id) => { st.hovered.value = id },
         onActivate,
         onZone: (z) => { st.zone.value = z },
@@ -95,8 +95,9 @@ onMounted(async () => {
       setReducedMotion: (v) => e!.setReducedMotion(v),
     })
     if (import.meta.dev) (window as unknown as { __atelier: AtelierEngine }).__atelier = e
-    if (initial.panel) { e.setPanelOpen(true); await e.focus(exhibitFor(initial.panel), true) }
-    else if (initial.zone !== 'atrium') await e.goZone(initial.zone, true)
+    // catch up with where the viewer is now: the deep link, or wherever they went while the 3D was loading
+    if (st.panel.value) { e.setPanelOpen(true); await e.focus(exhibitFor(st.panel.value), true) }
+    else if (st.zone.value !== 'atrium') await e.goZone(st.zone.value, true)
     st.ready.value = true
   } catch (err) {
     if (!alive) return

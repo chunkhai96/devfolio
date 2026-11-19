@@ -130,7 +130,8 @@ function pick(it: Item) {
   .plan { display: none; }
   .blurb { display: none; }
   /* phones: every item fully visible as a two-column grid, scrolling vertically if a room has many */
-  .items { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; border-top: 0; margin-top: 10px; max-height: 38vh; overflow-y: auto; scrollbar-width: none; }
+  .items li { display: flex; }   /* cards fill their row: every card in the grid is the same height */
+  .items { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr; gap: 6px; border-top: 0; margin-top: 10px; max-height: 38vh; overflow-y: auto; scrollbar-width: none; }
   /* number sits above the title so narrow cards keep titles to two lines */
   .item { flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; border: 1px solid var(--hairline); border-radius: 10px; padding: 7px 10px; min-height: 44px; font-size: 0.82rem; line-height: 1.25; }
   .meta { min-width: 0; font-size: 0.64rem; }

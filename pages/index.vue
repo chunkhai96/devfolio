@@ -8,7 +8,7 @@ useSeoMeta({
 useHead({
   titleTemplate: '%s',
   link: [{ rel: 'alternate', href: '/overview', title: 'Text view' }],
-  noscript: [{ innerHTML: `<p style="position:fixed;bottom:16px;left:16px;z-index:99;color:#d7dfdf">JavaScript is off — <a href="/overview" style="color:#9ad8d6">open the text view of ${landing.title}'s portfolio</a>.</p>` }],
+  noscript: [{ innerHTML: '<style>.veil { display: none !important; }</style>' }, { innerHTML: `<p style="position:fixed;bottom:16px;left:16px;z-index:99;color:#d7dfdf">JavaScript is off — <a href="/overview" style="color:#9ad8d6">open the text view of ${landing.title}'s portfolio</a>.</p>` }],
 })
 const route = useRoute()
 const hideUi = computed(() => route.query.ui === '0')
@@ -16,7 +16,13 @@ const hideUi = computed(() => route.query.ui === '0')
 const st = useAtelier()
 const showHero = computed(() => st.zone.value === 'atrium' && !st.panel.value && !st.exploring.value)
 const showGuide = computed(() => st.webgl.value !== 'none' && !st.panel.value && !showHero.value)
-const loading = computed(() => st.webgl.value === 'ok' && !st.ready.value)
+// also true in the server-rendered HTML ('unknown'), so the status shows from the first paint, before
+// any JavaScript has run; it hides once the 3D is ready or the text edition takes over
+const loading = computed(() => st.webgl.value !== 'none' && !st.ready.value)
+
+// while the loading veil covers the page, what is behind it stays out of the tab order and screen readers
+const skipped = useLoaderSkipped()
+const gate = computed(() => loading.value && !skipped.value)
 
 // when the hero (and the focused control inside it) leaves, hand keyboard focus to the room guide
 watch(showHero, (v) => {
@@ -33,21 +39,14 @@ watch(showHero, (v) => {
       <a href="#main-content" class="skip-link">Skip to content</a>
       <NuxtLink to="/overview" class="skip-link" style="left: 180px">Text view</NuxtLink>
     </nav>
-    <SiteHeader />
-    <main id="main-content" class="stage-wrap">
+    <SiteHeader :inert="gate" />
+    <main id="main-content" class="stage-wrap" :inert="gate" :aria-busy="loading">
       <div class="poster" :class="{ hide: st.ready.value }" aria-hidden="true" />
       <ClientOnly><AtelierCanvas /></ClientOnly>
       <div class="scrim" :class="{ on: showHero }" aria-hidden="true" />
       <Transition name="fade"><HeroIntro v-if="showHero && st.webgl.value !== 'none'" /></Transition>
       <Transition name="guide"><RoomGuide v-if="showGuide" /></Transition>
       <ExhibitPanel />
-      <Transition name="fade">
-        <div v-if="loading" class="loader" role="status" aria-live="polite">
-          <span class="ltxt">{{ st.progress.value >= 1 ? 'Atelier ready' : 'Preparing the atelier' }}</span>
-          <span class="lbar"><span :style="{ transform: `scaleX(${st.progress.value})` }" /></span>
-          <span class="lpct">{{ Math.round(st.progress.value * 100) }}%</span>
-        </div>
-      </Transition>
       <Transition name="fade">
         <p v-if="st.toast.value" class="toast" role="status">{{ st.toast.value }}</p>
       </Transition>
@@ -57,6 +56,7 @@ watch(showHero, (v) => {
         </p>
       </Transition>
     </main>
+    <LoadingVeil />
     <div v-if="st.webgl.value === 'none'" class="fallback">
       <p class="fb-note">Showing the text edition — the interactive 3D atelier needs WebGL 2.</p>
       <PortfolioDocument />
@@ -76,14 +76,6 @@ watch(showHero, (v) => {
   background: linear-gradient(90deg, rgba(10, 13, 17, 0.72) 0%, rgba(10, 13, 17, 0.45) 30%, rgba(10, 13, 17, 0) 55%);
 }
 .scrim.on { opacity: 1; }
-.loader {
-  position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 25;
-  display: flex; align-items: center; gap: 14px; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; color: var(--mist);
-  text-transform: uppercase;
-}
-.lbar { width: 120px; height: 1px; background: rgba(215, 223, 223, 0.18); overflow: hidden; }
-.lbar span { display: block; height: 100%; background: var(--ice-cyan); transform-origin: left; transition: transform 300ms var(--ease-out); }
-.lpct { min-width: 3ch; color: var(--titanium); }
 .toast {
   position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 26; max-width: min(560px, calc(100% - 32px));
   padding: 12px 16px; border-radius: 12px; background: var(--panel); border: 1px solid var(--panel-border); color: var(--mist); font-size: 0.9rem; line-height: 1.5;

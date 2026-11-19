@@ -28,8 +28,16 @@ export interface Interactable {
   marker?: boolean
 }
 
+/** Start-up phases, in order, reported with an overall 0..1 progress estimate. */
+export type LoadStage = 'download' | 'screens' | 'shaders' | 'textures' | 'lighting' | 'ready'
+
+/** Share of the overall progress bar each phase covers (roughly its share of start-up time on a slow CPU). */
+const STAGE_SPAN: Record<Exclude<LoadStage, 'ready'>, [number, number]> = {
+  download: [0, 0.35], screens: [0.35, 0.6], shaders: [0.6, 0.66], textures: [0.66, 0.9], lighting: [0.9, 1],
+}
+
 export interface EngineCallbacks {
-  onProgress?: (loaded: number, total: number) => void
+  onProgress?: (progress: number, stage: LoadStage) => void
   onHover?: (id: string | null) => void
   onActivate?: (it: Interactable) => void
   onZone?: (zone: Zone) => void
@@ -67,15 +75,41 @@ const ZONE_LM: Record<Zone, number> = { atrium: 1.0, gallery: 0.95, lab: 1.25, c
 const ZONE_COLOR: Partial<Record<Zone, Record<string, string>>> = {
   // each room keeps the campus materials but shifts their emphasis (DESIGN §3.2)
   gallery: { stone_wall: '#8e9094', ceramic: '#cfc9bf', plaster: '#55575a' },     // graphite hall, warmth from the light only
-  lab: { stone_wall: '#7c8998', fabric: '#4c5560', ceramic: '#7f7a72' },           // cool acoustic studio
+  lab: { stone_wall: '#8a8986', fabric: '#57575a', ceramic: '#7f7a72' },           // graphite studio on the shared warm-neutral key
   corridor: { stone_wall: '#68737f', ceramic: '#b9b3a9' },                         // deep graphite procession
   terrace: { plaster: '#d8d4cc', stone_wall: '#6a6f76', basalt_floor: '#7a736b' },   // warm dusk ground
 }
 const ZONE_FILL: Record<Zone, [number, number, number]> = {
-  atrium: [0.045, 0.05, 0.062], gallery: [0.085, 0.09, 0.105], lab: [0.2, 0.205, 0.22],
+  atrium: [0.045, 0.05, 0.062], gallery: [0.085, 0.09, 0.105], lab: [0.21, 0.2, 0.19],
   corridor: [0.13, 0.135, 0.155], terrace: [0.16, 0.145, 0.13],
 }
 const ZONE_EMIT: Record<Zone, number> = { atrium: 5.0, gallery: 0.6, lab: 0.85, corridor: 2.2, terrace: 3.0 }
+
+/**
+ * Texture loading that decodes on a background thread where the browser can (ImageBitmap), so
+ * uploading a large webp no longer stalls the page. Same guards as GLTFLoader's ImageBitmap path.
+ * ImageBitmaps ignore Texture.flipY, so the orientation is baked in at decode time instead.
+ */
+function textureLoader() {
+  const ua = typeof navigator === 'undefined' ? '' : navigator.userAgent
+  const safari = /^((?!chrome|android).)*safari/i.test(ua) ? +(ua.match(/Version\/(\d+)/)?.[1] ?? -1) : Infinity
+  const firefox = ua.includes('Firefox') ? +(ua.match(/Firefox\/(\d+)\./)?.[1] ?? -1) : Infinity
+  if (typeof createImageBitmap === 'undefined' || safari < 17 || firefox < 98) {
+    const tl = new THREE.TextureLoader()
+    return async (url: string, flipY: boolean) => { const t = await tl.loadAsync(url); t.flipY = flipY; return t }
+  }
+  const flipped = new THREE.ImageBitmapLoader().setOptions({ imageOrientation: 'flipY', premultiplyAlpha: 'none' })
+  const upright = new THREE.ImageBitmapLoader().setOptions({ premultiplyAlpha: 'none' })
+  return async (url: string, flipY: boolean) => {
+    const t = new THREE.Texture(await (flipY ? flipped : upright).loadAsync(url))
+    t.flipY = false
+    t.needsUpdate = true
+    return t
+  }
+}
+
+/** Let the browser handle input and paint between chunks of startup work. */
+const yieldToMain = () => new Promise<void>(r => setTimeout(r, 0))
 
 export class AtelierEngine {
   private renderer!: THREE.WebGLRenderer
@@ -93,6 +127,8 @@ export class AtelierEngine {
   private contrastFx = new BrightnessContrastEffect({ contrast: 0.1 })
   private colliders: THREE.Object3D[] = []
   private hitMeshes = new Map<string, THREE.Mesh>()
+  /** world-space bounds of the static hit volumes, built lazily for picking */
+  private hitBoxes = new WeakMap<THREE.Object3D, THREE.Box3>()
   private screens = new Map<string, THREE.Mesh>()
   private highlights = new Map<string, THREE.Mesh>()
   private envs = new Map<Zone, THREE.Texture>()
@@ -150,22 +186,22 @@ export class AtelierEngine {
     this.rig.reducedMotion = this.o.reducedMotion
 
     // --- asset loading -------------------------------------------------------
-    const texLoader = new THREE.TextureLoader()
+    const loadTex = textureLoader()
     const gltf = new GLTFLoader()
     gltf.setMeshoptDecoder(MeshoptDecoder)
     const lmSuffix = lowQuality ? '_m' : ''
     const total = 1 + ZONES.length + 21
     let loaded = 0
-    const tick = () => { loaded++; this.o.callbacks.onProgress?.(loaded, total) }
-    this.o.callbacks.onProgress?.(0, total)
+    const tick = () => { loaded++; this.progress('download', loaded / total) }
+    this.progress('download', 0)
 
     const lib = new MaterialLibrary(
-      { loadAsync: (url: string) => texLoader.loadAsync(url).then((t) => { tick(); return t }) } as unknown as THREE.TextureLoader,
+      { loadAsync: (url: string) => loadTex(url, true).then((t) => { tick(); return t }) } as unknown as THREE.TextureLoader,
       Math.min(8, this.renderer.capabilities.getMaxAnisotropy()), base + '/atelier', lowQuality)
 
     const [glb, lightmaps] = await Promise.all([
       gltf.loadAsync(base + '/atelier/world.glb').then((g) => { tick(); return g }),
-      Promise.all(ZONES.map(z => texLoader.loadAsync(`${base}/atelier/lm_${z}${lmSuffix}.webp`).then((t) => {
+      Promise.all(ZONES.map(z => loadTex(`${base}/atelier/lm_${z}${lmSuffix}.webp`, false).then((t) => {
         tick()
         t.flipY = false
         t.channel = 1
@@ -295,18 +331,26 @@ export class AtelierEngine {
     // screens get their content
     await document.fonts?.ready
     await this.buildScreens()
+    if (this.disposed) return
 
     // reflection probes: two passes so metals see metals
     this.renderer.setSize(canvas.clientWidth || 1, canvas.clientHeight || 1, false)
-    this.renderProbes(lowQuality ? 128 : 256)
-    props?.applyEnv()
+    await this.renderProbes(lowQuality ? 128 : 256, props)
+    if (this.disposed) return
 
     this.setupComposer()
     this.bindEvents()
     this.resize()
     this.exposure = 0.0
     this.exposureTarget = 1
+    this.progress('ready', 1)
     this.loop()
+  }
+
+  private progress(stage: LoadStage, within: number) {
+    if (stage === 'ready') { this.o.callbacks.onProgress?.(1, 'ready'); return }
+    const [a, b] = STAGE_SPAN[stage]
+    this.o.callbacks.onProgress?.(a + (b - a) * Math.min(1, Math.max(0, within)), stage)
   }
 
   // ---------------------------------------------------------------------------
@@ -357,11 +401,19 @@ export class AtelierEngine {
     const c = this.o.content
     const aniso = Math.min(8, this.renderer.capabilities.getMaxAnisotropy())
     const jobs: Promise<void>[] = []
+    // two steps per screen: its turn in the loop, then its canvas being applied
+    const steps = this.screens.size * 2
+    let done = 0
+    const step = () => this.progress('screens', ++done / steps)
     for (const [name, mesh] of this.screens) {
+      await yieldToMain() // each canvas draw is its own short task
+      if (this.disposed) return
+      step()
       const g = this.screenGeom(mesh)
       const aspect = g.width / g.height
       const zone = zoneAt(g.center)
       const set = (cv: HTMLCanvasElement, intensity: number) => {
+        step()
         mesh.material = screenMaterial(toTexture(cv, aniso), intensity, null)
         ;(mesh.material as THREE.MeshStandardMaterial).userData.zone = zone
       }
@@ -420,31 +472,82 @@ export class AtelierEngine {
     return grp
   }
 
-  private renderProbes(res: number) {
+  /**
+   * Zone reflection probes, built without freezing the page: shaders compile in parallel
+   * (KHR_parallel_shader_compile) and each probe render is its own short task, so the intro UI
+   * keeps answering input while the 3D space warms up.
+   */
+  private async renderProbes(res: number, props: { applyEnv(): void } | null) {
     const rt = new THREE.WebGLCubeRenderTarget(res, { type: THREE.HalfFloatType, generateMipmaps: false })
     const cube = new THREE.CubeCamera(0.05, 1000, rt)
     const pmrem = new THREE.PMREMGenerator(this.renderer)
-    const hiddenFx: THREE.Object3D[] = []
-    for (let pass = 0; pass < 2; pass++) {
-      for (const z of ZONES) {
+    // a black probe of the final size, so every material compiles the shader variant it ends with
+    // (no env map -> env map would otherwise compile everything twice, synchronously)
+    rt.clear(this.renderer)
+    const blank = pmrem.fromCubemap(rt.texture).texture
+    for (const z of ZONES) this.envs.set(z, blank)
+    this.applyEnvs()
+    props?.applyEnv()
+    // compile against a render target: probes and the composer never draw straight to the canvas
+    this.renderer.setRenderTarget(rt)
+    this.progress('shaders', 0)
+    const compiled = this.renderer.compileAsync(this.scene, this.camera)
+    this.renderer.setRenderTarget(null)
+    await compiled
+    await this.uploadTextures()
+    // two passes so metals see metals
+    for (let pass = 0; pass < 2 && !this.disposed; pass++) {
+      const next = new Map<Zone, THREE.Texture>()
+      for (const [k, z] of ZONES.entries()) {
+        await yieldToMain()
+        if (this.disposed) break
+        this.progress('lighting', (pass * ZONES.length + k) / (2 * ZONES.length))
         cube.position.copy(PROBES[z])
         cube.update(this.renderer, this.scene)
-        const env = pmrem.fromCubemap(rt.texture).texture
-        this.envs.get(z)?.dispose()
-        this.envs.set(z, env)
+        next.set(z, pmrem.fromCubemap(rt.texture).texture)
       }
-      for (const [z, mats] of this.zoneMaterials) {
-        for (const m of mats) { m.envMap = this.envs.get(z)!; m.needsUpdate = true }
-      }
-      if (this.sculpture) this.sculpture.setEnvMap(this.envs.get('atrium')!)
-      for (const [, mesh] of this.screens) {
-        const m = mesh.material as THREE.MeshStandardMaterial
-        if (m.userData?.zone) { m.envMap = this.envs.get(m.userData.zone as Zone)!; m.needsUpdate = true }
-      }
+      const prev = new Set(this.envs.values())
+      for (const [z, env] of next) this.envs.set(z, env)
+      for (const t of prev) t.dispose()
+      if (this.disposed) break
+      this.applyEnvs()
+      props?.applyEnv()
     }
-    hiddenFx.forEach(o => (o.visible = true))
     rt.dispose()
     pmrem.dispose()
+  }
+
+  /** Upload every scene texture one per task, instead of all of them inside the first probe render. */
+  private async uploadTextures() {
+    const seen = new Set<THREE.Texture>()
+    this.scene.traverse((o) => {
+      const mat = (o as THREE.Mesh).material
+      if (!mat) return
+      for (const m of Array.isArray(mat) ? mat : [mat]) {
+        for (const v of Object.values(m)) if ((v as THREE.Texture)?.isTexture) seen.add(v as THREE.Texture)
+        const u = (m as THREE.ShaderMaterial).uniforms
+        if (u) for (const x of Object.values(u)) if ((x?.value as THREE.Texture)?.isTexture) seen.add(x.value as THREE.Texture)
+      }
+    })
+    let i = 0
+    for (const t of seen) {
+      if (this.disposed) return
+      this.progress('textures', i++ / seen.size)
+      if ((t as THREE.CubeTexture).isCubeTexture || (t as unknown as { isRenderTargetTexture?: boolean }).isRenderTargetTexture) continue
+      this.renderer.initTexture(t)
+      await yieldToMain()
+    }
+  }
+
+  private applyEnvs() {
+    for (const [z, mats] of this.zoneMaterials) {
+      for (const m of mats) { m.envMap = this.envs.get(z)!; m.needsUpdate = true }
+    }
+    if (this.sculpture) this.sculpture.setEnvMap(this.envs.get('atrium')!)
+    for (const [, mesh] of this.screens) {
+      const m = mesh.material as THREE.MeshStandardMaterial
+      if (m.userData?.zone) { m.envMap = this.envs.get(m.userData.zone as Zone)!; m.needsUpdate = true }
+    }
   }
 
   private setupComposer() {
@@ -521,9 +624,13 @@ export class AtelierEngine {
     if (this.pointerNdc.x > 2) return null
     this.raycaster.setFromCamera(this.pointerNdc, this.camera)
     const hits = this.raycaster.intersectObjects(this.colliders, false)
+    const eye = this.raycaster.ray.origin
     for (const h of hits) {
       const n = h.object.name
       if (n.startsWith('hit_')) {
+        // a camera standing inside a hit volume (e.g. the corridor overview inside a cert frame's box)
+        // would otherwise catch every ray on the box's inner face
+        if (this.hitBox(h.object).containsPoint(eye)) continue
         const it = this.activeFor(n)
         if (it) return it
         continue // inactive hit volumes are transparent to picking
@@ -531,6 +638,12 @@ export class AtelierEngine {
       return null
     }
     return null
+  }
+
+  private hitBox(o: THREE.Object3D) {
+    let box = this.hitBoxes.get(o)
+    if (!box) { box = new THREE.Box3().setFromObject(o); this.hitBoxes.set(o, box) }
+    return box
   }
 
   private sculptureHit() {

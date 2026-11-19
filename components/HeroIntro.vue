@@ -11,7 +11,7 @@ function explore() {
     <h1 id="hero-title" class="hero-name">{{ landing.title }}</h1>
     <p class="hero-desc">{{ landing.description }}</p>
     <p class="hero-roles">
-      <template v-for="(r, i) in whatido.roles" :key="r"><span v-if="i" class="dot" aria-hidden="true">·</span><span v-if="i" class="sr-only">, </span>{{ r }}</template>
+      <template v-for="(r, i) in whatido.roles" :key="r"><span v-if="i" class="dot" aria-hidden="true">·</span><span v-if="i" class="sr-only">, </span><wbr v-if="i"><span class="role">{{ r }}</span></template>
     </p>
     <div class="hero-actions">
       <button type="button" class="btn btn-primary" @click="explore">
@@ -44,19 +44,23 @@ function explore() {
 .hero-desc { margin-top: 26px; font-size: clamp(1.125rem, 1.45vw, 1.4rem); line-height: 1.5; color: var(--porcelain); max-width: 30ch; }
 .hero-roles { margin-top: 10px; font-size: 0.98rem; color: var(--mist); opacity: 0.82; }
 .dot { margin: 0 10px; color: var(--titanium); }
+.role { white-space: nowrap; }
 .hero-actions { margin-top: 36px; display: flex; flex-wrap: wrap; gap: 10px; }
 .hero-foot { margin-top: 36px; display: flex; align-items: center; gap: 14px; }
 .resume { display: inline-flex; align-items: center; gap: 8px; font-size: 0.875rem; color: var(--mist); height: 40px; }
 .resume:hover { color: #fff; }
 .rule { width: 1px; height: 20px; background: var(--hairline); }
 @media (max-width: 760px), (max-aspect-ratio: 4/5) {
-  .hero { left: 16px; right: 16px; top: auto; bottom: 20px; transform: none; max-width: none; }
+  /* centred under the sculpture: the portrait scene is symmetrical, so the copy follows its axis */
+  .hero { left: 16px; right: 16px; top: auto; bottom: 20px; transform: none; max-width: none; text-align: center; }
   .hero::before { inset: -150px -16px -20px -16px; background: linear-gradient(0deg, rgba(10, 13, 17, 0.92) 0%, rgba(10, 13, 17, 0.9) 72%, rgba(10, 13, 17, 0)); }
-  .hero-desc { margin-top: 14px; }
-  .hero-actions { margin-top: 22px; }
+  /* the 30ch measure is for the left-aligned desktop column; centred, use the full width and wrap evenly */
+  .hero-desc { margin: 14px auto 0; max-width: none; text-wrap: balance; }
+  .hero-actions { margin-top: 22px; justify-content: center; }
   .hero-actions .btn { flex: 1 1 auto; }
   .hero-actions .btn-primary { flex-basis: 100%; }
-  .hero-foot { margin-top: 18px; flex-wrap: wrap; gap: 6px; }
+  .hero-foot { margin-top: 18px; flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .hero-foot :deep(.social) { justify-content: center; }
   .rule { display: none; }
 }
 /* short portrait screens (iPhone SE class): keep the whole intro below the header */
