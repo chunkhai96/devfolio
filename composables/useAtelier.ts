@@ -1,4 +1,5 @@
 import type { Zone } from '~/three/meta'
+import type { LoadStage } from '~/three/engine'
 import type { PanelKey } from '~/utils/atelier'
 
 type EngineHandle = {
@@ -21,6 +22,8 @@ export function useAtelier() {
   const panel = useState<PanelKey | null>('atelier-panel', () => null)
   const ready = useState<boolean>('atelier-ready', () => false)
   const progress = useState<number>('atelier-progress', () => 0)
+  /** null until the engine has started loading */
+  const loadStage = useState<LoadStage | null>('atelier-load-stage', () => null)
   const webgl = useState<'unknown' | 'ok' | 'none'>('atelier-webgl', () => 'unknown')
   const moving = useState<boolean>('atelier-moving', () => false)
   const hovered = useState<string | null>('atelier-hover', () => null)
@@ -70,7 +73,12 @@ export function useAtelier() {
   }
 
   return {
-    zone, panel, ready, progress, webgl, moving, hovered, exploring, reducedMotion, toast, engine,
+    zone, panel, ready, progress, loadStage, webgl, moving, hovered, exploring, reducedMotion, toast, engine,
     goZone, openPanel, closePanel, showToast, syncHash,
   }
+}
+
+/** The visitor chose "Browse while it loads": the loading veil steps aside for a compact status pill. */
+export function useLoaderSkipped() {
+  return useState<boolean>('atelier-loader-skipped', () => false)
 }

@@ -28,8 +28,16 @@ export interface Interactable {
   marker?: boolean
 }
 
+/** Start-up phases, in order, reported with an overall 0..1 progress estimate. */
+export type LoadStage = 'download' | 'screens' | 'shaders' | 'textures' | 'lighting' | 'ready'
+
+/** Share of the overall progress bar each phase covers (roughly its share of start-up time on a slow CPU). */
+const STAGE_SPAN: Record<Exclude<LoadStage, 'ready'>, [number, number]> = {
+  download: [0, 0.35], screens: [0.35, 0.6], shaders: [0.6, 0.66], textures: [0.66, 0.9], lighting: [0.9, 1],
+}
+
 export interface EngineCallbacks {
-  onProgress?: (loaded: number, total: number) => void
+  onProgress?: (progress: number, stage: LoadStage) => void
   onHover?: (id: string | null) => void
   onActivate?: (it: Interactable) => void
   onZone?: (zone: Zone) => void
@@ -184,8 +192,8 @@ export class AtelierEngine {
     const lmSuffix = lowQuality ? '_m' : ''
     const total = 1 + ZONES.length + 21
     let loaded = 0
-    const tick = () => { loaded++; this.o.callbacks.onProgress?.(loaded, total) }
-    this.o.callbacks.onProgress?.(0, total)
+    const tick = () => { loaded++; this.progress('download', loaded / total) }
+    this.progress('download', 0)
 
     const lib = new MaterialLibrary(
       { loadAsync: (url: string) => loadTex(url, true).then((t) => { tick(); return t }) } as unknown as THREE.TextureLoader,
@@ -335,7 +343,14 @@ export class AtelierEngine {
     this.resize()
     this.exposure = 0.0
     this.exposureTarget = 1
+    this.progress('ready', 1)
     this.loop()
+  }
+
+  private progress(stage: LoadStage, within: number) {
+    if (stage === 'ready') { this.o.callbacks.onProgress?.(1, 'ready'); return }
+    const [a, b] = STAGE_SPAN[stage]
+    this.o.callbacks.onProgress?.(a + (b - a) * Math.min(1, Math.max(0, within)), stage)
   }
 
   // ---------------------------------------------------------------------------
@@ -386,13 +401,19 @@ export class AtelierEngine {
     const c = this.o.content
     const aniso = Math.min(8, this.renderer.capabilities.getMaxAnisotropy())
     const jobs: Promise<void>[] = []
+    // two steps per screen: its turn in the loop, then its canvas being applied
+    const steps = this.screens.size * 2
+    let done = 0
+    const step = () => this.progress('screens', ++done / steps)
     for (const [name, mesh] of this.screens) {
       await yieldToMain() // each canvas draw is its own short task
       if (this.disposed) return
+      step()
       const g = this.screenGeom(mesh)
       const aspect = g.width / g.height
       const zone = zoneAt(g.center)
       const set = (cv: HTMLCanvasElement, intensity: number) => {
+        step()
         mesh.material = screenMaterial(toTexture(cv, aniso), intensity, null)
         ;(mesh.material as THREE.MeshStandardMaterial).userData.zone = zone
       }
@@ -469,6 +490,7 @@ export class AtelierEngine {
     props?.applyEnv()
     // compile against a render target: probes and the composer never draw straight to the canvas
     this.renderer.setRenderTarget(rt)
+    this.progress('shaders', 0)
     const compiled = this.renderer.compileAsync(this.scene, this.camera)
     this.renderer.setRenderTarget(null)
     await compiled
@@ -476,9 +498,10 @@ export class AtelierEngine {
     // two passes so metals see metals
     for (let pass = 0; pass < 2 && !this.disposed; pass++) {
       const next = new Map<Zone, THREE.Texture>()
-      for (const z of ZONES) {
+      for (const [k, z] of ZONES.entries()) {
         await yieldToMain()
         if (this.disposed) break
+        this.progress('lighting', (pass * ZONES.length + k) / (2 * ZONES.length))
         cube.position.copy(PROBES[z])
         cube.update(this.renderer, this.scene)
         next.set(z, pmrem.fromCubemap(rt.texture).texture)
@@ -506,8 +529,10 @@ export class AtelierEngine {
         if (u) for (const x of Object.values(u)) if ((x?.value as THREE.Texture)?.isTexture) seen.add(x.value as THREE.Texture)
       }
     })
+    let i = 0
     for (const t of seen) {
       if (this.disposed) return
+      this.progress('textures', i++ / seen.size)
       if ((t as THREE.CubeTexture).isCubeTexture || (t as unknown as { isRenderTargetTexture?: boolean }).isRenderTargetTexture) continue
       this.renderer.initTexture(t)
       await yieldToMain()
